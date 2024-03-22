@@ -1,0 +1,142 @@
+{
+    "chat": {
+        "navbar": {
+            "menu": {
+                "signOut": "Sign Out"
+            }
+        },
+        "sidebar": {
+            "header": "Chats",
+            "newChatTooltip": "Create New Chat",
+            "noChats": "You don't have any chats yet, create a chat to start a conversation"
+        },
+        "chat": {
+            "chatMessages": "Chat Messages",
+            "chatFiles": "Chat Files",
+            "noChatSelectedTitle": "No Chat Selected",
+            "noChatSelectedSubtitle": "Select a chat from the list or create a new one",
+            "addNewChat": "Create New Chat"
+        },
+        "chatFiles": {
+            "loadingFiles": "Loading Files",
+            "error": {
+                "errorTitle": "Failed to display files",
+                "errorSubtitle": "Refresh the page or try again later",
+                "errorDuringFileDownload": "Error while downloading files",
+                "errorFileTooBig": "File {name} is too big. Max size: 50MB"
+            },
+            "downloadFile": "Download File",
+            "author": "Author",
+            "name": "Name",
+            "size": "Size",
+            "creationDate": "Creation date"
+        },
+        "chatMessageList": {
+            "sendMessageError": "Failed to send message. Refresh the page and try again",
+            "sendMessagePlaceholder": "New message to: "
+        },
+        "modals": {
+            "createChatModal": {
+                "title": "New Chat",
+                "chatNamePlaceholder": "Create New Chat",
+                "noContacts": "No Contacts",
+                "members": "Members",
+                "admin": "Staff",
+                "loading": "Creating new Chat",
+                "errors": {
+                    "errorLoadingContacts": "Error loading contacts"
+                }
+            },
+
+            "inviteUserModal": {
+                "inviteNewMember": "Invite a New Member",
+                "howToPassInviteToken": "How to share the invitation token",
+                "inviteToken": "Invitation Token",
+                "giveAdminRights": "Staff",
+                "generateNewToken": "Generate New Token",
+                "copy": "Copy",
+                "copied": "Copied"
+            },
+            "domainModal": {
+                "domain": "Domain",
+                "inviteNewMember": "Invite a New Member",
+                "inviteNewMemberSubTitle": "Share the invitation token with a person to let them create an account",
+                "copy": "Copy",
+                "copied": "Copied",
+                "newToken": "New Token",
+                "userWithAdminPrivileges": "User with Staff permissions",
+                "members": "Members",
+                "grantAdminPrivileges": "Grant Staff permissions",
+                "revokeAdminPrivileges": "Revoke Staff permissions"
+            }
+        }
+    },
+    "common": {
+        "tryAgainLater": "Try again later",
+        "tryAgain": "Try again",
+        "error": "Error",
+        "somethingWentWrong": "Something went wrong",
+        "search": "Search...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "done": "Done",
+        "success": "Success"
+    },
+    "signIn": {
+        "signinIn": "Sign in",
+        "form": {
+            "username": "Username",
+            "password": "Password",
+            "signIn": "Sign in",
+
+            "errors": {
+                "invalidCredentials": "Invalid credentials",
+                "signInFailed": "Sign in failed"
+            }
+        },
+        "noAccount": "No account yet?",
+        "register": "Sign up"
+    },
+    "signUp": {
+        "signUp": "Sign up",
+        "form": {
+            "header": "New account",
+            "inviteToken": "Invitation token",
+            "username": "Username",
+            "password": "Password",
+            "repeatPassword": "Repeat password",
+            "error": {
+                "invalidInviteToken": "Invalid invitation token",
+                "usernameIsTaken": "Username is taken",
+                "signUpError": "An error occured while creating your account. Please try again later."
+            },
+
+            "requirements": {
+                "passwordLength": "6 characters",
+                "passwordsAreNotEqual": "Passwords are not equal",
+                "numbers": "A number",
+                "smallCharacters": "A lowercase character",
+                "bigCharacters": "Am uppercase character",
+                "specialCharacters": "A special character"
+            },
+            "createAccount": "Create account"
+        },
+        "finished": {
+            "done": "Done",
+            "accountCreated": "Account created.",
+            "signIn": "Sign in"
+        }
+    },
+    "error": {
+        "looksLikeSomethingWentWrong": "Something went wrong.",
+        "errorMessage": "Error message:"
+    },
+    "notFound": {
+        "siteNotFound": "Page not found",
+        "goToHomePage": "Go to home page"
+    },
+    "domainNotFound": {
+        "domainNotFound": "Domain not found",
+        "goToHomePage": "Go to home page"
+    }
+}

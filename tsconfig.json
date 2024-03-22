@@ -1,0 +1,39 @@
+{
+    "compilerOptions": {
+        "strictNullChecks": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "allowUnusedLabels": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "ES2015",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": false,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "paths": {
+            "@icon":["./src/shared/ui/atoms/icons/index.ts"],
+            "@chat": ["./src/shared/pages/chat/index.ts"],
+            "@modals/*": ["./src/shared/ui/modals/*"],
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "exclude": ["node_modules"]
+}

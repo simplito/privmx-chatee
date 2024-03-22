@@ -1,0 +1,3 @@
+.input-override[data-variant=default]:not([data-error]){
+    --_input-bd: var(--mantine-color-gray-2)
+}

@@ -1,0 +1,1 @@
+export { ChatFiles } from './ChatFiles';

@@ -1,0 +1,112 @@
+'use client';
+
+import { Endpoint } from '@/lib/endpoint-api/endpoint';
+import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
+import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
+import React, { createContext, useContext, useReducer } from 'react';
+
+export type UserStatus = 'logged-in' | 'logged-out';
+
+export interface UserContextType {
+    userStatus: UserStatus;
+    token: string;
+    contextId: string;
+    username: string;
+    publicKey: string;
+    isStaff: boolean;
+}
+
+export enum UserContextActionTypes {
+    SIGN_IN = 'SIGN_IN',
+    SIGN_OUT = 'SIGN_OUT'
+}
+
+interface SignInAction {
+    type: UserContextActionTypes.SIGN_IN;
+    payload: {
+        token: string;
+        contextId: string;
+        username: string;
+        publicKey: string;
+        isStaff: boolean;
+    };
+}
+
+interface SignOutAction {
+    type: UserContextActionTypes.SIGN_OUT;
+}
+
+type Action = SignInAction | SignOutAction;
+
+const initialState: UserContextType = {
+    userStatus: 'logged-out',
+    token: '',
+    contextId: '',
+    username: '',
+    publicKey: '',
+    isStaff: false
+};
+
+export const UserContext = createContext<{
+    state: UserContextType;
+    dispatch: React.Dispatch<Action>;
+}>({
+    state: initialState,
+    dispatch: () => null
+});
+
+function userReducer(state: UserContextType, action: Action): UserContextType {
+    switch (action.type) {
+        case UserContextActionTypes.SIGN_IN:
+            return {
+                ...state,
+                userStatus: 'logged-in',
+                token: action.payload.token,
+                contextId: action.payload.contextId,
+                username: action.payload.username,
+                publicKey: action.payload.publicKey,
+                isStaff: action.payload.isStaff
+            };
+        case UserContextActionTypes.SIGN_OUT:
+            return initialState;
+        default:
+            return state;
+    }
+}
+
+export const UserContextProvider: React.FC<{ children: React.ReactNode }> =
+    function UserContextProvider({ children }) {
+        const [state, dispatch] = useReducer(userReducer, initialState);
+
+        useEndpointEvent(EndpointEventTypes.DISCONNECTED, async () => {
+            const endPoint = await Endpoint.getInstance();
+            await endPoint.platformDisconnect();
+
+            dispatch(signOutAction());
+        });
+
+        return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
+    };
+
+export function signInAction(payload: UserContextType): SignInAction {
+    return {
+        type: UserContextActionTypes.SIGN_IN,
+        payload
+    };
+}
+
+export function signOutAction(): SignOutAction {
+    return {
+        type: UserContextActionTypes.SIGN_OUT
+    };
+}
+
+export function useUserContext() {
+    const context = useContext(UserContext);
+
+    if (!context) {
+        throw new Error('useUserContext must be used inside a UserContext');
+    }
+
+    return context;
+}

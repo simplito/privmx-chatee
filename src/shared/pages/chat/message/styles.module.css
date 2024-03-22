@@ -1,0 +1,9 @@
+.message_author{
+    display: none;
+    align-items: baseline;
+    --group-gap:var(--mantine-spacing-sm);
+}
+
+.group_message:first-child .message_author{
+    display: flex;
+}
