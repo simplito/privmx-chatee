@@ -37,6 +37,7 @@ export default function useThreadList(options?: { sortBy?: 'newest-message' | 'n
                 } else {
                     setThreads((prev) => [...threadList.threads, ...prev]);
                 }
+                subscribeToThreads(threadList.threads);
                 setHasMore(threadList.threads.length === THREADS_PER_PAGE);
 
                 setStatus('success');

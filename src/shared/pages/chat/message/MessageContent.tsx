@@ -3,8 +3,11 @@ import { ChatMessage } from '..';
 import { FileBadge } from '../file-badge';
 import styles from './styles.module.css';
 import dayjs from 'dayjs';
+import { useLocale } from 'next-intl';
 
 export function MessageContent({ message }: { message: ChatMessage }) {
+    const locale = useLocale();
+
     if (message.status === 'pending') {
         return (
             <Stack gap={0} className={styles.group_message}>
@@ -13,7 +16,7 @@ export function MessageContent({ message }: { message: ChatMessage }) {
                         {message.author}
                     </Text>
                     <Text c="dimmed" size="xs" fw={400}>
-                        {dayjs(message.createDate).fromNow()}
+                        {dayjs(message.createDate).locale(locale).fromNow()}
                     </Text>
                 </Group>
 
@@ -39,7 +42,7 @@ export function MessageContent({ message }: { message: ChatMessage }) {
                             {message.author}
                         </Text>
                         <Text c="dimmed" size="xs" fw={400}>
-                            {dayjs(message.createDate).fromNow()}
+                            {dayjs(message.createDate).locale(locale).fromNow()}
                         </Text>
                     </Group>
                     <Paper radius={'sm'} maw={800}>
@@ -57,7 +60,7 @@ export function MessageContent({ message }: { message: ChatMessage }) {
                             {message.author}
                         </Text>
                         <Text c="dimmed" fw={400} size="xs">
-                            {dayjs(message.createDate).fromNow()}
+                            {dayjs(message.createDate).locale(locale).fromNow()}
                         </Text>
                     </Group>
                     <Paper radius={'sm'} maw={800}>

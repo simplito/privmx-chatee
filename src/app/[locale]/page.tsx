@@ -11,13 +11,10 @@ import 'dayjs/locale/pl';
 import 'dayjs/locale/en';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { StoreCacheContextProvider } from '@/shared/ui/context/StoreCacheContext';
-import { getLocalCookieVal } from '@/shared/pages/navbar/header-menu/HeaderMenu';
 
 dayjs.extend(relativeTime);
 
 export default function Home() {
-    dayjs.locale(getLocalCookieVal());
-
     const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(undefined);
     const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(undefined);
 
