@@ -21,7 +21,8 @@ export const NEXT_STATE_GRAPH: Graph<'status'> = {
         SETTLE: 'Idle',
         SETTLE_MESSAGE: 'Stale',
         NEW_MESSAGE: 'Loading',
-        FETCH_NEXT_PAGE: 'Loading'
+        FETCH_NEXT_PAGE: 'Loading',
+        INITIALIZE: 'Initial'
     },
     Initial: {
         ...CHANGE_THREAD_EVENT,
