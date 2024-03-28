@@ -39,6 +39,7 @@ import { useUserContext } from '../../context/UserContext';
 import { UserAvatar } from '../../atoms/user-avatar/UserAvatar';
 import { useTranslations } from 'next-intl';
 import { ContextModalProps } from '@mantine/modals';
+import { FormContainer } from '../../atoms/form-container';
 export function DomainConfigModal({ context, id }: ContextModalProps<{}>) {
     const { contacts, status, setContacts } = useContactsGet();
     const {
@@ -55,25 +56,17 @@ export function DomainConfigModal({ context, id }: ContextModalProps<{}>) {
     const t = useTranslations();
 
     return (
-        <Grid pos="relative">
+        <FormContainer>
             <ActionIcon
                 variant="subtle"
                 pos="absolute"
-                top={0}
-                right={-8}
+                top={16}
+                right={16}
                 onClick={() => context.closeModal(id)}>
                 <IconX size={16} />
             </ActionIcon>
-            <Grid.Col span={4} pos={'relative'}>
-                <Box
-                    bg={'var(--mantine-color-gray-8)'}
-                    w="100%"
-                    h="100%"
-                    style={{ borderRadius: 'var(--mantine-radius-sm)' }}
-                    inset={8}
-                />
-            </Grid.Col>
-            <Grid.Col span={8}>
+            <FormContainer.LeftPanel></FormContainer.LeftPanel>
+            <FormContainer.RightPanel>
                 <Stack h={'80svh'} gap={'lg'}>
                     <Group gap={4} align="center" mt={'lg'}>
                         <ThemeIcon variant="transparent" size={'sm'}>
@@ -275,7 +268,7 @@ export function DomainConfigModal({ context, id }: ContextModalProps<{}>) {
                         </Box>
                     </Stack>
                 </Stack>
-            </Grid.Col>
-        </Grid>
+            </FormContainer.RightPanel>
+        </FormContainer>
     );
 }

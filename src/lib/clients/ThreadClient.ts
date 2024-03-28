@@ -45,8 +45,10 @@ export class ThreadClient {
                 PAGE_SIZE,
                 'desc'
             );
-            allMessages.unshift(...pageMessages.messages.toReversed());
-            totalMessages = pageMessages.messagesTotal;
+            if (pageMessages?.messages) {
+                allMessages.unshift(...pageMessages.messages.toReversed());
+                totalMessages = pageMessages.messagesTotal;
+            }
         }
 
         const newMessages = this._threadCache.setMessages(id, {
@@ -193,5 +195,20 @@ export class ThreadClient {
 
     public get hasMessages() {
         return this._threadCache.hasMessages(this.threadId);
+    }
+
+    public async deleteMessage(messageId: string, threadId: string) {
+        const endPoint = await Endpoint.getInstance();
+
+        try {
+            await endPoint.threadMessageDelete(messageId);
+            this._threadCache.deleteMessage(messageId, threadId);
+        } catch (error) {
+            throw new Error('Unable to delete message', { cause: 'message_Delete_error' });
+        }
+    }
+
+    public deleteMessageInCache(messageId: string, threadId: string) {
+        this._threadCache.deleteMessage(messageId, threadId);
     }
 }

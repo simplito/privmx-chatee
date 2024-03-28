@@ -8,14 +8,21 @@
         "sidebar": {
             "header": "Czaty",
             "newChatTooltip": "Stwórz nowy czat",
-            "noChats": "Nie masz jeszcze żadnych czatów, stwórz czat żeby z kimś porozmawiać"
+            "noChats": "Nie masz jeszcze żadnych czatów, stwórz czat żeby z kimś porozmawiać",
+            "deleteThread": "Usuń wątek",
+            "deleteThreadQuestion": "Czy na pewno chcesz usunąć wątek {name}? Ta akcja jest nieodwracalna.",
+            "deleteThreadError": "Wystąpił błąd podczas usuwania wątku."
         },
         "chat": {
             "chatMessages": "Wiadomości czatu",
             "chatFiles": "Pliki czatu",
             "noChatSelectedTitle": "Nie wybrano czatu",
             "noChatSelectedSubtitle": "Wybierz czat z listy lub Stwórz nowy",
-            "addNewChat": "Stwórz nowy czat"
+            "addNewChat": "Stwórz nowy czat",
+            "deleteMessage": "Usunąć wiadomość?",
+            "delete": "Usuń",
+            "cancel": "Anuluj",
+            "messageDeleteError": "Wystąpił błąd podczas usuwania wiadomości"
         },
         "chatFiles": {
             "loadingFiles": "Pobieranie plików",
@@ -80,7 +87,8 @@
         "save": "Zapisz",
         "cancel": "Anuluj",
         "done": "Gotowe",
-        "success": "Sukces"
+        "success": "Sukces",
+        "sessionExpired": "Sesja wygasła, zaloguj się ponownie."
     },
     "signIn": {
         "signinIn": "Logowanie",

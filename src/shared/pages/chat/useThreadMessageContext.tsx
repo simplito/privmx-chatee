@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useThreadContext } from './useThreadContext';
 import { useChatStateMachine } from './useChatStateMachine/useChatStateMachine';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
-import { EndpointEventTypes } from '@/lib/endpoint-api/eventClient';
+import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
 
 export function useThreadMessageContext() {
     const chatClient = useThreadContext();
@@ -50,12 +50,20 @@ export function useThreadMessageContext() {
         });
     });
 
+    useEndpointEvent(EndpointEventTypes.THREAD_DELETED_MESSAGE, async (e) => {
+        chatClient.deleteMessageInCache(e.data.messageId, e.data.threadId);
+        send({
+            type: 'DELETE_MESSAGE',
+            deletedMessage: { msgId: e.data.messageId, threadId: e.data.threadId }
+        });
+    });
+
     useEffect(() => {
         if (!currentThreadId) {
             return;
         }
+        const currentMessages = chatClient.getMessages();
         if (chatClient.hasMessages) {
-            const currentMessages = chatClient.getMessages();
             send({
                 type: 'START_FETCHING',
                 newMessages: currentMessages,
@@ -119,6 +127,20 @@ export function useThreadMessageContext() {
         [chatClient, currentThreadId, send]
     );
 
+    const deleteMessage = useCallback(
+        async (messageId: string, threadId: string) => {
+            if (!messageId || !threadId) {
+                return;
+            }
+            await chatClient.deleteMessage(messageId, threadId);
+            send({
+                type: 'DELETE_MESSAGE',
+                deletedMessage: { msgId: messageId, threadId }
+            });
+        },
+        [chatClient, send]
+    );
+
     return {
         ...state,
         messages: [...(state.messages || []), ...(state.pendingMessages || [])],
@@ -126,7 +148,8 @@ export function useThreadMessageContext() {
         hasMoreMessages,
         sendMessage,
         allMessagesLength,
-        sendFileMessage
+        sendFileMessage,
+        deleteMessage
     };
 }
 

@@ -65,6 +65,18 @@ export class ThreadMessageCache {
         if (this._messages.has(threadId)) {
             const messages = this._messages.get(threadId);
             const newMessages = settleMessage(messages, msgId, threadMessageId);
+            this._messages.set(threadId, newMessages);
+        }
+    }
+
+    public deleteMessage(msgId: string, threadId: string) {
+        if (this._messages.has(threadId)) {
+            const messages = this._messages.get(threadId);
+            const newMessages = messages.filter(
+                (message) =>
+                    message.status === 'pending' ||
+                    (message.status === 'sent' && message.messageId !== msgId)
+            );
 
             this._messages.set(threadId, newMessages);
         }

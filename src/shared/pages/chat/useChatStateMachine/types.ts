@@ -63,7 +63,15 @@ export type Event =
           newMessages?: ChatMessage[] | undefined;
       }
     | { type: 'INVALIDATE'; effect?: EffectCallback; newMessages: ChatMessage[] | undefined }
-    | { type: 'INITIALIZE'; effect: EffectCallback };
+    | { type: 'INITIALIZE'; effect: EffectCallback }
+    | {
+          type: 'DELETE_MESSAGE';
+          deletedMessage: {
+              msgId: string;
+              threadId: string;
+          };
+          effect?: EffectCallback;
+      };
 
 export type Connection<Field extends keyof State> = Record<
     Event['type'],

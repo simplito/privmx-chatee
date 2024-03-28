@@ -1,13 +1,20 @@
 import { getEndpoint } from './getEndpoint';
-import { Channel, EndpointApiInterface, SortOrder } from './types/endpointApiInterface';
 import { ContextsList } from './types/context';
 import { UserWithPubKey } from './types/user';
 import { ThreadInfo } from './types/thread';
 import { ThreadMessagesList } from './types/threadMessage';
 import { Deferred } from '@/shared/utils/deferred';
 import { Lock } from '@/shared/utils/lock';
-import { StoreFileData, StoreFileInfo, StoreFilesList, StoreInfo, StoreList } from './types/store';
-import { EndpointEventManager, EndpointEventTypes } from './types/events';
+import type {
+    StoreFileData,
+    StoreFileInfo,
+    StoreFilesList,
+    StoreInfo,
+    StoreList
+} from './types/store';
+import type { EndpointApiInterface, SortOrder, Channel } from './types/endpointApiInterface';
+import { EndpointEventManager } from './types/events';
+import { EndpointTryCatch } from '@/shared/utils/decorators';
 
 type ConnectionState =
     | { type: 'connected' }
@@ -16,7 +23,7 @@ type ConnectionState =
     | { type: 'disconnecting'; deferred: Deferred<void> };
 
 type GenericEvent = {
-    type: EndpointEventTypes;
+    type: string;
     data: any;
 };
 
@@ -46,6 +53,7 @@ export class Endpoint {
     // eslint-disable-next-line no-unused-vars
     public constructor(private endpoint: EndpointApiInterface) {}
 
+    @EndpointTryCatch
     async contextList(skip: number, limit: number, sortOrder: SortOrder): Promise<ContextsList> {
         return await this.endpoint.contextList(skip, limit, sortOrder);
     }
@@ -77,6 +85,7 @@ export class Endpoint {
         return await this.endpoint.cryptoPubKeyNew(privKey);
     }
 
+    @EndpointTryCatch
     async platformConnect(privKey: string, solutionId: string, platformUrl: string) {
         if (this.connectionState.type === 'connected') {
             return;
@@ -145,6 +154,7 @@ export class Endpoint {
         deferred.resolve();
     }
 
+    @EndpointTryCatch
     async threadCreate(
         contextId: string,
         users: UserWithPubKey[],
@@ -154,14 +164,22 @@ export class Endpoint {
         return await this.endpoint.threadCreate(contextId, users, managers, title);
     }
 
+    @EndpointTryCatch
+    async threadDelete(threadId: string): Promise<void> {
+        return await this.endpoint.threadDelete(threadId);
+    }
+
+    @EndpointTryCatch
     async threadGet(threadId: string): Promise<ThreadInfo> {
         return await this.endpoint.threadGet(threadId);
     }
 
+    @EndpointTryCatch
     async threadList(contextId: string, skip: number, limit: number, sortOrder: SortOrder) {
         return await this.endpoint.threadList(contextId, skip, limit, sortOrder);
     }
 
+    @EndpointTryCatch
     async threadMessageSend(
         threadId: string,
         clientThreadMessageId: string,
@@ -178,6 +196,7 @@ export class Endpoint {
         );
     }
 
+    @EndpointTryCatch
     async threadMessageGet(
         threadId: string,
         skip: number,
@@ -187,6 +206,12 @@ export class Endpoint {
         return await this.endpoint.threadMessagesGet(threadId, skip, limit, sortOrder);
     }
 
+    @EndpointTryCatch
+    async threadMessageDelete(messageId: string) {
+        return await this.endpoint.threadMessageDelete(messageId);
+    }
+
+    @EndpointTryCatch
     async cryptoPrivKeyNewPbkdf2(salt: string, password: string) {
         return await this.endpoint.cryptoPrivKeyNewPbkdf2(salt, password);
     }
@@ -195,16 +220,19 @@ export class Endpoint {
         return this.endpointCallLock.withLock(fn);
     }
 
+    @EndpointTryCatch
     async subscribeToChannel(channel: Channel) {
         return await this.endpoint.subscribeToChannel(channel);
     }
 
+    @EndpointTryCatch
     async unsubscribeFromChannel(channel: Channel) {
         return await this.endpoint.unsubscribeFromChannel(channel);
     }
 
     // --------- stores ----------- //
 
+    @EndpointTryCatch
     async storeCreate(
         contextId: string,
         users: UserWithPubKey[],
@@ -214,18 +242,21 @@ export class Endpoint {
         return await this.endpoint.storeCreate(contextId, users, managers, title);
     }
 
+    @EndpointTryCatch
     async storeFileCreate(storeId: string, data?: StoreFileData): Promise<string> {
         return await this.endpoint.storeFileCreate(storeId, data);
     }
-
+    @EndpointTryCatch
     async storeFileDelete(fileId: string): Promise<boolean> {
         return await this.endpoint.storeFileDelete(fileId);
     }
 
+    @EndpointTryCatch
     async storeFileGet(fileId: string): Promise<StoreFileInfo> {
         return await this.endpoint.storeFileGet(fileId);
     }
 
+    @EndpointTryCatch
     async storeFileList(
         storeId: string,
         skip: number,
@@ -235,18 +266,22 @@ export class Endpoint {
         return await this.endpoint.storeFileList(storeId, skip, limit, sortOrder);
     }
 
+    @EndpointTryCatch
     async storeFileRead(fileId: string): Promise<StoreFileData> {
         return await this.endpoint.storeFileRead(fileId);
     }
 
+    @EndpointTryCatch
     async storeFileWrite(fileId: string, data: StoreFileData): Promise<boolean> {
         return await this.endpoint.storeFileWrite(fileId, data);
     }
 
+    @EndpointTryCatch
     async storeGet(fileId: string): Promise<StoreInfo> {
         return await this.endpoint.storeGet(fileId);
     }
 
+    @EndpointTryCatch
     async storeList(
         contextId: string,
         skip: number,
@@ -254,5 +289,10 @@ export class Endpoint {
         sortOrder: SortOrder
     ): Promise<StoreList> {
         return await this.endpoint.storeList(contextId, skip, limit, sortOrder);
+    }
+
+    @EndpointTryCatch
+    async storeDelete(storeId: string) {
+        return await this.endpoint.storeDelete(storeId);
     }
 }

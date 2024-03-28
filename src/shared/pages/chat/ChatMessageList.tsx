@@ -1,5 +1,5 @@
 import { Stack, Progress, Group, Transition, Paper, ActionIcon } from '@mantine/core';
-import { FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
+import { FormEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChatMessage } from '.';
 import { useUserContext } from '@/shared/ui/context/UserContext';
 import { useNotification } from '@/shared/hooks/useNotification';
@@ -17,7 +17,8 @@ export function ChatMessageList({
     sendMessage,
     requestNextMessageFrame,
     isFetchingNextPage = false,
-    sendFileMessage
+    sendFileMessage,
+    deleteMessage
 }: {
     // eslint-disable-next-line no-unused-vars
     sendMessage: (msg: { author: string; text: string }) => Promise<void>;
@@ -28,6 +29,8 @@ export function ChatMessageList({
     requestNextMessageFrame: () => Promise<void>;
     // eslint-disable-next-line no-unused-vars
     sendFileMessage: (msg: { author: string; file: File }) => Promise<void>;
+    // eslint-disable-next-line no-unused-vars
+    deleteMessage: (messageId: string, threadId: string) => Promise<void>;
 }) {
     const { showError } = useNotification();
 
@@ -64,7 +67,7 @@ export function ChatMessageList({
         return isAtBottom ? 'auto' : false;
     }, []);
 
-    const groups = groupMessages(messages);
+    const groups = useMemo(() => groupMessages(messages), [messages]);
 
     const filesList =
         files.length > 0 &&
@@ -86,7 +89,11 @@ export function ChatMessageList({
                 initialTopMostItemIndex={groups.length - 1}
                 firstItemIndex={Math.max(0, allMessagesLength - groups.length)}
                 itemContent={(index, message) => (
-                    <MessageGroup key={message.messages[0].createDate} group={message} />
+                    <MessageGroup
+                        key={message.messages[0].createDate}
+                        group={message}
+                        deleteMessage={deleteMessage}
+                    />
                 )}
                 data={groups}
                 startReached={() => {
@@ -100,6 +107,7 @@ export function ChatMessageList({
                     display: 'flex',
                     padding: 'var(--mantine-spacing-md) 0'
                 }}
+                increaseViewportBy={{ top: 100, bottom: 100 }}
             />
             <form onSubmit={handleSubmit}>
                 <Transition

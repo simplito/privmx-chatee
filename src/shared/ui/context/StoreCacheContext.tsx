@@ -4,8 +4,8 @@ import { useUserContext } from './UserContext';
 import { Endpoint } from '@/lib/endpoint-api/endpoint';
 import { useThreadContext } from '@chat';
 import { StoreFileInfo, StoreInfo } from '@/lib/endpoint-api/types/store';
-import { EndpointEventTypes } from '@/lib/endpoint-api/eventClient';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
+import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
 
 type StoreState = 'None' | 'InfoInitialized';
 
@@ -36,7 +36,8 @@ export enum StoreCacheActionTypes {
     ADD_FILES = 'ADD_FILES',
     LOAD_PAGE = 'LOAD_PAGE',
     RESET_CACHE = 'RESET_CACHE',
-    START_PAGE_LOAD = 'START_PAGE_LOAD'
+    START_PAGE_LOAD = 'START_PAGE_LOAD',
+    DELETE_FILE = 'DELETE_FILE'
 }
 interface InitInfoAction {
     type: StoreCacheActionTypes.INIT_INFO;
@@ -60,6 +61,14 @@ interface LoadPageAction {
     };
 }
 
+interface DeleteFileAction {
+    type: StoreCacheActionTypes.DELETE_FILE;
+    payload: {
+        storeId: string;
+        fileId: string;
+    };
+}
+
 interface ResetCacheAction {
     type: StoreCacheActionTypes.RESET_CACHE;
 }
@@ -77,7 +86,8 @@ type StoreCacheAction =
     | AddFilesAction
     | LoadPageAction
     | ResetCacheAction
-    | StartPageLoadAction;
+    | StartPageLoadAction
+    | DeleteFileAction;
 
 export const StoreCacheContext = createContext<{
     state: StoreCacheType;
@@ -158,6 +168,34 @@ function storeCacheReducer(state: StoreCacheType, action: StoreCacheAction): Sto
             return newState;
         }
 
+        case StoreCacheActionTypes.DELETE_FILE: {
+            const { storeId, fileId } = action.payload;
+            const newState = { ...state };
+            const store = newState.stores.get(storeId);
+            if (store) {
+                store.files.forEach((files, page) => {
+                    const fileIndex = files.findIndex((file) => file.fileId === fileId);
+                    if (fileIndex > -1) {
+                        const updatedFiles = [
+                            ...files.slice(0, fileIndex),
+                            ...files.slice(fileIndex + 1)
+                        ];
+                        if (updatedFiles.length > 0) {
+                            store.files.set(page, updatedFiles);
+                        } else {
+                            store.files.delete(page);
+                        }
+
+                        store.filesCount -= 1;
+                    }
+                });
+
+                newState.stores.set(storeId, store);
+            }
+
+            return newState;
+        }
+
         default:
             return state;
     }
@@ -176,6 +214,16 @@ export function addFilesToCache(payload: {
 }): AddFilesAction {
     return {
         type: StoreCacheActionTypes.ADD_FILES,
+        payload
+    };
+}
+
+export function deleteFilesFromCache(payload: {
+    storeId: string;
+    fileId: string;
+}): DeleteFileAction {
+    return {
+        type: StoreCacheActionTypes.DELETE_FILE,
         payload
     };
 }
@@ -230,6 +278,15 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
         } catch (error) {
             console.error(error);
         }
+    });
+
+    useEndpointEvent(EndpointEventTypes.STORE_FILE_DELETED, (event) => {
+        const store = state.stores.get(event.data.storeId);
+        if (!store) {
+            return;
+        }
+
+        dispatch(deleteFilesFromCache({ storeId: event.data.storeId, fileId: event.data.fileId }));
     });
 
     useEffect(() => {

@@ -8,6 +8,7 @@ import { useNotification } from '@/shared/hooks/useNotification';
 import { bytesSize } from '../chat/Chat';
 import { useTranslations } from 'next-intl';
 import { UserAvatar } from '@/shared/ui/atoms/user-avatar/UserAvatar';
+import { displayDate } from '@/shared/utils/date';
 
 export function FileTableRow({ file }: { file: StoreFileInfo }) {
     const client = useThreadContext();
@@ -28,23 +29,27 @@ export function FileTableRow({ file }: { file: StoreFileInfo }) {
 
     return (
         <Table.Tr key={file.data.name}>
-            <Table.Td colSpan={2}>{file.data.name}</Table.Td>
+            <Table.Td colSpan={2}>
+                <Text c="dimmed" size="sm" lineClamp={1}>
+                    {file.data.name}
+                </Text>
+            </Table.Td>
             <Table.Td colSpan={2}>
                 <Group gap={'xs'}>
                     <UserAvatar name={file.author} size={'sm'} />
-                    <Text c="dimmed" size="sm">
+                    <Text visibleFrom="lg" c="dimmed" size="sm" lineClamp={1}>
                         {file.author}
                     </Text>
                 </Group>
             </Table.Td>
-            <Table.Td colSpan={2}>
+            <Table.Td colSpan={2} visibleFrom="lg">
                 <Text c="dimmed" size="sm">
                     {bytesSize(file.size)}
                 </Text>
             </Table.Td>
-            <Table.Td colSpan={2}>
+            <Table.Td colSpan={2} visibleFrom="md">
                 <Text c="dimmed" size="sm">
-                    {new Date(file.createDate).toLocaleString()}
+                    {displayDate(file.createDate)}
                 </Text>
             </Table.Td>
             <Table.Td colSpan={1}>

@@ -17,7 +17,7 @@ export function toEventObj(
 }
 
 export function getMessageId(msg: ChatMessage) {
-    return msg.status === 'pending' ? msg.msgId : msg.data.msgId;
+    return msg.status === 'pending' ? msg.msgId : msg.messageId;
 }
 
 export function getNextMessages(
@@ -29,6 +29,14 @@ export function getNextMessages(
         const newPendingMessages = [...currentPendingMessages, event.newMessage];
 
         return [state.messages, newPendingMessages];
+    }
+
+    if (event.type === 'DELETE_MESSAGE') {
+        const newMessages = state.messages.filter((x) => {
+            const isTheSame = getMessageId(x) !== event.deletedMessage.msgId;
+            return isTheSame;
+        });
+        return [newMessages, state.pendingMessages];
     }
 
     if (event.type === 'SETTLE_MESSAGE') {

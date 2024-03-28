@@ -23,9 +23,10 @@ import useContactsGet from '@/lib/hooks/useContactsGet';
 import { useUserContext } from '../../context/UserContext';
 import { useTranslations } from 'next-intl';
 import { LoadingState } from '../../atoms/loading-state/LoadingState';
-import { IconMessagePlus, IconSearch, IconUser, IconX } from '@tabler/icons-react';
+import { IconMessagePlus, IconUser, IconX } from '@tabler/icons-react';
 import { useInputState } from '@mantine/hooks';
 import { SearchInput } from '../../atoms/search-input/SearchInput';
+import { FormContainer } from '../../atoms/form-container';
 export interface threadUsers {
     userId: string;
     publicKey: string;
@@ -49,13 +50,13 @@ export function CreateChatModal({ context, id }: ContextModalProps<{}>) {
     const [usersQuery, changeUsersQuerry] = useInputState('');
 
     return (
-        <Grid pos="relative">
+        <FormContainer>
             <ActionIcon
                 variant="subtle"
                 style={{ zIndex: 10 }}
                 pos="absolute"
-                top={0}
-                right={-8}
+                top={16}
+                right={16}
                 onClick={() => context.closeModal(id)}>
                 <IconX size={16} />
             </ActionIcon>
@@ -65,18 +66,15 @@ export function CreateChatModal({ context, id }: ContextModalProps<{}>) {
                     children: <LoadingState title={t('chat.modals.createChatModal.loading')} />
                 }}
             />
-            <Grid.Col span={4} pos={'relative'}>
-                <Box
-                    bg={'var(--mantine-color-gray-8)'}
-                    w="100%"
-                    h="100%"
-                    style={{ borderRadius: 'var(--mantine-radius-md)' }}
-                    inset={8}
-                />
-            </Grid.Col>
-            <Grid.Col span={8} px="md">
-                <Stack>
+            <FormContainer.LeftPanel></FormContainer.LeftPanel>
+            <FormContainer.RightPanel>
+                <Stack h="100%">
                     <form
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1
+                        }}
                         onSubmit={async (e) => {
                             e.preventDefault();
                             const formData = new FormData(e.target as HTMLFormElement);
@@ -127,7 +125,7 @@ export function CreateChatModal({ context, id }: ContextModalProps<{}>) {
                             }}
                         />
 
-                        <Paper mb="sm" pos="relative" h={390}>
+                        <Paper mb="sm" pos="relative" h="100%" w="100%">
                             <LoadingOverlay visible={status === 'loading'} />
                             {status === 'success' &&
                                 contacts.length === 0 &&
@@ -189,7 +187,7 @@ export function CreateChatModal({ context, id }: ContextModalProps<{}>) {
                                 </Alert>
                             )}
                         </Paper>
-                        <Group grow>
+                        <Group grow style={{ marginTop: 'auto' }}>
                             <Button type="submit" disabled={threadStatus === 'loading'}>
                                 {t('common.save')}
                             </Button>
@@ -199,7 +197,7 @@ export function CreateChatModal({ context, id }: ContextModalProps<{}>) {
                         </Group>
                     </form>
                 </Stack>
-            </Grid.Col>
-        </Grid>
+            </FormContainer.RightPanel>
+        </FormContainer>
     );
 }

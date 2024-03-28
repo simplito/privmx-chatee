@@ -33,11 +33,16 @@ function ChatHeader({ title, rightSection }: { title: string; rightSection: Reac
                 borderBottom: 'var(--mantine-border)'
             }}>
             <Group justify="space-between">
-                <Group>
+                <Group gap={4}>
                     <ThemeIcon variant="subtle">
                         <IconMessage size={16} />
                     </ThemeIcon>
-                    <Text size="lg">{title}</Text>
+                    <Text size="lg" visibleFrom="md">
+                        {title}
+                    </Text>
+                    <Text size="sm" hiddenFrom="md">
+                        {title}
+                    </Text>
                 </Group>
                 {rightSection}
             </Group>
@@ -64,11 +69,31 @@ export function Chat() {
 
     const fileTabChange = (
         <Tabs.List>
-            <Tabs.Tab value="CHAT" leftSection={<IconMessages size={12} />}>
-                {t('chat.chat.chatMessages')}
+            <Tabs.Tab
+                p="xs"
+                value="CHAT"
+                styles={{
+                    tabSection: {
+                        marginRight: 0
+                    }
+                }}
+                leftSection={<IconMessages size={16} />}>
+                <Text size="xs" visibleFrom="md" ml="xs">
+                    {t('chat.chat.chatMessages')}
+                </Text>
             </Tabs.Tab>
-            <Tabs.Tab value="FILES" leftSection={<IconFiles size={12} />}>
-                {t('chat.chat.chatFiles')}
+            <Tabs.Tab
+                p="xs"
+                value="FILES"
+                styles={{
+                    tabSection: {
+                        marginRight: 0
+                    }
+                }}
+                leftSection={<IconFiles size={16} />}>
+                <Text size="xs" visibleFrom="md" ml="xs">
+                    {t('chat.chat.chatFiles')}
+                </Text>
             </Tabs.Tab>
         </Tabs.List>
     );

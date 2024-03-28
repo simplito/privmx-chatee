@@ -3,6 +3,7 @@
 import { Endpoint } from '@/lib/endpoint-api/endpoint';
 import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
+import { useRouter } from 'next/navigation';
 import React, { createContext, useContext, useReducer } from 'react';
 
 export type UserStatus = 'logged-in' | 'logged-out';
@@ -77,12 +78,16 @@ function userReducer(state: UserContextType, action: Action): UserContextType {
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> =
     function UserContextProvider({ children }) {
         const [state, dispatch] = useReducer(userReducer, initialState);
-
-        useEndpointEvent(EndpointEventTypes.DISCONNECTED, async () => {
+        const router = useRouter();
+        useEndpointEvent(EndpointEventTypes.DISCONNECTED, async (event) => {
             const endPoint = await Endpoint.getInstance();
             await endPoint.platformDisconnect();
 
-            dispatch(signOutAction());
+            if (event.data && event?.data?.type === 'time-out') {
+                router.push('/sign-in?session-expired=true');
+            } else {
+                dispatch(signOutAction());
+            }
         });
 
         return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;

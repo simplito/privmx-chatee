@@ -3,9 +3,6 @@ import useSignIn from '@/lib/hooks/useSignIn';
 import { Step } from '@/shared/ui/atoms/step/Step';
 import {
     Center,
-    Paper,
-    Grid,
-    Flex,
     ThemeIcon,
     Title,
     PasswordInput,
@@ -21,15 +18,36 @@ import {
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useInitialFocus } from '@/shared/hooks/useInitialFocus';
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useNotification } from '@/shared/hooks/useNotification';
+import { FormContainer } from '@/shared/ui/atoms/form-container';
 
 export default function Page() {
     const { signIn, status, setStatus } = useSignIn();
     const t = useTranslations();
     const nameInput = useInitialFocus();
+    const searchParams = useSearchParams();
+    const { showError } = useNotification();
+
+    useEffect(() => {
+        const sessionExpired = searchParams.get('session-expired');
+
+        if (sessionExpired) {
+            showError(t('common.sessionExpired'));
+        }
+    }, [searchParams, showError, t]);
 
     return (
         <Center h="100%" style={{ flexGrow: 1 }}>
-            <form
+            <FormContainer
+                mx="lg"
+                containerProps={{
+                    p: 'lg',
+                    miw: { base: '100%', sm: '720px' }
+                }}
+                withShadow
+                component="form"
                 onSubmit={async (e) => {
                     e.preventDefault();
                     const formData = new FormData(e.target as HTMLFormElement);
@@ -39,108 +57,74 @@ export default function Page() {
 
                     await signIn(username, password);
                 }}>
-                <Paper
-                    pos="relative"
-                    shadow="xs"
-                    radius={'lg'}
-                    p="lg"
-                    miw={720}
-                    mih={513}
-                    display={'flex'}
-                    style={{ flexDirection: 'column' }}>
-                    <LoadingOverlay visible={status === 'loading'} />
+                <LoadingOverlay visible={status === 'loading'} />
 
-                    <Grid
-                        flex={1}
-                        align="stretch"
-                        gutter={'md'}
-                        styles={{
-                            root: { display: 'flex', flexDirection: 'column' },
-                            inner: { flexGrow: 1 }
-                        }}>
-                        <Grid.Col span={4} pos={'relative'}>
-                            <Flex
-                                align={'flex-end'}
-                                justify={'flex-end'}
-                                direction={'column'}
-                                bg={'var(--mantine-color-gray-8)'}
-                                p="md"
-                                h="100%"
-                                style={{ borderRadius: 'var(--mantine-radius-md)' }}
-                                inset={8}>
-                                <ThemeIcon
-                                    c={'gray.0'}
-                                    size={'xl'}
-                                    variant="transparent"
-                                    ml="auto"
-                                    opacity={0.8}></ThemeIcon>
-                                <Title
-                                    ta="center"
-                                    mt={0}
-                                    order={2}
-                                    opacity={0.9}
-                                    c="gray.0"
-                                    tw="balance">
-                                    Chatee
-                                </Title>
-                            </Flex>
-                        </Grid.Col>
-                        <Grid.Col span={8}>
-                            <Step visible>
-                                <Title order={3}>{t('signIn.signinIn')}</Title>
-                                <Stack gap={4}>
-                                    <TextInput
-                                        ref={nameInput}
-                                        onFocus={() => {
-                                            if (status === 'invalid-credentials') {
-                                                setStatus('default');
-                                            }
-                                        }}
-                                        error={
-                                            status === 'invalid-credentials'
-                                                ? t('signIn.form.errors.invalidCredentials')
-                                                : undefined
-                                        }
-                                        name="username"
-                                        label={t('signIn.form.username')}
-                                    />
-                                    <PasswordInput
-                                        onFocus={() => {
-                                            if (status === 'invalid-credentials') {
-                                                setStatus('default');
-                                            }
-                                        }}
-                                        error={
-                                            status === 'invalid-credentials'
-                                                ? t('signIn.form.errors.invalidCredentials')
-                                                : undefined
-                                        }
-                                        name="password"
-                                        label={t('signIn.form.password')}
-                                    />
-                                </Stack>
-                                <Button type="submit">{t('signIn.form.signIn')}</Button>
+                <FormContainer.LeftPanel>
+                    <ThemeIcon
+                        c={'gray.0'}
+                        size={'xl'}
+                        variant="transparent"
+                        ml="auto"
+                        opacity={0.8}></ThemeIcon>
+                    <Title ta="center" mt={0} order={2} opacity={0.9} c="gray.0" tw="balance">
+                        Chatee
+                    </Title>
+                </FormContainer.LeftPanel>
 
-                                <Group gap={4}>
-                                    <Text c="dimmed" size="sm">
-                                        {t('signIn.noAccount')}
-                                    </Text>
+                <FormContainer.RightPanel>
+                    <Step visible>
+                        <Title order={3}>{t('signIn.signinIn')}</Title>
+                        <Stack gap={4}>
+                            <TextInput
+                                ref={nameInput}
+                                onFocus={() => {
+                                    if (status === 'invalid-credentials') {
+                                        setStatus('default');
+                                    }
+                                }}
+                                error={
+                                    status === 'invalid-credentials'
+                                        ? t('signIn.form.errors.invalidCredentials')
+                                        : undefined
+                                }
+                                name="username"
+                                label={t('signIn.form.username')}
+                            />
+                            <PasswordInput
+                                onFocus={() => {
+                                    if (status === 'invalid-credentials') {
+                                        setStatus('default');
+                                    }
+                                }}
+                                error={
+                                    status === 'invalid-credentials'
+                                        ? t('signIn.form.errors.invalidCredentials')
+                                        : undefined
+                                }
+                                name="password"
+                                label={t('signIn.form.password')}
+                            />
+                        </Stack>
+                        <Button type="submit">{t('signIn.form.signIn')}</Button>
 
-                                    <Anchor size="sm" component={Link} href="/sign-up">
-                                        {t('signIn.register')}
-                                    </Anchor>
-                                </Group>
+                        <Group gap={4}>
+                            <Text c="dimmed" size="sm">
+                                {t('signIn.noAccount')}
+                            </Text>
 
-                                {status === 'error' && (
-                                    <Alert color="red" title={t('signIn.form.errors.signInFailed')}>
-                                        {t('common.tryAgainLater')}
-                                    </Alert>
-                                )}
-                            </Step>
-                        </Grid.Col>
-                    </Grid>
-                </Paper>
-            </form>
+                            <Anchor size="sm" component={Link} href="/sign-up">
+                                {t('signIn.register')}
+                            </Anchor>
+                        </Group>
+
+                        {status === 'error' && (
+                            <Alert color="red" title={t('signIn.form.errors.signInFailed')}>
+                                {t('common.tryAgainLater')}
+                            </Alert>
+                        )}
+                    </Step>
+                </FormContainer.RightPanel>
+            </FormContainer>
         </Center>
     );
 }

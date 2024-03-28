@@ -6,17 +6,23 @@ import { useUserContext } from '@/shared/ui/context/UserContext';
 import { EndpointEventTypes } from '../endpoint-api/types/events';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { ThreadName } from './useThreadCreate';
+import { toChatInfo } from '../clients/utils';
+import { useThreadContext } from '@chat';
 
 export const THREADS_PER_PAGE = 100;
 
-export default function useThreadList(options?: { sortBy?: 'newest-message' | 'name' }) {
+export default function useThreadList(
+    // eslint-disable-next-line no-unused-vars
+    navigate: (threadId: string | undefined, threadTitle: string) => void
+) {
     const [status, setStatus] = useState<FormStatus>('loading');
+    const threadClient = useThreadContext();
     const [threads, setThreads] = useState<ThreadInfo[]>([]);
     const {
         state: { contextId }
     } = useUserContext();
     const [startIndex, setStartIndex] = useState(0);
-    const [hasMore, setHasMore] = useState(true); // New state to track if more threads can be loaded
+    const [hasMore, setHasMore] = useState(true);
 
     const getThreadList = useCallback(
         async (contextId: string, startIndex: number) => {
@@ -64,13 +70,46 @@ export default function useThreadList(options?: { sortBy?: 'newest-message' | 'n
         updateThreadList(event.data);
     });
 
+    useEndpointEvent(EndpointEventTypes.THREAD_DELETED, async (event) => {
+        setThreads((prev) => {
+            const newThreads = prev.filter((item) => item.threadId !== event.data.threadId);
+            return newThreads;
+        });
+
+        if (threadClient.threadId === event.data.threadId) {
+            navigate(undefined, '');
+        }
+    });
+
+    const deleteThread = useCallback(
+        async (threadId: string) => {
+            const thread = threads.find((thread) => thread.threadId === threadId);
+
+            if (!thread) {
+                return;
+            }
+            const threadBinding = toChatInfo(thread.data.title);
+            const endpoint = await Endpoint.getInstance();
+            await endpoint.threadDelete(thread.threadId);
+
+            setThreads((prev) => {
+                const newThreads = prev.filter((item) => item.threadId !== thread.threadId);
+                return newThreads;
+            });
+
+            endpoint.storeDelete(threadBinding.storeId);
+        },
+        [threads]
+    );
+
     return {
         threads,
         getThreadList,
         status,
         setStartIndex,
         startIndex,
-        hasMore
+        hasMore,
+        deleteThread
     };
 }
 

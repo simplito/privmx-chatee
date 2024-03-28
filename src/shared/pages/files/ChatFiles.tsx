@@ -115,8 +115,12 @@ export function ChatFiles() {
                             <Table.Tr>
                                 <Table.Th colSpan={2}>{t('chat.chatFiles.name')}</Table.Th>
                                 <Table.Th colSpan={2}>{t('chat.chatFiles.author')}</Table.Th>
-                                <Table.Th colSpan={2}>{t('chat.chatFiles.size')}</Table.Th>
-                                <Table.Th colSpan={2}>{t('chat.chatFiles.creationDate')}</Table.Th>
+                                <Table.Th colSpan={2} visibleFrom="lg">
+                                    {t('chat.chatFiles.size')}
+                                </Table.Th>
+                                <Table.Th visibleFrom="md" colSpan={2}>
+                                    {t('chat.chatFiles.creationDate')}
+                                </Table.Th>
                                 <Table.Th colSpan={1}></Table.Th>
                             </Table.Tr>
                         </Table.Thead>

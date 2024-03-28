@@ -1,4 +1,4 @@
-import { Avatar, AvatarProps } from '@mantine/core';
+import { Avatar, AvatarProps, Tooltip } from '@mantine/core';
 import { forwardRef } from 'react';
 
 const colorsMantine = [
@@ -32,19 +32,21 @@ function getColorHash(str?: string) {
 const UserAvatar = forwardRef<HTMLDivElement, { name: string; isStaff?: boolean } & AvatarProps>(
     ({ name, isStaff = false, ...props }, ref) => {
         return (
-            <Avatar
-                ref={ref}
-                variant={isStaff ? 'outline' : 'light'}
-                styles={{
-                    placeholder: { opacity: 1 },
-                    root: {
-                        opacity: 0.8
-                    }
-                }}
-                color={getColorHash(name)}
-                {...props}>
-                {name[0]}
-            </Avatar>
+            <Tooltip label={name} openDelay={300}>
+                <Avatar
+                    ref={ref}
+                    variant={isStaff ? 'outline' : 'light'}
+                    styles={{
+                        placeholder: { opacity: 1 },
+                        root: {
+                            opacity: 0.8
+                        }
+                    }}
+                    color={getColorHash(name)}
+                    {...props}>
+                    {name[0]}
+                </Avatar>
+            </Tooltip>
         );
     }
 );

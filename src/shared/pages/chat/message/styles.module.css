@@ -1,9 +1,33 @@
-.message_author{
+.message_author {
     display: none;
     align-items: baseline;
-    --group-gap:var(--mantine-spacing-sm);
+    --group-gap: var(--mantine-spacing-sm);
 }
 
-.group_message:first-child .message_author{
+.group_message:first-child .message_author {
     display: flex;
+}
+
+.message{
+    margin-bottom: 2px;
+}
+
+.group_message:not(:first-child) .message{
+    margin-bottom: 4px;
+}
+
+
+.message:hover, .message[data-open="true"] {
+    background-color: var(--mantine-color-gray-0);
+}
+
+.trashcan {
+    /* display: none; */
+    visibility: hidden;
+}
+
+.message:hover .trashcan,.message[data-open="true"] .trashcan {
+    /* display: block; */
+    visibility: visible;
+
 }

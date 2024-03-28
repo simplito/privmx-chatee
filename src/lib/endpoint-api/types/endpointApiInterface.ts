@@ -34,6 +34,8 @@ export declare class EndpointApiInterface {
         managers: UserWithPubKey[],
         title: string
     ) => Promise<string>;
+    threadDelete: (threadId: string) => Promise<void>;
+
     threadGet: (threadId: string) => Promise<ThreadInfo>;
     threadList: (
         contextId: string,
@@ -56,6 +58,8 @@ export declare class EndpointApiInterface {
         sortOrder: SortOrder
     ) => Promise<ThreadMessagesList>;
 
+    threadMessageDelete: (messageId: string) => Promise<void>;
+
     subscribeToChannel: (channel: Channel) => Promise<void>;
     unsubscribeFromChannel: (channel: Channel) => Promise<void>;
 
@@ -67,6 +71,8 @@ export declare class EndpointApiInterface {
         managers: UserWithPubKey[],
         title: string
     ) => Promise<string>;
+
+    storeDelete: (storeId: string) => Promise<void>;
     storeFileCreate: (storeId: string, data?: StoreFileData) => Promise<string>;
     storeFileDelete: (fileId: string) => Promise<boolean>;
     storeFileGet: (fileId: string) => Promise<StoreFileInfo>;

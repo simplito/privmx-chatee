@@ -32,9 +32,6 @@ const themeOverride = createTheme({
                     root: {
                         backgroundColor: theme.colors.gray[0]
                     }
-                    // label: {
-                    //     minWidth: 'min-content'
-                    // }
                 };
             }
         }),
@@ -74,12 +71,18 @@ const themeOverride = createTheme({
         }),
 
         Modal: Modal.extend({
+            classNames: {
+                inner: styles.modal_inner
+            },
             defaultProps: {
                 size: 'xl',
                 padding: 'lg',
                 centered: true,
                 radius: 'md',
                 withCloseButton: false,
+                transitionProps: {
+                    transition: 'slide-up'
+                },
                 overlayProps: {
                     color: 'gray',
                     opacity: 0.25,

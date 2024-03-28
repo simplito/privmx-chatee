@@ -11,21 +11,27 @@ type Props =
           loading: true;
           message?: ChatMessage;
       };
+const avatarSize = 'calc(2 * 1em * var(--mantine-line-height-sm))';
 
 export function Message({ loading = false, message }: Props) {
     if (loading) {
         return (
             <Group align="flex-start" opacity={0.8} py="xs">
-                <Avatar size={'md'} />
-                <Stack gap={4}>
+                <Avatar
+                    size={'md'}
+                    fz={'var(--mantine-font-size-sm)'}
+                    w={avatarSize}
+                    h={avatarSize}
+                />
+                <Stack gap={0} flex={1}>
                     <Skeleton width="100px" opacity={0.5}>
                         <Text c="dimmed" size="sm">
                             Lorem ipsum
                         </Text>
                     </Skeleton>
-                    <Paper radius={'sm'} maw={800}>
+                    <Paper radius={'sm'} w="80%" pr="sm" h="45%" mt={1}>
                         <Skeleton w="auto" opacity={0.5}>
-                            <Text size="sm" opacity={0.98}>
+                            <Text size="sm" opacity={0.98} lineClamp={1}>
                                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis
                                 Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                             </Text>

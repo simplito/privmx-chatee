@@ -11,7 +11,8 @@ export const NEXT_STATE_GRAPH: Graph<'status'> = {
         SETTLE: 'Idle',
         SETTLE_MESSAGE: 'Stale',
         NEW_MESSAGE: 'Loading',
-        FETCH_NEXT_PAGE: 'Loading'
+        FETCH_NEXT_PAGE: 'Loading',
+        DELETE_MESSAGE: 'Loading'
     },
     Idle: {
         ...CHANGE_THREAD_EVENT,
@@ -22,7 +23,7 @@ export const NEXT_STATE_GRAPH: Graph<'status'> = {
         SETTLE_MESSAGE: 'Stale',
         NEW_MESSAGE: 'Loading',
         FETCH_NEXT_PAGE: 'Loading',
-        INITIALIZE: 'Initial'
+        DELETE_MESSAGE: 'Stale'
     },
     Initial: {
         ...CHANGE_THREAD_EVENT,
@@ -36,6 +37,7 @@ export const NEXT_STATE_GRAPH: Graph<'status'> = {
         INVALIDATE: 'Stale',
         SETTLE_MESSAGE: 'Stale',
         NEW_MESSAGE: 'Loading',
+        DELETE_MESSAGE: 'Stale',
         FETCH_NEXT_PAGE: 'Loading'
     },
     None: {

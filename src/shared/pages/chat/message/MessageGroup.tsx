@@ -5,9 +5,16 @@ import { UserAvatar } from '@/shared/ui/atoms/user-avatar/UserAvatar';
 
 const avatarSize = 'calc(2 * 1em * var(--mantine-line-height-sm))';
 
-export function MessageGroup({ group }: { group: GroupedMessages }) {
+export function MessageGroup({
+    group,
+    deleteMessage
+}: {
+    group: GroupedMessages;
+    // eslint-disable-next-line no-unused-vars
+    deleteMessage: (messageId: string, threadId: string) => Promise<void>;
+}) {
     return (
-        <Group align="flex-start" py="xs" gap="lg">
+        <Group align="flex-start" gap="lg" py="xs" wrap="nowrap">
             <UserAvatar
                 name={group.author}
                 size={'md'}
@@ -15,9 +22,13 @@ export function MessageGroup({ group }: { group: GroupedMessages }) {
                 w={avatarSize}
                 h={avatarSize}
             />
-            <Stack gap={8}>
+            <Stack gap={0} w="100%">
                 {group.messages.map((message) => (
-                    <MessageContent key={message.createDate} message={message} />
+                    <MessageContent
+                        key={message.createDate}
+                        message={message}
+                        deleteMessage={deleteMessage}
+                    />
                 ))}
             </Stack>
         </Group>

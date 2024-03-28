@@ -8,14 +8,21 @@
         "sidebar": {
             "header": "Chats",
             "newChatTooltip": "Create New Chat",
-            "noChats": "You don't have any chats yet, create a chat to start a conversation"
+            "noChats": "You don't have any chats yet, create a chat to start a conversation",
+            "deleteThread": "Delete thread",
+            "deleteThreadQuestion": "Are you sure you want to delete the thread {name}? This action is irreversible.",
+            "deleteThreadError": "An error occured during deleting deleting the thread."
         },
         "chat": {
             "chatMessages": "Chat Messages",
             "chatFiles": "Chat Files",
             "noChatSelectedTitle": "No Chat Selected",
             "noChatSelectedSubtitle": "Select a chat from the list or create a new one",
-            "addNewChat": "Create New Chat"
+            "addNewChat": "Create New Chat",
+            "deleteMessage": "Delete message?",
+            "delete": "Delete",
+            "cancel": "Cancel",
+            "messageDeleteError": "An error occured during deleting the message"
         },
         "chatFiles": {
             "loadingFiles": "Loading Files",
@@ -80,7 +87,8 @@
         "save": "Save",
         "cancel": "Cancel",
         "done": "Done",
-        "success": "Success"
+        "success": "Success",
+        "sessionExpired": "Session has expired, log in again"
     },
     "signIn": {
         "signinIn": "Sign in",

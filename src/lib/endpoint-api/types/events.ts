@@ -1,4 +1,9 @@
-import { StoreFileInfo, StoreInfo, StoreStatsChangedEventData } from './store';
+import {
+    StoreFileDeletedEventData,
+    StoreFileInfo,
+    StoreInfo,
+    StoreStatsChangedEventData
+} from './store';
 import { ThreadInfo } from './thread';
 import { ThreadMessage } from './threadMessage';
 
@@ -8,13 +13,16 @@ export enum EndpointEventTypes {
     THREAD_CREATED = 'thread2Created',
     THREAD_UPDATED = 'thread2Updated',
     THREAD_NEW_MESSAGE = 'thread2NewMessage',
+    THREAD_DELETED = 'thread2Deleted',
+    THREAD_DELETED_MESSAGE = 'thread2DeletedMessage',
     STORE_CREATED = 'storeCreated',
     STORE_UPDATED = 'storeUpdated',
     STORE_STATS_CHANGED = 'storeStatsChanged',
     STORE_FILE_CREATED = 'storeFileCreated',
     STORE_FILE_UPDATED = 'storeFileUpdated',
     STORE_FILE_DELETED = 'storeFileDeleted',
-    DISCONNECTED = 'libPlatformDisconnected'
+    DISCONNECTED = 'libPlatformDisconnected',
+    LIBDISCONNECTED = 'libDisconnected'
 }
 export interface ThreadCreatedEvent {
     type: EndpointEventTypes.THREAD_CREATED;
@@ -26,9 +34,24 @@ export interface ThreadUpdatedEvent {
     data: ThreadInfo;
 }
 
+export interface ThreadDeletedEvent {
+    type: EndpointEventTypes.THREAD_DELETED;
+    data: {
+        threadId: string;
+    };
+}
+
 export interface ThreadNewMessageEvent {
     type: EndpointEventTypes.THREAD_NEW_MESSAGE;
     data: ThreadMessage;
+}
+
+export interface ThreadDeletedMessageEvent {
+    type: EndpointEventTypes.THREAD_DELETED_MESSAGE;
+    data: {
+        messageId: string;
+        threadId: string;
+    };
 }
 
 export interface StoreCreatedEvent {
@@ -58,11 +81,14 @@ export interface StoreFileUpdatedEvent {
 
 export interface StoreFileDeletedEvent {
     type: EndpointEventTypes.STORE_FILE_DELETED;
-    data: StoreFileDeletedEvent;
+    data: StoreFileDeletedEventData;
 }
 
 export interface DisconnectedEvent {
     type: EndpointEventTypes.DISCONNECTED;
+    data?: {
+        type: 'time-out';
+    };
 }
 
 export type EndpointApiEvent =
@@ -75,7 +101,9 @@ export type EndpointApiEvent =
     | StoreFileCreatedEvent
     | StoreFileUpdatedEvent
     | StoreFileDeletedEvent
-    | DisconnectedEvent;
+    | DisconnectedEvent
+    | ThreadDeletedEvent
+    | ThreadDeletedMessageEvent;
 
 class EventDispatcher {
     listeners: { [key: string]: Function[] };
