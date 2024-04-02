@@ -73,7 +73,6 @@ export declare class EndpointApiInterface {
     ) => Promise<string>;
 
     storeDelete: (storeId: string) => Promise<void>;
-    storeFileCreate: (storeId: string, data?: StoreFileData) => Promise<string>;
     storeFileDelete: (fileId: string) => Promise<boolean>;
     storeFileGet: (fileId: string) => Promise<StoreFileInfo>;
     storeFileList: (
@@ -82,8 +81,23 @@ export declare class EndpointApiInterface {
         limit: number,
         sortOrder: SortOrder
     ) => Promise<StoreFilesList>;
-    storeFileRead: (fileId: string) => Promise<StoreFileData>;
-    storeFileWrite: (fileId: string, data: StoreFileData) => Promise<boolean>;
+
+    storeFileRead: (handle: string, chunk: number) => Promise<Uint8Array>;
+    storeFileCreate: (
+        storeId: string,
+        size: number,
+        mimetype: string,
+        name: string
+    ) => Promise<string>;
+    storeFileWrite: (fileId: string, data: Uint8Array) => Promise<boolean>;
+    storeFileOpen: (fileId: string) => Promise<string>;
+    storeFileUpdate: (
+        fileId: string,
+        size: number,
+        mimeType: string,
+        name: string
+    ) => Promise<string>;
+    storeFileClose: (handle: string) => Promise<string>;
     storeGet: (storeId: string) => Promise<StoreInfo>;
     storeList: (
         contextId: string,

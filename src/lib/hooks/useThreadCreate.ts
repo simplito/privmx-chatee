@@ -12,8 +12,6 @@ export interface ThreadName {
     storeId: string;
 }
 
-const defaultFileContent: MessageInfo = { lastReadMessageId: null };
-
 export default function useThreadCreate() {
     const [status, setStatus] = useState<FormStatus>('default');
 
@@ -39,30 +37,12 @@ export default function useThreadCreate() {
 
             const storeId = await endpoint.storeCreate(contextId, allUsers, managers, title);
 
-            // for (let i = 0; i < allUsers.length; i++) {
-            //     await endpoint.storeFileCreate(storeId, {
-            //         mimetype: 'text/plain',
-            //         name: `.${allUsers[i].userId}`,
-            //         data: new TextEncoder().encode(JSON.stringify(defaultFileContent)),
-            //         size: JSON.stringify(defaultFileContent).length
-            //     });
-            // }
-
             await endpoint.threadCreate(
                 contextId,
                 allUsers,
                 managers,
                 JSON.stringify({ name: title, storeId: storeId })
             );
-
-            // const threadBindingData = JSON.stringify({ name: title, threadId });
-
-            // await endpoint.storeFileCreate(storeId, {
-            //     mimetype: 'text/plain',
-            //     name: `.threadBinding`,
-            //     data: new TextEncoder().encode(JSON.stringify(threadBindingData)),
-            //     size: JSON.stringify(threadBindingData).length
-            // });
 
             setStatus('success');
         } catch (e) {

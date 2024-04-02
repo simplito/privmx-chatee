@@ -5,13 +5,7 @@ import { ThreadInfo } from './types/thread';
 import { ThreadMessagesList } from './types/threadMessage';
 import { Deferred } from '@/shared/utils/deferred';
 import { Lock } from '@/shared/utils/lock';
-import type {
-    StoreFileData,
-    StoreFileInfo,
-    StoreFilesList,
-    StoreInfo,
-    StoreList
-} from './types/store';
+import type { StoreFileInfo, StoreFilesList, StoreInfo, StoreList } from './types/store';
 import type { EndpointApiInterface, SortOrder, Channel } from './types/endpointApiInterface';
 import { EndpointEventManager } from './types/events';
 import { EndpointTryCatch } from '@/shared/utils/decorators';
@@ -243,8 +237,13 @@ export class Endpoint {
     }
 
     @EndpointTryCatch
-    async storeFileCreate(storeId: string, data?: StoreFileData): Promise<string> {
-        return await this.endpoint.storeFileCreate(storeId, data);
+    async storeFileCreate(
+        storeId: string,
+        size: number,
+        mimetype: string,
+        name: string
+    ): Promise<string> {
+        return await this.endpoint.storeFileCreate(storeId, size, mimetype, name);
     }
     @EndpointTryCatch
     async storeFileDelete(fileId: string): Promise<boolean> {
@@ -254,6 +253,16 @@ export class Endpoint {
     @EndpointTryCatch
     async storeFileGet(fileId: string): Promise<StoreFileInfo> {
         return await this.endpoint.storeFileGet(fileId);
+    }
+
+    @EndpointTryCatch
+    async storeFileOpen(fileId: string): Promise<string> {
+        return await this.endpoint.storeFileOpen(fileId);
+    }
+
+    @EndpointTryCatch
+    async storeFileClose(handle: string): Promise<string> {
+        return await this.endpoint.storeFileClose(handle);
     }
 
     @EndpointTryCatch
@@ -267,13 +276,23 @@ export class Endpoint {
     }
 
     @EndpointTryCatch
-    async storeFileRead(fileId: string): Promise<StoreFileData> {
-        return await this.endpoint.storeFileRead(fileId);
+    async storeFileRead(handle: string, chunk: number): Promise<Uint8Array> {
+        return await this.endpoint.storeFileRead(handle, chunk);
     }
 
     @EndpointTryCatch
-    async storeFileWrite(fileId: string, data: StoreFileData): Promise<boolean> {
+    async storeFileWrite(fileId: string, data: Uint8Array): Promise<boolean> {
         return await this.endpoint.storeFileWrite(fileId, data);
+    }
+
+    @EndpointTryCatch
+    async storeFileUpdate(
+        fileId: string,
+        size: number,
+        mimeType: string,
+        name: string
+    ): Promise<string> {
+        return await this.endpoint.storeFileUpdate(fileId, size, mimeType, name);
     }
 
     @EndpointTryCatch

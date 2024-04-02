@@ -1,5 +1,7 @@
 import { Endpoint } from '../endpoint-api/endpoint';
 
+const CHUNK_SIZE = 1048576;
+
 export type Asset = {
     name: string;
     data: Uint8Array;
@@ -31,16 +33,21 @@ export class StoreClient {
         reader.readAsDataURL(new Blob([asset.data]));
     }
 
-    protected async createNewFile<T extends Uint8Array>(name: string, data: T, mimeType: string) {
+    protected async createNewFile(name: string, data: Uint8Array, mimeType: string) {
         const size = data.length;
         const endpoint = await Endpoint.getInstance();
         try {
-            return await endpoint.storeFileCreate(this._storeId, {
-                mimetype: mimeType,
-                name,
-                data: data,
-                size
-            });
+            const handle = await endpoint.storeFileCreate(this._storeId, size, mimeType, name);
+
+            let offset = 0;
+
+            while (offset < size) {
+                const nextChunkSize = Math.min(size - offset, CHUNK_SIZE);
+                const chunk = data.slice(offset, offset + nextChunkSize);
+                await endpoint.storeFileWrite(handle, chunk);
+                offset += nextChunkSize;
+            }
+            return await endpoint.storeFileClose(handle);
         } catch (e) {
             console.error(e);
         }
@@ -64,8 +71,59 @@ export class StoreClient {
 
     async getFile(id: string): Promise<Asset> {
         const endpoint = await Endpoint.getInstance();
-        const result = await endpoint.storeFileRead(id);
+        const {
+            data: { mimetype, name }
+        } = await endpoint.storeFileGet(id);
+        const handle = await endpoint.storeFileOpen(id);
+        let data = new Uint8Array();
+        while (true) {
+            const chunk = await endpoint.storeFileRead(handle, 1048576);
 
-        return { data: result.data, mimetype: result.mimetype, name: result.name };
+            let newData = new Uint8Array(data.length + chunk.length);
+            newData.set(data);
+            newData.set(chunk, data.length);
+            data = newData;
+
+            if (chunk.length < 1048576) {
+                break;
+            }
+        }
+
+        await endpoint.storeFileClose(handle);
+
+        return { data: data, mimetype: mimetype, name: name };
+    }
+
+    async updateFile(id: string, data: Uint8Array, offset: number = 0) {
+        const endpoint = await Endpoint.getInstance();
+        const handle = await endpoint.storeFileOpen(id);
+
+        let localOffset = offset;
+        const size = data.length;
+
+        while (offset < data.length) {
+            const nextChunkSize = Math.min(size - localOffset, CHUNK_SIZE);
+            const chunk = data.slice(localOffset, localOffset + nextChunkSize);
+            await endpoint.storeFileWrite(handle, chunk);
+            localOffset += nextChunkSize;
+        }
+        return await endpoint.storeFileClose(handle);
+    }
+
+    static async overrideFile(fileId: string, data: Uint8Array, mimeType: string, name: string) {
+        const endpoint = await Endpoint.getInstance();
+        const size = data.length;
+
+        const handle = await endpoint.storeFileUpdate(fileId, size, mimeType, name);
+
+        let offset = 0;
+
+        while (offset < size) {
+            const nextChunkSize = Math.min(size - offset, CHUNK_SIZE);
+            const chunk = data.slice(offset, offset + nextChunkSize);
+            await endpoint.storeFileWrite(handle, chunk);
+            offset += nextChunkSize;
+        }
+        return await endpoint.storeFileClose(handle);
     }
 }

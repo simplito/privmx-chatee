@@ -22,7 +22,8 @@ export enum EndpointEventTypes {
     STORE_FILE_UPDATED = 'storeFileUpdated',
     STORE_FILE_DELETED = 'storeFileDeleted',
     DISCONNECTED = 'libPlatformDisconnected',
-    LIBDISCONNECTED = 'libDisconnected'
+    LIBDISCONNECTED = 'libDisconnected',
+    THREAD_STATS = 'thread2Stats'
 }
 export interface ThreadCreatedEvent {
     type: EndpointEventTypes.THREAD_CREATED;
@@ -50,6 +51,15 @@ export interface ThreadDeletedMessageEvent {
     type: EndpointEventTypes.THREAD_DELETED_MESSAGE;
     data: {
         messageId: string;
+        threadId: string;
+    };
+}
+
+export interface ThreadStatsEvent {
+    type: EndpointEventTypes.THREAD_STATS;
+    data: {
+        lastMsgDate: number;
+        messages: number;
         threadId: string;
     };
 }
@@ -103,7 +113,8 @@ export type EndpointApiEvent =
     | StoreFileDeletedEvent
     | DisconnectedEvent
     | ThreadDeletedEvent
-    | ThreadDeletedMessageEvent;
+    | ThreadDeletedMessageEvent
+    | ThreadStatsEvent;
 
 class EventDispatcher {
     listeners: { [key: string]: Function[] };
