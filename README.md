@@ -5,7 +5,7 @@
 Chatee is a chat application that provides you with full end-to-end encryption using the **PrivMX Endpoint**.
 ## Description
 
-Chatee provides you with all the basic chat features, such as group chats or attaching files. All the data exchanged in Chatee is end-to-end encrypted, meaning that only the end users are able to read their messages. Even the hosting providers are not able to access the users' data.
+Chatee provides you with all the basic chat features, such as group chats or attaching files. All the data exchanged in Chatee is end-to-end encrypted, meaning that only the end users are able to read (decrypt) their messages. Even the hosting providers are not able to access the users' data.
 
 Chatee differentiates two types of users - Staff and regular users. The first account you set up is a Staff account, which means that you're able to manage the access to your app - inviting users and granting them different permissions.
 
