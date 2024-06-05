@@ -1,4 +1,4 @@
-import { StoreFileInfo } from '@/lib/endpoint-api/types/store';
+import { StoreFileInfo } from '@privmx/endpoint-web';
 import { ActionIcon, Group, Loader, Paper, Text, ThemeIcon } from '@mantine/core';
 import { IconDownload, IconFile } from '@tabler/icons-react';
 import { useThreadContext } from '../../chat/useThreadContext';

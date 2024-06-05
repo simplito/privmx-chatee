@@ -3,7 +3,7 @@ import { Group, Text, ActionIcon, Table, Flex, Loader } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { useThreadContext } from '../chat';
 import { useCallback, useState } from 'react';
-import { StoreFileInfo } from '@/lib/endpoint-api/types/store';
+import { StoreFileInfo } from '@privmx/endpoint-web';
 import { useNotification } from '@/shared/hooks/useNotification';
 import { bytesSize } from '../chat/Chat';
 import { useTranslations } from 'next-intl';

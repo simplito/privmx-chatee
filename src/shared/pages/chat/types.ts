@@ -1,6 +1,4 @@
-import { ThreadInfo } from '@/lib/endpoint-api/types/thread';
-import { ThreadMessageDataDestination } from '@/lib/endpoint-api/types/threadMessage';
-import { UserWithPubKey } from '@/lib/endpoint-api/types/user';
+import { ThreadInfo, UserWithPubKey, ServerInfo } from '@privmx/endpoint-web';
 
 export type ChatMessage =
     | {
@@ -16,7 +14,7 @@ export type ChatMessage =
               date: number;
               deleted: boolean;
               author: UserWithPubKey;
-              destination: ThreadMessageDataDestination;
+              destination: ServerInfo;
           };
       }
     | {

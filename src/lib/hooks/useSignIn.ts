@@ -3,7 +3,7 @@
 import { SignInRequestBody, SignInResponse } from '@/app/api/sign-in';
 import { FormStatus } from '@/shared/utils/types';
 import { useState } from 'react';
-import { Endpoint } from '../endpoint-api/endpoint';
+import { Endpoint } from '@privmx/endpoint-web';
 import { NEXT_PUBLIC_BACKEND_URL } from '@/shared/utils/env';
 import { useRouter } from 'next/navigation';
 import { useUserContext, signInAction } from '@/shared/ui/context/UserContext';

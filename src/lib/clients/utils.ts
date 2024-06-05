@@ -1,5 +1,5 @@
 import { ChatMessage, ThreadBindingData } from '@chat';
-import { ThreadMessage } from '../endpoint-api/types/threadMessage';
+import { ThreadMessage } from '@privmx/endpoint-web';
 
 export function toChatInfo(threadData: string): ThreadBindingData {
     try {
@@ -27,9 +27,10 @@ export function toSendMessage(
             text: msg.text,
             type: 'type',
             destination: {
-                contextId: '',
-                server: '',
-                threadId: msg.threadId
+                threadId: msg.threadId,
+                author: msg.author,
+                createDate: Date.now(),
+                messageId: msg.msgId
             }
         }
     };

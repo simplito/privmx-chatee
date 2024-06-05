@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Endpoint } from '../endpoint-api/endpoint';
+import { Endpoint, ThreadInfo } from '@privmx/endpoint-web';
 import { FormStatus } from '@/shared/utils/types';
-import { ThreadInfo } from '../endpoint-api/types/thread';
 import { useUserContext } from '@/shared/ui/context/UserContext';
-import { EndpointEventTypes } from '../endpoint-api/types/events';
+import { EndpointEventTypes } from '@privmx/endpoint-web';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { ThreadName } from './useThreadCreate';
 import { toChatInfo } from '../clients/utils';

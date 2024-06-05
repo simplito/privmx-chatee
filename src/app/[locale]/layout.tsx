@@ -29,9 +29,9 @@ export default function LocaleLayout({
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <ColorSchemeScript />
-                <Script src="/wasmAssets/wasmapi.js"></Script>
-                <Script src="/wasmAssets/bindings.js"></Script>
-                <Script src="/wasmAssets/EmscriptenApi.js"></Script>
+                <Script src="/wasmAssets/privmx-endpoint-web.js"></Script>
+                <Script src="/wasmAssets/driver-web-context.js"></Script>
+                <Script src="/wasmAssets/endpoint-wasm-module.js"></Script>
             </head>
             <body className={inter.className} style={{ padding: 0 }}>
                 <NextIntlClientProvider locale={locale} messages={messages}>

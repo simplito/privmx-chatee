@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useThreadContext } from './useThreadContext';
 import { useChatStateMachine } from './useChatStateMachine/useChatStateMachine';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
-import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
+import { EndpointEventTypes } from '@privmx/endpoint-web';
 
 export function useThreadMessageContext() {
     const chatClient = useThreadContext();

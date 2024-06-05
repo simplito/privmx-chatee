@@ -1,4 +1,4 @@
-import { PLATFORM_URL, SERVER_ID } from '@/shared/utils/env';
+import { PLATFORM_URL, SOLUTION_ID } from '@/shared/utils/env';
 import { z } from 'zod';
 
 export const signInRequestSchema = z.object({
@@ -14,7 +14,7 @@ export function generateSignInResponse(token: string, contextId: string, isStaff
         isStaff,
         token,
         cloudData: {
-            solutionId: SERVER_ID,
+            solutionId: SOLUTION_ID,
             contextId,
             platformUrl: PLATFORM_URL
         }

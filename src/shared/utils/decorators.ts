@@ -1,4 +1,4 @@
-import { EndpointEventManager } from '@/lib/endpoint-api/types/events';
+import { EndpointEventManager } from '@privmx/endpoint-web';
 
 export function EndpointTryCatch(
     target: any,

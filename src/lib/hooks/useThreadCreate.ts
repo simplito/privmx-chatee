@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Endpoint } from '../endpoint-api/endpoint';
+import { Endpoint, UserWithPubKey } from '@privmx/endpoint-web';
 import { FormStatus } from '@/shared/utils/types';
-import { UserWithPubKey } from '../endpoint-api/types/user';
 import { threadUsers } from '@modals/create-chat-modal/CreateChatModal';
 
 export interface MessageInfo {

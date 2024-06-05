@@ -1,7 +1,6 @@
 'use client';
-import { Endpoint } from '@/lib/endpoint-api/endpoint';
+import { Endpoint, ThreadMessage } from '@privmx/endpoint-web';
 import { ChatMessage } from '../../shared/pages/chat';
-import { ThreadMessage } from '@/lib/endpoint-api/types/threadMessage';
 import { StoreClient } from '@/lib/clients/StoreClient';
 import { ThreadBindingData } from '../../shared/pages/chat/types';
 import { PAGE_SIZE, ThreadMessageCache } from './ThreadMessageCache';

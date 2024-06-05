@@ -1,5 +1,5 @@
 import { ChatMessage } from '../types';
-import { ThreadMessage } from '@/lib/endpoint-api/types/threadMessage';
+import { ThreadMessage } from '@privmx/endpoint-web';
 
 export type Graph<Field extends keyof State> = Record<State['status'], Partial<Connection<Field>>>;
 

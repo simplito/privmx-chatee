@@ -3,7 +3,7 @@ import { Menu } from '@mantine/core';
 import { IconLogout, IconWorld } from '@tabler/icons-react';
 import styles from './styles.module.css';
 import { UserAvatar } from '@/shared/ui/atoms/user-avatar/UserAvatar';
-import { EndpointEventManager } from '@/lib/endpoint-api/types/events';
+import { EndpointEventManager } from '@privmx/endpoint-web';
 import { useTranslations } from 'next-intl';
 import { openContextModal } from '@mantine/modals';
 import { IconDoamin } from '@icon';

@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { useUserContext } from './UserContext';
-import { Endpoint } from '@/lib/endpoint-api/endpoint';
+import { Endpoint, EndpointEventTypes, StoreFileInfo, StoreInfo } from '@privmx/endpoint-web';
 import { useThreadContext } from '@chat';
-import { StoreFileInfo, StoreInfo } from '@/lib/endpoint-api/types/store';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
-import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
 
 type StoreState = 'None' | 'InfoInitialized';
 

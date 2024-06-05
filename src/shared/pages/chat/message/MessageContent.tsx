@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useUserContext } from '@/shared/ui/context/UserContext';
-import { Endpoint } from '@/lib/endpoint-api/endpoint';
+import { Endpoint } from '@privmx/endpoint-web';
 import { useNotification } from '@/shared/hooks/useNotification';
 
 export function MessageContent({

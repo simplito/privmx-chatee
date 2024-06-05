@@ -8,7 +8,7 @@ import {
     startPageLoadAction,
     useStoreCache
 } from '@/shared/ui/context/StoreCacheContext';
-import { Endpoint } from '../endpoint-api/endpoint';
+import { Endpoint } from '@privmx/endpoint-web';
 
 export default function useFilesList() {
     const [status, setStatus] = useState<FormStatus>('loading');

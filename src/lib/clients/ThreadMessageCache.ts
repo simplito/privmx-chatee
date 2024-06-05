@@ -1,6 +1,6 @@
 'use client';
 import { ChatMessage } from '../../shared/pages/chat';
-import { ThreadMessage, ThreadMessagesList } from '@/lib/endpoint-api/types/threadMessage';
+import { ThreadMessage, ThreadMessagesList } from '@privmx/endpoint-web';
 import { settleMessage, toChatMessage } from './utils';
 
 export const PAGE_SIZE = 50;

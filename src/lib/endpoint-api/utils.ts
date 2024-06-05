@@ -5,7 +5,7 @@ export async function addUserToContext(userId: string, pubKey: string, contextId
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Member-Token': CLOUD_DEV_TOKEN
+            'X-Developer-Token': CLOUD_DEV_TOKEN
         },
         body: JSON.stringify({
             jsonrpc: '2.0',
@@ -38,7 +38,7 @@ export async function createCloudContext(name: string) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Member-Token': CLOUD_DEV_TOKEN
+            'X-Developer-Token': CLOUD_DEV_TOKEN
         },
         body: JSON.stringify({
             jsonrpc: '2.0',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Endpoint } from '../endpoint-api/endpoint';
+import { Endpoint } from '@privmx/endpoint-web';
 import { FormStatus } from '@/shared/utils/types';
 import { NEXT_PUBLIC_BACKEND_URL } from '@/shared/utils/env';
 import { SignUpRequestBody } from '@/app/api/sign-up';

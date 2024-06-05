@@ -1,4 +1,4 @@
-import { Endpoint } from '../endpoint-api/endpoint';
+import { Endpoint } from '@privmx/endpoint-web';
 
 const CHUNK_SIZE = 1048576;
 

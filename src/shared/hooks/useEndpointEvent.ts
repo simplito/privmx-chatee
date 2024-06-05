@@ -1,9 +1,5 @@
 import { useEffect } from 'react';
-import {
-    EndpointEventTypes,
-    EndpointEventManager,
-    EndpointApiEvent
-} from '@/lib/endpoint-api/types/events';
+import { EndpointEventTypes, EndpointEventManager, EndpointApiEvent } from '@privmx/endpoint-web';
 
 export function useEndpointEvent<T extends EndpointEventTypes>(
     eventType: T,

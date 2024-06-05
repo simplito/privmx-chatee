@@ -4,7 +4,7 @@ import { IconSearch, IconPlus, IconChevronLeft } from '@tabler/icons-react';
 import { ChatsSidebarElement } from './ChatsSidebarElement';
 import { openContextModal } from '@mantine/modals';
 import useThreadList, { THREADS_PER_PAGE } from '@/lib/hooks/useThreadList';
-import { ThreadInfo } from '@/lib/endpoint-api/types/thread';
+import { ThreadInfo } from '@privmx/endpoint-web';
 import { useTranslations } from 'next-intl';
 import { SearchInput } from '@/shared/ui/atoms/search-input/SearchInput';
 import { Virtuoso } from 'react-virtuoso';

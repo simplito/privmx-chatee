@@ -1,7 +1,6 @@
 'use client';
 
-import { Endpoint } from '@/lib/endpoint-api/endpoint';
-import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
+import { Endpoint, EndpointEventTypes } from '@privmx/endpoint-web';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { useRouter } from 'next/navigation';
 import React, { createContext, useContext, useReducer } from 'react';
