@@ -51,22 +51,22 @@ You need Node.js preferably version **20.10 or higher**
 
 Chatee has a subdomain system integrated.
 
-1. Create an Owner Token
-   1.1 Navigate to /owner/create-token.
-   1.2 Create a password for your owner panel. This will generate your owner token, which you will use to sign in.
+1. Create an Owner Token \
+   1.1 Navigate to /owner/create-token. \
+   1.2 Create a password for your owner panel. This will generate your owner token, which you will use to sign in. 
 
-2. Sign In to the Owner Panel
-   2.1 Go to /owner/sign-in.
-   2.2 Sign in using the owner token generated in Step 1.
+2. Sign In to the Owner Panel \
+   2.1 Go to /owner/sign-in. \
+   2.2 Sign in using the owner token generated in Step 1. 
 
-3. Create a New Domain
-   3.1. If you are in a development environment, the application defaults to a "test" domain so create one with the link "test"
-   So the urls: '<http://test.localhost:3000> and <http://localhost:3000/> should work.
-   3.2. Copy the generated invite token
+3. Create a New Domain \
+   3.1. If you are in a development environment, the application defaults to a "test" domain so create one with the link "test" \
+   So the urls: '<http://test.localhost:3000> and <http://localhost:3000/> should work. \
+   3.2. Copy the generated invite token 
 
-4. Create your first admin user
-   4.1 Go to /sign-up and create your account
-   4.2 Log in
+4. Create your first admin user \
+   4.1 Go to /sign-up and create your account \
+   4.2 Log in 
 
 (Check **middleware.ts**)
 
