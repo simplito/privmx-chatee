@@ -1,8 +1,8 @@
 'use server';
 
 import { getDomainByName } from '@domains/data';
-import { getSigHeader } from '@utils/crypto';
-import { ACCESS_KEY, CLOUD_URL, INSTANCE_ID } from '@utils/env';
+import { getAccessSig } from '@utils/crypto';
+import { CLOUD_URL, INSTANCE_ID } from '@utils/env';
 
 export type Bucket = {
     bucketId: number;
@@ -62,7 +62,7 @@ export const getCloudStats = async (domainName: string) => {
             body: JSON.stringify(requestBody),
             headers: {
                 'Content-type': 'application/json',
-                'X-Access-Sig': await getSigHeader(requestBody)
+                'X-Access-Sig': await getAccessSig(JSON.stringify(requestBody))
             }
         });
 
