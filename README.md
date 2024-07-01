@@ -28,17 +28,17 @@ This will create a mongodb instance running on `0.0.0.0:27017` with a replica se
 
 You need Node.js preferably version **20.10 or higher**
 
-#### PrivMX Cloud Platform
-To use the application you need to have a **PrivMX Cloud Platform** account with Organisation and Solution created. Find out more about the **[PrivMX Cloud Platform](https://privmx.cloud)**.
+#### PrivMX Platform
+To use the application you need to have a **PrivMX Platform** account with Organisation and Solution created. Find out more about the **[PrivMX Platform](https://privmx.cloud)**.
 
 ## How to run?
 
 1. Copy **.env.example** to **.env.local**
 2. You need to have a running MongoDb instance with a replica set
     - Fill in the replica set name and MongoDB URI in your **.env.local**
-3. On **[PrivMX Cloud (PrivMX Cloud Platform)](https://privmx.cloud)**
+3. On **[PrivMX Cloud (PrivMX Platform)](https://privmx.cloud)**
 
-    - create an Organization and copy it's `Api URL` (more about PrivMX Bridge can be found [here](https://docs.privmx.cloud/bridge))
+    - create an Organization and copy it's `Api URL` (more about PrivMX Platform can be found [here](https://docs.privmx.cloud/bridge))
     - create a Solution and copy it's ID
     - inside a Solution create new Access Key (more about keys generation can be found [here](https://docs.privmx.cloud/keys/))
    
@@ -47,7 +47,7 @@ To use the application you need to have a **PrivMX Cloud Platform** account with
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
       
       ```ENV
-      API_URL={Replace with your PrivMX Cloud Platform Organisation's Api URL}
+      API_URL={Replace with your PrivMX Platform Organisation's Api URL}
       SOLUTION_ID={Replace with your Solution ID}
       ACCESS_KEY={Replace with Solution's PubKey}
       ACCESS_KEY_SECRET={Replace with Solution's Secret}
