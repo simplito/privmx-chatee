@@ -28,6 +28,9 @@ This will create a mongodb instance running on `0.0.0.0:27017` with a replica se
 
 You need Node.js preferably version **20.10 or higher**
 
+#### PrivMX Cloud Platform
+To use the application you need to have a **PrivMX Cloud Platform** account with Organisation and Solution created. Find out more about the **[PrivMX Cloud Platform](https://privmx.cloud)**.
+
 ## How to run?
 
 1. Copy **.env.example** to **.env.local**
