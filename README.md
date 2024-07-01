@@ -38,11 +38,10 @@ You need Node.js preferably version **20.10 or higher**
     - create an Organization and copy it's API URL (more about PrivMX Bridge can be found [here](https://docs.privmx.cloud/bridge))
     - create a Solution and copy it's ID
     - inside a Solution create new Access Key (more about keys generation can be found [here](https://docs.privmx.cloud/keys/))
+   
+3.1 On env.local
     - Copy your **SOLUTION_ID**, **API_URL**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **.env.local**.
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
-
-
-
 
 4. Generate random **JWT_SALT** and **OWNER_TOKEN** and fill in your .env.file
     - You can run the following command in the terminal to generate these values: `openssl rand -base64 20`
