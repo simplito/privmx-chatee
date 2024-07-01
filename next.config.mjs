@@ -1,11 +1,21 @@
 import createNextIntlPlugin from 'next-intl/plugin';
-
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
     output: 'standalone',
+    compiler: {
+        removeConsole: false,
+    },
+    logging: {
+        fetches: {
+          fullUrl: true,
+        },
+    },
+    experimental: {
+        instrumentationHook: true,
+      },
     headers: async () => {
         return [
             {
@@ -33,4 +43,7 @@ const nextConfig = {
     }
 };
 
+
 export default withNextIntl(nextConfig);
+
+

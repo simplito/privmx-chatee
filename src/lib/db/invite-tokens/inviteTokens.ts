@@ -5,29 +5,37 @@ import clientPromise from '../mongodb';
 import { generateInviteToken } from './utils';
 export interface InviteToken {
     value: string;
+    hashedValue: string; // salt.hash
     creationDate: number;
     isStaff: boolean;
     isUsed: boolean;
     domain: string;
 }
 
+export interface InviteTokenDbDTO extends Omit<InviteToken, 'value'> {}
+export interface InviteTokenClientDTO extends Omit<InviteToken, 'hashedValue'> {}
+
 const collectionName = 'InviteTokens';
 
 async function getCollection() {
     const mongoClient = await clientPromise;
     const db = mongoClient.db('Chatee');
-    const collection = db.collection<InviteToken>(collectionName);
+    const collection = db.collection<InviteTokenDbDTO>(collectionName);
 
     return collection;
 }
 
-export async function createInviteToken(isStaff: boolean, domain: string, session?: ClientSession) {
+export async function createInviteToken(
+    isStaff: boolean,
+    domain: string,
+    session?: ClientSession
+): Promise<InviteTokenClientDTO> {
     const collection = await getCollection();
-    const token = generateInviteToken(isStaff, domain);
-    const id = await collection.insertOne({ ...token }, { session });
+    const { value, hashedValue, ...token } = await generateInviteToken(isStaff, domain);
+    const id = await collection.insertOne({ hashedValue, ...token }, { session });
 
     if (id) {
-        return token;
+        return { value, ...token };
     }
 
     throw new Error('Error creating invite token');
@@ -40,9 +48,18 @@ export async function getInviteTokenByValue(tokenValue: string) {
     return token;
 }
 
+export async function getActiveInviteTokens() {
+    const collection = await getCollection();
+    const maxCreaionDate = Date.now() - 1000 * 60 * 60 * 24 * 7;
+    const token = await collection
+        .find({ isUsed: false, creationDate: { $gte: maxCreaionDate } })
+        .toArray();
+    return token;
+}
+
 export async function updateInviteToken(
-    filterCriteria: Filter<InviteToken>,
-    updateValues: UpdateFilter<InviteToken>
+    filterCriteria: Filter<InviteTokenDbDTO>,
+    updateValues: UpdateFilter<InviteTokenDbDTO>
 ) {
     const collection = await getCollection();
     const result = await collection.updateOne(filterCriteria, updateValues);
@@ -54,7 +71,7 @@ export async function expireInviteToken(token: string, session?: ClientSession) 
     const collection = await getCollection();
     const result = await collection.updateOne(
         {
-            value: token
+            hashedValue: token
         },
         {
             $set: {
@@ -65,4 +82,19 @@ export async function expireInviteToken(token: string, session?: ClientSession) 
     );
 
     return result.modifiedCount;
+}
+
+export async function mutateInviteToken(
+    filter: Filter<InviteToken>,
+    updateValues: InviteTokenDbDTO
+) {
+    const collection = await getCollection();
+    const result = await collection.replaceOne(filter as any, updateValues);
+
+    return result.modifiedCount;
+}
+
+export async function getAllInviteTokens() {
+    const collection = await getCollection();
+    return (await collection.find({}).toArray()) as Array<Partial<InviteToken>>;
 }

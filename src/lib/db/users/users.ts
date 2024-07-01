@@ -2,7 +2,8 @@
 
 import { ClientSession, Filter } from 'mongodb';
 import clientPromise from '../mongodb';
-import { getDomainNames } from '../domains/domains';
+import { getDomainNames } from '@domains/data';
+import { CredentialError } from '@/lib/errors/credentialError';
 
 export interface User {
     username: string;
@@ -22,13 +23,15 @@ export async function createUser(user: User, domain: string, session?: ClientSes
     const domains = await getDomainNames();
 
     for (let i = 0; i < domains.length; i++) {
-        const collection = await getCollection(domains[i]);
-        const duplicates = await collection.countDocuments({
-            $or: [{ username: user.username }, { publicKey: user.publicKey }]
-        });
+        const collection = await getCollection(`${domains[i]}`);
+        const query = await collection
+            .find({
+                $or: [{ username: user.username }, { publicKey: user.publicKey }]
+            })
+            .toArray();
 
-        if (duplicates > 0) {
-            return null;
+        if (query.length > 0) {
+            throw new CredentialError('User already exists');
         }
     }
 
@@ -92,6 +95,12 @@ export async function setUserStaffRole(username: string, isStaff: boolean) {
     }
 
     return null;
+}
+
+export async function getDomainUsersCount(domain: string) {
+    const collection = await getCollection(domain);
+
+    return await collection.countDocuments();
 }
 
 export async function getUserContacts(isStaff: boolean, domain: string) {

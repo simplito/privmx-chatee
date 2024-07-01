@@ -12,3 +12,7 @@ export async function dummyReqest<T>(returnValue: T): Promise<T> {
         }, 2000);
     });
 }
+
+export async function serverDelay(time: number) {
+    return new Promise((resolv) => setTimeout(resolv, time));
+}

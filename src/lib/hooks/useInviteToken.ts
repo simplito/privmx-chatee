@@ -1,9 +1,9 @@
 'use client';
 
-import { InviteTokenRequestBody, InviteTokenResponse } from '@/app/api/invite-token';
 import { useUserContext } from '@/shared/ui/context/UserContext';
 import { NEXT_PUBLIC_BACKEND_URL } from '@/shared/utils/env';
 import { FormStatus } from '@/shared/utils/types';
+import { InviteTokenRequestBody, InviteTokenResponse } from '@domains/logic';
 import { useCallback, useState } from 'react';
 
 export function useInviteToken() {

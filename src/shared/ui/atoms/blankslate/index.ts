@@ -1,0 +1,1 @@
+export { Blankslate } from './Blankslate';

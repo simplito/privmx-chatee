@@ -6,8 +6,8 @@ export const SOLUTION_ID = process.env.SOLUTION_ID as string;
 export const PLATFORM_URL = process.env.PLATFORM_URL as string;
 export const OWNER_TOKEN = process.env.OWNER_TOKEN as string;
 export const JWT_SALT = process.env.JWT_SALT as string;
-export const SERVER_ID = process.env.SERVER_ID as string;
 export const REPLICA_SET = process.env.REPLICA_SET as string;
+export const INSTANCE_ID = process.env.INSTANCE_ID as string;
 
 // export const MONGODB_URI = 'mongodb://mongo:27017';
 // export const NEXT_PUBLIC_BACKEND_URL = 'https://chatee.test.simplito.com/';

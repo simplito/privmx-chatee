@@ -2,8 +2,6 @@
 
 import { AppShell, Group, Overlay } from '@mantine/core';
 import { useCallback, useState } from 'react';
-import { Chat, ThreadContextProvider } from '@chat';
-import { ChatsSidebar } from '@/shared/pages/chats-sidebar/ChatsSidebar';
 import { AuthGuard } from '@/shared/ui/atoms/auth-guard/AuthGuard';
 import { Navbar } from '@/shared/pages/navbar/Navbar';
 import dayjs from 'dayjs';
@@ -11,9 +9,10 @@ import 'dayjs/locale/pl';
 import 'dayjs/locale/en';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { StoreCacheContextProvider } from '@/shared/ui/context/StoreCacheContext';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useLocale } from 'next-intl';
+import { Chat, ChatsSidebar } from '@chat/ui';
+import { StoreCacheContextProvider, ThreadContextProvider } from '@chat/logic';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -33,6 +32,11 @@ export default function Home() {
     );
     const isMobile = useMediaQuery(`(max-width: 62em)`);
 
+    const navigate = (id: string, title: string): void => {
+        open();
+        handleSetCurrentThreadId(id);
+        setCurrentThreadTitle(title);
+    };
     return (
         <AuthGuard>
             <AppShell
@@ -86,20 +90,13 @@ export default function Home() {
                                     borderRadius: 'var(--mantine-radius-lg)',
                                     boxShadow: 'var(--mantine-shadow-xs)'
                                 }}>
-                                <ChatsSidebar
-                                    toggle={toggle}
-                                    navigate={(id, title) => {
-                                        open();
-                                        handleSetCurrentThreadId(id);
-                                        setCurrentThreadTitle(title);
-                                    }}
-                                />
+                                <ChatsSidebar toggle={toggle} navigate={navigate} />
                             </AppShell.Section>
                         </AppShell.Navbar>
 
                         <AppShell.Main>
                             <Group p="md" w="100%" align="stretch">
-                                <Chat key={currentThreadId} />
+                                <Chat key={currentThreadId} navigate={navigate} />
                             </Group>
                         </AppShell.Main>
                     </StoreCacheContextProvider>

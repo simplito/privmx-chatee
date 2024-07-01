@@ -1,10 +1,10 @@
 'use client';
 
-import { Endpoint } from '@/lib/endpoint-api/endpoint';
-import { EndpointEventTypes } from '@/lib/endpoint-api/types/events';
+import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
+import { EndpointEventTypes } from '@simplito/privmx-endpoint-web-sdk';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { useRouter } from 'next/navigation';
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { ReactNode, createContext, useContext, useReducer } from 'react';
 
 export type UserStatus = 'logged-in' | 'logged-out';
 
@@ -18,7 +18,9 @@ export interface UserContextType {
 }
 
 export enum UserContextActionTypes {
+    // eslint-disable-next-line no-unused-vars
     SIGN_IN = 'SIGN_IN',
+    // eslint-disable-next-line no-unused-vars
     SIGN_OUT = 'SIGN_OUT'
 }
 
@@ -85,13 +87,18 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> =
 
             if (event.data && event?.data?.type === 'time-out') {
                 router.push('/sign-in?session-expired=true');
-            } else {
-                dispatch(signOutAction());
             }
+            dispatch(signOutAction());
         });
 
         return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
     };
+
+export function OwnerContextProvider({ children }: { children: ReactNode }) {
+    const [state, dispatch] = useReducer(userReducer, initialState);
+
+    return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
+}
 
 export function signInAction(payload: UserContextType): SignInAction {
     return {

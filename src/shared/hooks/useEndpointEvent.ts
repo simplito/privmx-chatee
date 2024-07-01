@@ -1,20 +1,24 @@
-import { useEffect } from 'react';
-import {
-    EndpointEventTypes,
-    EndpointEventManager,
-    EndpointApiEvent
-} from '@/lib/endpoint-api/types/events';
+'use client';
 
-export function useEndpointEvent<T extends EndpointEventTypes>(
+import { EndpointApiEvent, Platform } from '@simplito/privmx-endpoint-web-sdk';
+import { useEffect } from 'react';
+
+type ExtractEvent<T extends EndpointApiEvent['type']> = Extract<EndpointApiEvent, { type: T }>;
+
+export function useEndpointEvent<T extends EndpointApiEvent['type']>(
     eventType: T,
     // eslint-disable-next-line no-unused-vars
-    callback: (event: Extract<EndpointApiEvent, { type: T }>) => void
+    callback: (event: ExtractEvent<T>) => void
 ) {
     useEffect(() => {
-        EndpointEventManager.addEventListener(eventType, callback);
+        const connection = Platform.getCurrent();
+        if (!connection) {
+            return () => {};
+        }
 
+        const removeListener = connection.addEventListener(eventType, callback);
         return () => {
-            EndpointEventManager.removeEventListener(eventType, callback);
+            removeListener();
         };
     }, [eventType, callback]);
 }

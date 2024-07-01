@@ -78,6 +78,83 @@
             }
         }
     },
+    "owner": {
+        "title": "Domeny",
+        "navbar": {
+            "changeOwnerToken": "Zmień token ownera"
+        },
+        "sign-in": {
+            "title": "Panel Właściciela",
+            "ownerToken": "Token Właściciela"
+        },
+        "newDomain": {
+            "newDomainButton": "Dodaj domenę",
+            "errors": {
+                "invalidDomain": "Zły format subdomeny",
+                "invalidDateTime": "Zły format daty"
+            }
+        },
+        "domain": {
+            "header": {
+                "blockDomain": "Zablokuj domenę",
+                "unblockDomain": "Odblokuj domenę"
+            },
+            "summary": {
+                "title": "Podsumowanie",
+                "lastActive": "Ostatnia Aktywność",
+                "usersCount": "Liczba Użytkowników",
+                "createdAt": "Data utworzenia",
+                "startDate": "Data rozpoczęcia",
+                "endDate": "Data wygaśnięcia"
+            },
+            "activePeriods": {
+                "title": "Okresy Dostępu",
+                "addPeriod": "Dodaj okres",
+                "startDate": "Rozpoczęcie",
+                "endDate": "Wygaśnięcie",
+                "status": "Status",
+                "statusState": {
+                    "expired": "Wygasły",
+                    "active": "Aktywny",
+                    "blocked": "Zablokowany"
+                },
+                "pickDatesRange": "Przedział dat"
+            }
+        },
+        "createDomain": {
+            "title": "Nowa Domena",
+            "name": "Nazwa",
+            "domain": "Domena",
+            "activeTo": "Aktywna do",
+            "submit": "Stwórz domenę"
+        },
+        "createDomainSuccess": {
+            "title": "Domena Utworzona",
+            "subtitle": "Przekaż token zaproszenia pierwszemu adminowi domeny"
+        },
+        "create-token": {
+            "header": "Stwórz token właściciela",
+            "input-label": "Token właściciela",
+            "create": "Stwórz",
+            "error": {
+                "duringCreation": "Wystąpił błąd podczas tworzenia tokenu właściciela"
+            }
+        },
+        "errors": {
+            "unableToAddPeriod": "Błąd podczas dodawania okresu"
+        },
+        "cloudStats": {
+            "header": "Zużycie danych",
+            "requests": "Żądania",
+            "erros": "Błędy",
+            "dataReceived": "Odebrane dane",
+            "dataSent": "Wysłane dane",
+            "minTime": "Minimalny czas żądania",
+            "maxTime": "Maksymalny czas żądania",
+            "totalTime": "Łączny czas przetwarzania",
+            "noData": "Nie udało się pobrać informacji o zużyciu danych"
+        }
+    },
     "common": {
         "tryAgainLater": "Spróbuj ponownie później",
         "tryAgain": "Spróbuj ponownie",
@@ -88,7 +165,12 @@
         "cancel": "Anuluj",
         "done": "Gotowe",
         "success": "Sukces",
-        "sessionExpired": "Sesja wygasła, zaloguj się ponownie."
+        "back": "Wstecz",
+        "block": "Zablokuj",
+        "unblock": "Odblokuj",
+        "delete": "Usuń",
+        "sessionExpired": "Sesja wygasła, zaloguj się ponownie.",
+        "invalidFormData": "Niepoprawne dane formularza"
     },
     "signIn": {
         "signinIn": "Logowanie",
@@ -99,8 +181,15 @@
 
             "errors": {
                 "invalidCredentials": "Niepoprawna nazwa użytkownika lub hasło",
-                "signInFailed": "Logowanie nie powiodło się"
+                "signInFailed": "Logowanie nie powiodło się",
+                "domainUnavailable": "Domena jest obecnie zablokowana...",
+                "noAccessPeriod": "Brak aktywnego okresu dostępu, skontaktuj się z dostawcą po więcej informacji"
             }
+        },
+        "endOfPeriod": {
+            "info": "Okres dostępu wygasa za {daysToPeriodEnd} ",
+            "daysPlural": "dni",
+            "daysSingular": "dzień"
         },
         "noAccount": "Nie masz jeszcze konta?",
         "register": "Zarejestruj się"
@@ -137,7 +226,10 @@
     },
     "error": {
         "looksLikeSomethingWentWrong": "Coś poszło nie tak.",
-        "errorMessage": "Komunikat o błędzie:"
+        "errorMessage": "Komunikat o błędzie:",
+        "minLength3": "Minimum 3 znaki",
+        "maxLength20": "Maximum 20 znaków",
+        "maxLength40": "Maximum 40 znaków"
     },
     "notFound": {
         "siteNotFound": "Strona nie istnieje",

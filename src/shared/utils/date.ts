@@ -1,13 +1,23 @@
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
-import { getLocalCookieVal } from './locale';
 
 export function displayDate(date: number) {
     return dayjs(date).format('l LT');
 }
 
-export function useLocale() {
-    useEffect(() => {
-        dayjs.locale(getLocalCookieVal() === 'pl' ? 'pl' : 'en');
-    }, []);
+export class Time {
+    static get second() {
+        return 1000;
+    }
+
+    static get minute() {
+        return this.second * 60;
+    }
+
+    static get hour() {
+        return this.minute * 60;
+    }
+
+    static get day() {
+        return this.hour * 24;
+    }
 }

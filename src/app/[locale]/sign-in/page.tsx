@@ -122,6 +122,16 @@ export default function Page() {
                                 {t('common.tryAgainLater')}
                             </Alert>
                         )}
+                        {status === 'domain-blocked' && (
+                            <Alert color="red" title="Domain blocked">
+                                {t('signIn.form.errors.domainUnavailable')}
+                            </Alert>
+                        )}
+                        {status === 'no-access-period' && (
+                            <Alert color="red" title="Domain blocked">
+                                {t('signIn.form.errors.noAccessPeriod')}
+                            </Alert>
+                        )}
                     </Step>
                 </FormContainer.RightPanel>
             </FormContainer>

@@ -1,11 +1,13 @@
-import { CLOUD_URL, CLOUD_DEV_TOKEN, SOLUTION_ID } from '@/shared/utils/env';
+import { CLOUD_URL, CLOUD_DEV_TOKEN } from '@/shared/utils/env';
+import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
+import { splitStringInHalf } from '@/shared/utils/string';
 
 export async function addUserToContext(userId: string, pubKey: string, contextId: string) {
     const addToContextRequest = await fetch(CLOUD_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Member-Token': CLOUD_DEV_TOKEN
+            'X-Developer-Token': CLOUD_DEV_TOKEN
         },
         body: JSON.stringify({
             jsonrpc: '2.0',
@@ -28,33 +30,28 @@ export async function addUserToContext(userId: string, pubKey: string, contextId
     throw new Error('Error adding user to context');
 }
 
-export interface createContextResponse {
-    jsonrpc: string;
-    id: number;
-    result: { contextId: string };
-}
-export async function createCloudContext(name: string) {
-    const addToContextRequest = await fetch(CLOUD_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Member-Token': CLOUD_DEV_TOKEN
-        },
-        body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 0,
-            method: 'context/createContext',
-            params: {
-                solutionId: SOLUTION_ID,
-                profile: { name, description: '', scope: 'private' }
-            }
-        })
-    });
+export type createContextResponse =
+    | {
+          jsonrpc: string;
+          id: number;
+          result: { contextId: string };
+      }
+    | {
+          jsonrpc: '2.0';
+          id: 0;
+          error: { code: number; message: string; data: null };
+      };
 
-    if (addToContextRequest.status === 200) {
-        const body: createContextResponse = await addToContextRequest.json();
-        return body.result.contextId;
-    }
+export const generateEndpointKeyPair = async (string: string) => {
+    const endpoint = await Endpoint.getInstance();
 
-    throw new Error('Error creating context');
-}
+    const [salt, password] = splitStringInHalf(string);
+
+    const privateKey = await endpoint.cryptoPrivKeyNewPbkdf2(salt, password);
+    const publicKey = await endpoint.cryptoPubKeyNew(privateKey);
+
+    return {
+        privateKey,
+        publicKey
+    };
+};

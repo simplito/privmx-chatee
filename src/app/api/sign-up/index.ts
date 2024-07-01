@@ -1,4 +1,6 @@
+import { HandlerResponse } from '@/shared/utils/types';
 import { z } from 'zod';
+import { POST } from './route';
 
 export const signUpRequestSchema = z.object({
     inviteToken: z.string(),
@@ -15,3 +17,4 @@ export function generateSignUpResponse() {
 }
 
 export type SignUpResponse = ReturnType<typeof generateSignUpResponse>;
+export type SignUpResult = HandlerResponse<Awaited<ReturnType<typeof POST>>>;

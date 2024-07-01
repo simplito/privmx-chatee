@@ -78,6 +78,81 @@
             }
         }
     },
+    "owner": {
+        "title": "Domains",
+        "navbar": {
+            "changeOwnerToken": "Change Owner Token"
+        },
+        "sign-in": {
+            "title": "Owner Panel",
+            "ownerToken": "Owner Token"
+        },
+        "newDomain": {
+            "newDomainButton": "Add domain",
+            "errors": {
+                "invalidDomain": "Must be valid subdomain name",
+                "invalidDateTime": "Incorect date time format"
+            }
+        },
+        "domain": {
+            "header": {
+                "blockDomain": "Block domain",
+                "unblockDomain": "Unblock domain"
+            },
+            "summary": {
+                "title": "Summary",
+                "lastActive": "Last Activity",
+                "usersCount": "Users Count",
+                "createdAt": "Created At"
+            },
+            "activePeriods": {
+                "title": "Access Periods",
+                "addPeriod": "Add Period",
+                "startDate": "Start date",
+                "endDate": "Expiration date",
+                "status": "Status",
+                "statusState": {
+                    "expired": "Expired",
+                    "active": "Active",
+                    "blocked": "Blocked"
+                },
+                "pickDatesRange": "Dates range"
+            }
+        },
+        "createDomain": {
+            "title": "New Domain",
+            "name": "Name",
+            "domain": "Domain",
+            "activeTo": "Active to",
+            "submit": "Create Domain"
+        },
+        "createDomainSuccess": {
+            "title": "Domain Created",
+            "subtitle": "Share the invitation token with a person to let them create an account"
+        },
+        "create-token": {
+            "header": "Create a owner token",
+            "input-label": "Owner token",
+            "create": "Create",
+            "error": {
+                "duringCreation": "An error occured during creation of the owner token"
+            }
+        },
+        "errors": {
+            "unableToAddPeriod": "Error while adding period"
+        },
+        "cloudStats": {
+            "header": "Cloud Usage",
+            "requests": "Requests",
+            "erros": "Errors",
+            "dataReceived": "Data received",
+            "dataSent": "Data sent",
+            "minTime": "Min request time",
+            "maxTime": "Max request time",
+            "totalTime": "Total Execution Time",
+            "noData": "Failed to retrieve data usage information"
+        }
+    },
     "common": {
         "tryAgainLater": "Try again later",
         "tryAgain": "Try again",
@@ -88,7 +163,12 @@
         "cancel": "Cancel",
         "done": "Done",
         "success": "Success",
-        "sessionExpired": "Session has expired, log in again"
+        "back": "Back",
+        "block": "Block",
+        "unblock": "Unblock",
+        "delete": "Delete",
+        "sessionExpired": "Session has expired, log in again",
+        "invalidFormData": "Invalid form data"
     },
     "signIn": {
         "signinIn": "Sign in",
@@ -99,8 +179,15 @@
 
             "errors": {
                 "invalidCredentials": "Invalid credentials",
-                "signInFailed": "Sign in failed"
+                "signInFailed": "Sign in failed",
+                "domainUnavailable": "Domain is currently disabled, please contact your provider for more information",
+                "noAccessPeriod": "No active Access Period, contact your provider for more information"
             }
+        },
+        "endOfPeriod": {
+            "info": "Your current period ends in {daysToPeriodEnd} ",
+            "daysPlural": "days",
+            "daysSingular": "day"
         },
         "noAccount": "No account yet?",
         "register": "Sign up"
@@ -137,7 +224,10 @@
     },
     "error": {
         "looksLikeSomethingWentWrong": "Something went wrong.",
-        "errorMessage": "Error message:"
+        "errorMessage": "Error message:",
+        "minLength3": "Minimum 3 characters",
+        "maxLength20": "Maximum 20 characters",
+        "maxLength40": "Maximum 40 characters"
     },
     "notFound": {
         "siteNotFound": "Page not found",

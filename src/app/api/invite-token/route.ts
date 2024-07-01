@@ -1,34 +1,32 @@
 'use server';
 
-import { createInviteToken } from '@/lib/db/invite-tokens/inviteTokens';
 import { getTokenFromRequest } from '@/shared/utils/auth';
-import { InviteTokenRequestSchema, generateInviteTokenRespose } from '.';
-import { NextResponse } from 'next/server';
-import { verifyJwt } from '@/shared/utils/jwt';
+import { NextRequest, NextResponse } from 'next/server';
+import { getInviteTokenHandler } from '@domains/logic';
+import { API_ERRORS } from '@/shared/utils/errors';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const validation = InviteTokenRequestSchema.safeParse(body);
-        if (!validation.success) {
-            return NextResponse.json({ message: 'Bad request' }, { status: 400 });
-        }
 
         const token = getTokenFromRequest(request);
-        if (!token) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        const result = await getInviteTokenHandler(token, body);
+
+        if ('errorCode' in result) {
+            switch (result.errorCode) {
+                case 1:
+                    return NextResponse.json(result, { status: 400 });
+                case 5:
+                    return NextResponse.redirect(new URL('/owner/sign-in', request.nextUrl));
+                default:
+                    return NextResponse.json(API_ERRORS.UNEXPECTED, { status: 409 });
+            }
         }
-        const decryptedToken = verifyJwt(token);
 
-        if (!decryptedToken || !decryptedToken.isStaff) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-        }
-
-        const inviteToken = await createInviteToken(validation.data.isStaff, decryptedToken.domain);
-
-        return NextResponse.json(generateInviteTokenRespose(inviteToken), { status: 200 });
-    } catch {
-        return NextResponse.json({ message: 'Unexpected error' }, { status: 500 });
+        return NextResponse.json(result, { status: 200 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json(API_ERRORS.UNEXPECTED, { status: 409 });
     }
 }
 

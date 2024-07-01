@@ -28,8 +28,13 @@
             }
         ],
         "paths": {
+            "@chat/*":["./src/features/chat/*"],
+            "@owner/*":["./src/features/owner/*"],
+            "@domains/*":["./src/features/domains/*"],
+            "@utils/*":["./src/shared/utils/*"],
+            "@atoms/*":["./src/shared/ui/atoms/*"],
+            "@pages/*":["./src/shared/pages/*"],
             "@icon":["./src/shared/ui/atoms/icons/index.ts"],
-            "@chat": ["./src/shared/pages/chat/index.ts"],
             "@modals/*": ["./src/shared/ui/modals/*"],
             "@/*": ["./src/*"]
         }
