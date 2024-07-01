@@ -1,4 +1,4 @@
-import { CLOUD_URL, CLOUD_DEV_TOKEN } from '@/shared/utils/env';
+import { CLOUD_URL, ACCESS_TOKEN } from '@/shared/utils/env';
 import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { splitStringInHalf } from '@/shared/utils/string';
 
@@ -7,7 +7,7 @@ export async function addUserToContext(userId: string, pubKey: string, contextId
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Developer-Token': CLOUD_DEV_TOKEN
+            'X-Access-Sig': ACCESS_TOKEN
         },
         body: JSON.stringify({
             jsonrpc: '2.0',

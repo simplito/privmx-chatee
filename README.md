@@ -38,7 +38,7 @@ You need Node.js preferably version **20.10 or higher**
     - create an organization
     - create an instance
     - create a solution
-    - Copy your **SOLUTION_ID**, **INSTANCE_ID**, **API_URL**, and **CLOUD_DEV_TOKEN** to **.env.local**.
+    - Copy your **SOLUTION_ID**, **INSTANCE_ID**, **API_URL**, and **ACCESS_TOKEN** to **.env.local**.
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
 
 4. Generate random **JWT_SALT** and **OWNER_TOKEN** and fill in your .env.file

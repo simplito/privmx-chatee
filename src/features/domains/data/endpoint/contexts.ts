@@ -1,5 +1,5 @@
 import { createContextResponse } from '@/lib/endpoint-api/utils';
-import { CLOUD_URL, CLOUD_DEV_TOKEN, SOLUTION_ID } from '@/shared/utils/env';
+import { CLOUD_URL, SOLUTION_ID, ACCESS_TOKEN } from '@/shared/utils/env';
 
 export async function createCloudContext(name: string) {
     try {
@@ -7,7 +7,7 @@ export async function createCloudContext(name: string) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Developer-Token': CLOUD_DEV_TOKEN
+                'X-Access-Sig': ACCESS_TOKEN
             },
             body: JSON.stringify({
                 jsonrpc: '2.0',

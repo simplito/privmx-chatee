@@ -1,7 +1,7 @@
 'use server';
 
 import { getDomainByName } from '@domains/data';
-import { CLOUD_DEV_TOKEN, CLOUD_URL, INSTANCE_ID } from '@utils/env';
+import { ACCESS_TOKEN, CLOUD_URL, INSTANCE_ID } from '@utils/env';
 
 export type Bucket = {
     bucketId: number;
@@ -59,7 +59,7 @@ export const getCloudStats = async (domainName: string) => {
             }),
             headers: {
                 'Content-type': 'application/json',
-                'X-Developer-Token': CLOUD_DEV_TOKEN
+                'X-Access-Sig': ACCESS_TOKEN
             }
         });
 
