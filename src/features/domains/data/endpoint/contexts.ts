@@ -1,23 +1,25 @@
 import { createContextResponse } from '@/lib/endpoint-api/utils';
-import { CLOUD_URL, SOLUTION_ID, ACCESS_TOKEN } from '@/shared/utils/env';
+import { CLOUD_URL, SOLUTION_ID } from '@/shared/utils/env';
+import { getSigHeader } from '@utils/crypto';
 
 export async function createCloudContext(name: string) {
     try {
+        const requestBody = {
+            jsonrpc: '2.0',
+            id: 0,
+            method: 'context/createContext',
+            params: {
+                solutionId: SOLUTION_ID,
+                profile: { name, description: '', scope: 'private' }
+            }
+        };
         const addToContextRequest = await fetch(CLOUD_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Access-Sig': ACCESS_TOKEN
+                'X-Access-Sig': await getSigHeader(requestBody)
             },
-            body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 0,
-                method: 'context/createContext',
-                params: {
-                    solutionId: SOLUTION_ID,
-                    profile: { name, description: '', scope: 'private' }
-                }
-            })
+            body: JSON.stringify(requestBody)
         });
 
         const body: createContextResponse = await addToContextRequest.json();

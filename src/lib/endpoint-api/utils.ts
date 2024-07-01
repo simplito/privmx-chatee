@@ -1,26 +1,29 @@
-import { CLOUD_URL, ACCESS_TOKEN } from '@/shared/utils/env';
+import { CLOUD_URL, ACCESS_KEY } from '@/shared/utils/env';
 import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { splitStringInHalf } from '@/shared/utils/string';
+import { getSigHeader } from '@utils/crypto';
 
 export async function addUserToContext(userId: string, pubKey: string, contextId: string) {
+    const requestBody = {
+        jsonrpc: '2.0',
+        id: 0,
+        method: 'context/addUserToContext',
+        params: {
+            contextId: contextId,
+            user: {
+                userId,
+                pubKey
+            }
+        }
+    };
+
     const addToContextRequest = await fetch(CLOUD_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Access-Sig': ACCESS_TOKEN
+            'X-Access-Sig': await getSigHeader(requestBody)
         },
-        body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 0,
-            method: 'context/addUserToContext',
-            params: {
-                contextId: contextId,
-                user: {
-                    userId,
-                    pubKey
-                }
-            }
-        })
+        body: JSON.stringify(requestBody)
     });
 
     if (addToContextRequest.status === 200) {

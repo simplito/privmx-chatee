@@ -1,6 +1,7 @@
 import * as elliptic from 'elliptic';
 import * as base58check from 'bs58check';
 import * as crypto from 'crypto';
+import { ACCESS_KEY, ACCESS_KEY_SECRET } from './env';
 
 export type Result<T> = { success: true; result: T } | { success: false; error: any };
 
@@ -138,4 +139,20 @@ export function validatePassword(password: string, salt: string) {
     } catch (error) {
         return null;
     }
+}
+
+export async function getSigHeader(body: any) {
+    const timestamp = Date.now();
+    const nonce = crypto.randomUUID().slice(0, 13);
+    const signatureToSign = `${ACCESS_KEY};1;${timestamp};${nonce};${ACCESS_KEY_SECRET};${JSON.stringify(
+        body
+    )}`;
+
+    const encoder = new TextEncoder();
+    const encodedSignature = encoder.encode(signatureToSign);
+    const signatureDigest = (await crypto.subtle.digest('SHA-256', encodedSignature)).slice(0, 20);
+
+    const signatureBase64 = Buffer.from(new Uint8Array(signatureDigest)).toString('base64');
+
+    return `${ACCESS_KEY};1;${timestamp};${nonce};${signatureBase64}`;
 }
