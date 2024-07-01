@@ -1,44 +1,44 @@
 version: '3'
 
 services:
-  app:
-    container_name: chatee
-    image: chatee:simplito
-    restart: always
-    volumes:
-      - myvolume:/usr/src/app
-    ports:
-      - 8169:3000
-    depends_on:
-      - mongo
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017?replicaSet=rs0
-      - NEXT_PUBLIC_BACKEND_URL=
-      - CLOUD_URL=
-      - CLOUD_DEV_TOKEN=
-      - SOLUTION_ID=
-      - PLATFORM_URL=
-      - OWNER_TOKEN=
-      - JWT_SALT=
-      - SERVER_ID=
-      - REPLICA_SET=rs0
-  mongo:
-    container_name: chatee_mongo
-    image: mongo
-    restart: always
-    command: ['--replSet', 'rs0', '--bind_ip_all', '--port', '27017']
-    volumes:
-      - myvolume:/data/db
-  mongo_init:
-    image: mongo
-    depends_on:
-      - mongo
-    command: >
-      /bin/bash -c "
-      while ! echo 'try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"mongo:27017\"}]}); }' | mongosh --host mongo --port 27017 --quiet; do
-      sleep 5;
-      done;"
-    restart: on-failure
+    app:
+        container_name: chatee
+        image: chatee:simplito
+        restart: always
+        volumes:
+            - myvolume:/usr/src/app
+        ports:
+            - 8169:3000
+        depends_on:
+            - mongo
+        environment:
+            - MONGODB_URI=mongodb://mongo:27017?replicaSet=rs0
+            - NEXT_PUBLIC_BACKEND_URL=
+            - CLOUD_URL=
+            - ACCESS_TOKEN=
+            - SOLUTION_ID=
+            - PLATFORM_URL=
+            - OWNER_TOKEN=
+            - JWT_SALT=
+            - SERVER_ID=
+            - REPLICA_SET=rs0
+    mongo:
+        container_name: chatee_mongo
+        image: mongo
+        restart: always
+        command: ['--replSet', 'rs0', '--bind_ip_all', '--port', '27017']
+        volumes:
+            - myvolume:/data/db
+    mongo_init:
+        image: mongo
+        depends_on:
+            - mongo
+        command: >
+            /bin/bash -c "
+            while ! echo 'try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"mongo:27017\"}]}); }' | mongosh --host mongo --port 27017 --quiet; do
+            sleep 5;
+            done;"
+        restart: on-failure
 
 volumes:
-  myvolume:
+    myvolume:
