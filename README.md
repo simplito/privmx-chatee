@@ -28,24 +28,39 @@ This will create a mongodb instance running on `0.0.0.0:27017` with a replica se
 
 You need Node.js preferably version **20.10 or higher**
 
+#### PrivMX Platform
+To use the application you need to have a **PrivMX Platform** account with Organisation and Solution created. Find out more about the **[PrivMX Platform](https://privmx.cloud)**.
+
 ## How to run?
 
 1. Copy **.env.example** to **.env.local**
 2. You need to have a running MongoDb instance with a replica set
     - Fill in the replica set name and MongoDB URI in your **.env.local**
-3. On **cloud-public**
+3. On **[PrivMX Cloud (PrivMX Platform)](https://privmx.cloud)**
 
-    - create an organization
-    - create an instance
-    - create a solution
-    - Copy your **SOLUTION_ID**, **INSTANCE_ID**, **API_URL**, and **ACCESS_TOKEN** to **.env.local**.
+    - create an Organization and copy it's `Api URL` (more about PrivMX Platform can be found [here](https://docs.privmx.cloud/bridge))
+    - create a Solution and copy it's ID
+    - inside a Solution create new Access Key (more about keys generation can be found [here](https://docs.privmx.cloud/keys/))
+   
+4. On env.local
+    - Copy your **API_URL**, **SOLUTION_ID**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **.env.local**.
+
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
+      
+      ```ENV
+      API_URL={Replace with your PrivMX Platform Organisation's Api URL}
+      SOLUTION_ID={Replace with your Solution ID}
+      ACCESS_KEY={Replace with Solution's PubKey}
+      ACCESS_KEY_SECRET={Replace with Solution's Secret}
+      NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+      
+      ```
 
-4. Generate random **JWT_SALT** and **OWNER_TOKEN** and fill in your .env.file
+5. Generate random **JWT_SALT** and **OWNER_TOKEN** and fill in your .env.file
     - You can run the following command in the terminal to generate these values: `openssl rand -base64 20`
-5. Run **npm install**
+6. Run `npm install`
 
-6. Run **npm run dev**
+7. Run `npm run dev`
 
 ### Domain system & first user
 
