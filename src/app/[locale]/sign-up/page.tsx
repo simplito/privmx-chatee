@@ -28,11 +28,9 @@ export default function Page() {
                     const username = formData.get('username') as string;
                     const password = formData.get('password1') as string;
 
-                    try {
-                        await register(inviteToken, username, password);
+                    const isSuccess = await register(inviteToken, username, password);
+                    if (isSuccess) {
                         setStep('done');
-                    } catch (error) {
-                        console.error(error);
                     }
                 }}>
                 <LoadingOverlay visible={status === 'loading'} />
@@ -54,6 +52,11 @@ export default function Page() {
                         {status === 'error' && (
                             <Alert color="red" title={t('common.somethingWentWrong')}>
                                 {t('signUp.form.error.signUpError')}
+                            </Alert>
+                        )}
+                        {status === 'domain-blocked' && (
+                            <Alert color="red" title={'Domain blocked'}>
+                                Domain is curently unavailable
                             </Alert>
                         )}
                     </Step>

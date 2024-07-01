@@ -1,12 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Endpoint } from '@privmx/endpoint-web';
+import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { FormStatus } from '@/shared/utils/types';
 import { NEXT_PUBLIC_BACKEND_URL } from '@/shared/utils/env';
-import { SignUpRequestBody } from '@/app/api/sign-up';
+import { SignUpRequestBody, SignUpResult } from '@/app/api/sign-up';
 
-export type SignUpFormStatus = FormStatus | 'invalid-token' | 'credentials-in-use';
+export type SignUpFormStatus =
+    | FormStatus
+    | 'invalid-token'
+    | 'credentials-in-use'
+    | 'domain-blocked';
 
 export default function useSignUp() {
     const [status, setStatus] = useState<SignUpFormStatus>('default');
@@ -32,22 +36,33 @@ export default function useSignUp() {
                 },
                 body: JSON.stringify(body)
             });
+            const result: SignUpResult = await signUpRequest.json();
 
             if (signUpRequest.ok) {
                 setStatus('success');
-            } else {
-                const error = await signUpRequest.json();
-                if (error.message === 'Invalid token') {
-                    setStatus('invalid-token');
-                } else if (error.message === 'Username or public key in use') {
-                    setStatus('credentials-in-use');
-                } else {
-                    setStatus('error');
+                return true;
+            } else if ('errorCode' in result) {
+                switch (result.errorCode) {
+                    case 300:
+                        setStatus('invalid-token');
+                        break;
+                    case 400:
+                        setStatus('credentials-in-use');
+                        break;
+                    case 1:
+                        setStatus('error');
+                        break;
+                    case 3:
+                        setStatus('error');
+                        break;
+                    case 201:
+                        setStatus('domain-blocked');
                 }
-                throw new Error();
             }
+            return false;
         } catch (e) {
-            throw new Error();
+            setStatus('error');
+            return false;
         }
     };
 

@@ -4,13 +4,7 @@ import { Alert, Center, Divider, Text } from '@mantine/core';
 import { IconError404 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
-export default function Page({
-    error,
-    reset
-}: {
-    error: Error & { digest?: string };
-    reset: () => void;
-}) {
+export default function Page({ error }: { error: Error & { digest?: string } }) {
     const t = useTranslations();
 
     return (

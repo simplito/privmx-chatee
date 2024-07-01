@@ -1,142 +1,142 @@
 'use client';
 import { useInviteToken } from '@/lib/hooks/useInviteToken';
 import {
-    Grid,
     TextInput,
     Group,
     Button,
-    Checkbox,
     Text,
     Title,
     ActionIcon,
     ThemeIcon,
-    Flex,
-    TypographyStylesProvider,
     CopyButton,
     Tooltip,
     rem,
-    Alert
+    Alert,
+    Stack,
+    Switch,
+    LoadingOverlay
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { ContextModalProps } from '@mantine/modals';
-import { IconCheck, IconCopy, IconUserPlus } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
-import { Step } from '../../atoms/step/Step';
+import { IconCheck, IconCopy, IconPlus, IconUserPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-export const InviteUserModal = ({ context, id }: ContextModalProps<{}>) => {
-    const [step, setStep] = useState<'generate' | 'generated'>('generate');
-    const [isFetching, { open: startFetching, close: finishFetching }] = useDisclosure(false);
+import { FormContainer } from '../../atoms/form-container';
+import { EventHandler, SyntheticEvent } from 'react';
 
-    const { handleGetInviteToken, status, inviteToken } = useInviteToken();
+export const InviteUserModal = ({ context, id }: ContextModalProps<{}>) => {
+    const {
+        handleGetInviteToken,
+        status: inviteTokenStatus,
+        inviteToken,
+        clearInviteToken
+    } = useInviteToken();
+
     const t = useTranslations();
-    useEffect(() => {
-        if (status === 'success') {
-            setStep('generated');
-        }
-    }, [status]);
+
+    const handleSubmit: EventHandler<SyntheticEvent> = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const isAdmin = formData.get('isAdmin')?.toString() === 'on' ? true : false;
+        await handleGetInviteToken(isAdmin);
+    };
 
     return (
-        <>
-            <Grid>
-                <Grid.Col span={4} pos={'relative'}>
-                    <TypographyStylesProvider c="gray.0" tw="balance">
-                        <Flex
-                            align={'flex-end'}
-                            justify={'flex-end'}
-                            direction={'column'}
-                            bg={'var(--mantine-color-gray-7)'}
-                            p="lg"
-                            miw={200}
-                            h="350px"
-                            style={{ borderRadius: 'var(--mantine-radius-sm)' }}
-                            inset={8}>
-                            <ThemeIcon c={'inherit'} size={'xl'} variant="transparent" ml="auto">
-                                <IconUserPlus size={32} />
-                            </ThemeIcon>
-                            <Title ta="right" mt={0} order={3}>
-                                {t('chat.modals.inviteUserModal.inviteNewMember')}
-                            </Title>
-                            <Text ta="right" size="sm" tw="balance">
-                                {t('chat.modals.inviteUserModal.howToPassInviteToken')}
-                            </Text>
-                        </Flex>
-                    </TypographyStylesProvider>
-                </Grid.Col>
-                <Grid.Col span={8}>
-                    <Step visible={step === 'generate'}>
-                        <Title order={3} ta="center">
-                            {t('chat.modals.inviteUserModal.inviteToken')}
-                        </Title>
-                        <form
-                            onSubmit={async (e) => {
-                                e.preventDefault();
-                                const formData = new FormData(e.target as HTMLFormElement);
-                                const isAdmin =
-                                    formData.get('isAdmin')?.toString() === 'on' ? true : false;
-                                startFetching();
-                                await handleGetInviteToken(isAdmin);
-                                finishFetching();
-                            }}>
-                            <Checkbox
-                                name="isAdmin"
-                                mb="md"
-                                label={t('chat.modals.inviteUserModal.giveAdminRights')}
-                            />
-                            <Button loading={isFetching} fullWidth type="submit">
-                                {t('chat.modals.inviteUserModal.generateNewToken')}
-                            </Button>
-                        </form>
-
-                        {status === 'error' && (
-                            <Alert title={t('common.error') + '!'} color="red">
-                                <Text>{t('common.tryAgainLater')}</Text>
-                            </Alert>
-                        )}
-                    </Step>
-                    <Step visible={step === 'generated'}>
-                        <Title order={3} ta="center">
-                            {t('chat.modals.inviteUserModal.inviteToken')}
-                        </Title>
-                        <Group gap={8} w="100%" align="flex-end">
-                            <TextInput
-                                disabled
-                                styles={{
-                                    input: { border: 0, color: 'var(--mantine-color-gray-9)' }
-                                }}
-                                variant="filled"
-                                style={{ flexGrow: 1 }}
-                                value={inviteToken}
-                            />
-                            <CopyButton value={inviteToken} timeout={2000}>
-                                {({ copied, copy }) => (
-                                    <Tooltip
-                                        label={
-                                            copied
-                                                ? t('chat.modals.inviteUserModal.copied')
-                                                : t('chat.modals.inviteUserModal.copy')
+        <FormContainer pos="relative">
+            <FormContainer.LeftPanel></FormContainer.LeftPanel>
+            <FormContainer.RightPanel>
+                <LoadingOverlay visible={inviteTokenStatus === 'loading'} />
+                <Stack h="100%">
+                    <Group gap={4} align="center" mt={'lg'}>
+                        <ThemeIcon variant="transparent" size={'sm'}>
+                            <IconUserPlus />
+                        </ThemeIcon>
+                        <Title order={3}>Nowy Token Zaproszenia</Title>
+                    </Group>
+                    <Text size="sm" c="dimmed">
+                        Przekaż token zaproszenia pierwszemu adminowi domeny.
+                    </Text>
+                    <form
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1,
+                            justifyContent: 'center'
+                        }}
+                        onSubmit={handleSubmit}>
+                        <Stack>
+                            <Group gap={8} w="100%" align="flex-end">
+                                <Button
+                                    leftSection={<IconPlus size="1rem" />}
+                                    type="submit"
+                                    size="sm"
+                                    loading={inviteTokenStatus === 'loading'}>
+                                    {t('chat.modals.domainModal.newToken')}
+                                </Button>
+                                <TextInput
+                                    disabled
+                                    styles={{
+                                        input: {
+                                            background: 'var(--mantine-color-gray-0)',
+                                            opacity: 0.9,
+                                            cursor: 'default'
                                         }
-                                        withArrow
-                                        position="right">
-                                        <ActionIcon
-                                            color={copied ? 'teal' : 'gray'}
-                                            variant="outline"
-                                            size={'lg'}
-                                            onClick={copy}>
-                                            {copied ? (
-                                                <IconCheck style={{ width: rem(16) }} />
-                                            ) : (
-                                                <IconCopy size={16} />
-                                            )}
-                                        </ActionIcon>
-                                    </Tooltip>
-                                )}
-                            </CopyButton>
-                        </Group>
+                                    }}
+                                    flex={1}
+                                    size="sm"
+                                    value={inviteToken || ''}
+                                />
+                                <CopyButton value={inviteToken} timeout={2000}>
+                                    {({ copied, copy }) => (
+                                        <Tooltip
+                                            openDelay={300}
+                                            label={
+                                                copied
+                                                    ? t('chat.modals.domainModal.copied')
+                                                    : t('chat.modals.domainModal.copy')
+                                            }>
+                                            <ActionIcon
+                                                variant="light"
+                                                h={36}
+                                                w={36}
+                                                onClick={copy}>
+                                                {copied ? (
+                                                    <IconCheck style={{ width: rem(16) }} />
+                                                ) : (
+                                                    <IconCopy size={16} />
+                                                )}
+                                            </ActionIcon>
+                                        </Tooltip>
+                                    )}
+                                </CopyButton>
+                            </Group>
+                            <Switch
+                                onChange={() => {
+                                    clearInviteToken();
+                                }}
+                                size="sm"
+                                label={t('chat.modals.domainModal.userWithAdminPrivileges')}
+                                name="isAdmin"
+                            />
+                        </Stack>
+                    </form>
+                    <Group justify="center" mt="auto">
+                        <Button variant="light" type="submit">
+                            Gotowe
+                        </Button>
+                        <Button
+                            onClick={() => context.closeModal(id)}
+                            type="button"
+                            variant="outline">
+                            Anuluj
+                        </Button>
+                    </Group>
 
-                        <Button onClick={() => context.closeModal(id)}>{t('common.done')}</Button>
-                    </Step>
-                </Grid.Col>
-            </Grid>
-        </>
+                    {inviteTokenStatus === 'error' && (
+                        <Alert title={t('common.error') + '!'} color="red">
+                            <Text>{t('common.tryAgainLater')}</Text>
+                        </Alert>
+                    )}
+                </Stack>
+            </FormContainer.RightPanel>
+        </FormContainer>
     );
 };

@@ -1,4 +1,4 @@
-import { EndpointEventManager } from '@privmx/endpoint-web';
+import { EndpointEventManager } from '@simplito/privmx-endpoint-web-sdk';
 
 export function EndpointTryCatch(
     target: any,

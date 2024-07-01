@@ -21,7 +21,6 @@ import {
     ActionIcon,
     Menu,
     Badge,
-    Grid,
     Tooltip
 } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
@@ -35,11 +34,11 @@ import {
     IconUserPlus,
     IconX
 } from '@tabler/icons-react';
-import { useUserContext } from '../../context/UserContext';
-import { UserAvatar } from '../../atoms/user-avatar/UserAvatar';
 import { useTranslations } from 'next-intl';
 import { ContextModalProps } from '@mantine/modals';
-import { FormContainer } from '../../atoms/form-container';
+import { FormContainer } from '@atoms/form-container';
+import { useUserContext } from '@/shared/ui/context/UserContext';
+import { UserAvatar } from '@atoms/user-avatar/UserAvatar';
 export function DomainConfigModal({ context, id }: ContextModalProps<{}>) {
     const { contacts, status, setContacts } = useContactsGet();
     const {

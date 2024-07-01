@@ -14,9 +14,15 @@ import { ReactNode } from 'react';
 import styles from './styles.module.css';
 import { ModalsProvider } from '@mantine/modals';
 import { InviteUserModal } from '@modals/invite-user-modal/InviteUserModal';
-import { CreateChatModal } from '@modals/index';
 import { UserContextProvider } from '@/shared/ui/context/UserContext';
 import { Notifications } from '@mantine/notifications';
+import {
+    ChangeOwnerTokenModal,
+    ConfirmDomainBlockModal,
+    CreateDomainModal,
+    CreateDomainSuccessModal
+} from '@owner/ui';
+import { CreateChatModal } from '@chat/ui';
 import { DomainConfigModal } from '@modals/domain-config-modal/DomainConfigModal';
 
 const themeOverride = createTheme({
@@ -132,7 +138,11 @@ const resolver: CSSVariablesResolver = (theme) => {
 const modals = {
     createChat: CreateChatModal,
     inviteUser: InviteUserModal,
-    domainModal: DomainConfigModal
+    domainModal: DomainConfigModal,
+    createDomainModal: CreateDomainModal,
+    createDomainSuccessModal: CreateDomainSuccessModal,
+    confirmDomainBlockModal: ConfirmDomainBlockModal,
+    changeOwnerTokenModal: ChangeOwnerTokenModal
 };
 
 declare module '@mantine/modals' {

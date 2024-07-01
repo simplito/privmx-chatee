@@ -1,0 +1,11 @@
+.menu{
+    display: none;
+}
+
+.card{
+    color: var(--mantine-color-text)
+}
+
+.card:hover .menu{
+    display: block;
+}

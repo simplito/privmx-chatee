@@ -1,5 +1,5 @@
 import { Sheet } from '@/shared/ui/atoms/sheet/Sheet';
-import { ActionIcon, Box, Button, Flex, Grid, Group, Space, Text, Title, em } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Group, Menu, Space, Text, Title } from '@mantine/core';
 import { HeaderMenu } from './header-menu/HeaderMenu';
 import { useUserContext } from '@/shared/ui/context/UserContext';
 import { getDomainClient } from '@/shared/utils/domain';
@@ -8,6 +8,7 @@ import { openContextModal } from '@mantine/modals';
 import { IconMenu2 } from '@tabler/icons-react';
 import { MobileHeaderMenu } from './header-menu/MobileHeaderMenu';
 import { useMediaQuery } from '@mantine/hooks';
+// import { EndpointEventManager } from '@simplito/privmx-endpoint-web-sdk';
 
 export function Navbar({ toggle }: { toggle: VoidFunction }) {
     const {
@@ -16,6 +17,12 @@ export function Navbar({ toggle }: { toggle: VoidFunction }) {
 
     const currentDomain = getDomainClient();
     const isMobile = useMediaQuery(`(max-width: 62em)`);
+
+    const dispatchLogoutEvent = () => {
+        // EndpointEventManager.dispatchEvent({
+        //     type: 'libPlatformDisconnected'
+        // });
+    };
 
     return (
         <Sheet m="md" radius={'md'} pl="lg" pr="sm" h="calc(100% - 16px)">
@@ -49,13 +56,30 @@ export function Navbar({ toggle }: { toggle: VoidFunction }) {
                             </Button>
                         )}
                         <Space />
-                        <Group gap={'xs'}>
-                            <Text size="sm">{username ? username : 'user'}</Text>
-                            <HeaderMenu />
-                        </Group>
+                        {username && (
+                            <Group gap={'xs'}>
+                                <Text size="sm">{username}</Text>
+                                <HeaderMenu onLogOut={dispatchLogoutEvent} />
+                            </Group>
+                        )}
                     </Group>
                     <Group justify="flex-end">
-                        <MobileHeaderMenu />
+                        <MobileHeaderMenu onLogOut={dispatchLogoutEvent}>
+                            {isStaff && (
+                                <Menu.Item
+                                    leftSection={<IconDoamin size="1rem" />}
+                                    onClick={() => {
+                                        openContextModal({
+                                            modal: 'domainModal',
+                                            innerProps: {
+                                                size: 'xl'
+                                            }
+                                        });
+                                    }}>
+                                    {currentDomain}
+                                </Menu.Item>
+                            )}
+                        </MobileHeaderMenu>
                     </Group>
                 </Box>
             </Flex>

@@ -1,6 +1,7 @@
 import { WithId } from 'mongodb';
-import { InviteToken } from './inviteTokens';
+import { InviteToken, InviteTokenDbDTO } from './inviteTokens';
 import crypto from 'crypto';
+import { hashPassword } from '@/shared/utils/crypto';
 
 function generateRandomString(length: number): string {
     const buf = crypto.randomBytes(length);
@@ -8,7 +9,7 @@ function generateRandomString(length: number): string {
     return hexString.slice(0, length);
 }
 
-export function generateInviteToken(isStaff: boolean, domain: string): InviteToken {
+export async function generateInviteToken(isStaff: boolean, domain: string): Promise<InviteToken> {
     const randomValues = [
         generateRandomString(4),
         generateRandomString(4),
@@ -16,8 +17,11 @@ export function generateInviteToken(isStaff: boolean, domain: string): InviteTok
     ];
     const tokenValue = randomValues.join('-');
 
+    const [tokenSalt, hashedToken] = await hashPassword(tokenValue);
+
     return {
         value: tokenValue,
+        hashedValue: `${tokenSalt}.${hashedToken}`,
         creationDate: Date.now(),
         isStaff,
         isUsed: false,
@@ -25,7 +29,7 @@ export function generateInviteToken(isStaff: boolean, domain: string): InviteTok
     };
 }
 
-export function validateInviteToken(token: InviteToken | WithId<InviteToken> | null) {
+export function validateInviteToken(token: InviteTokenDbDTO | WithId<InviteTokenDbDTO> | null) {
     if (!token) {
         return false;
     }

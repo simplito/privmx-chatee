@@ -110,18 +110,32 @@ export function verifySign(publicKey: string, data: string, signature: string) {
 
     const publicKeyBytes = base58check.decode(publicKey);
 
-    // Depending on how your public key is formatted, you might need to convert it to a format elliptic can use
-    // This step is highly dependent on the format of your key and the specifics of your use case
     const publicKeyHex = Buffer.from(publicKeyBytes).toString('hex');
 
-    // Step 2: Import the public key
     const key = ec.keyFromPublic(publicKeyHex, 'hex');
 
-    // Step 3: Verify the signature
-    // Note: This assumes your original message or its hash is a string
-    // Convert your original message to a format suitable for your signature verification process
-    // This might involve hashing it first depending on your specific use case
     const isVerified = key.verify(data, signature);
 
     return isVerified;
+}
+
+function generateSalt(length: number) {
+    return crypto.randomBytes(length);
+}
+
+export function hashPassword(password: string): [salt: string, passwordHash: string] {
+    const salt = generateSalt(16).toString('hex');
+
+    const passwordHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+
+    return [salt, passwordHash];
+}
+
+export function validatePassword(password: string, salt: string) {
+    try {
+        const passwordHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+        return passwordHash;
+    } catch (error) {
+        return null;
+    }
 }

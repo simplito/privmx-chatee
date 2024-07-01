@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat curl
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -25,8 +25,8 @@ COPY . .
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
+ENV NODE_TLS_REJECT_UNAUTHORIZED="0"
 ENV NEXT_TELEMETRY_DISABLED 1
-
 ARG MONGODB_URI
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG CLOUD_DEV_TOKEN
@@ -36,6 +36,7 @@ ARG JWT_SALT
 ARG OWNER_TOKEN
 ARG PLATFORM_URL
 ARG SOLUTION_ID
+ARG INSTANCE_ID
 
 ENV MONGODB_URI=${MONGODB_URI} 
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL} 
@@ -47,8 +48,7 @@ ENV OWNER_TOKEN=${OWNER_TOKEN}
 ENV PLATFORM_URL=${PLATFORM_URL} 
 ENV SOLUTION_ID=${SOLUTION_ID}
 ENV REPLICA_SET=${REPLICA_SET} 
-
-ENV NODE_TLS_REJECT_UNAUTHORIZED="0"
+ENV INSTANCE_ID=${INSTANCE_ID}
 
 
 
@@ -59,13 +59,15 @@ RUN yarn build
 
 # Production image, copy all the files and run next
 FROM base AS runner
-WORKDIR /app
+RUN apk add --no-cache curl
 
+
+WORKDIR /app
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-
+ENV NODE_TLS_REJECT_UNAUTHORIZED="0"
 ENV MONGODB_URI=${MONGODB_URI} 
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL} 
 ENV CLOUD_DEV_TOKEN=${CLOUD_DEV_TOKEN} 
@@ -76,8 +78,9 @@ ENV OWNER_TOKEN=${OWNER_TOKEN}
 ENV PLATFORM_URL=${PLATFORM_URL} 
 ENV SOLUTION_ID=${SOLUTION_ID}
 ENV REPLICA_SET=${REPLICA_SET} 
+ENV INSTANCE_ID=${INSTANCE_ID}
 
-ENV NODE_TLS_REJECT_UNAUTHORIZED="0"
+
 
 
 

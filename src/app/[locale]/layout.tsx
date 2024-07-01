@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { ColorSchemeScript } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 import './global.css';
 import Script from 'next/script';
 import { AppStyleProvider } from '@/shared/pages/app-style-provider/AppStyleProvider';

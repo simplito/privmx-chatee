@@ -18,13 +18,13 @@ interface FormContainerProps extends BoxComponentProps {
 const _FormContainer = forwardRef<
     HTMLDivElement,
     FormContainerProps & HTMLAttributes<HTMLDivElement>
->(({ children, withShadow, containerProps, ...props }, ref) => {
+>(({ children, withShadow, mih, containerProps, ...props }, ref) => {
     return (
         <Box w={{ base: '100%', sm: 'auto' }} ref={ref} {...props}>
             <Paper
                 shadow={withShadow ? 'xs' : undefined}
                 radius={'lg'}
-                mih={513}
+                mih={mih ?? 513}
                 display={'flex'}
                 style={{ flexDirection: 'column' }}
                 {...containerProps}>
