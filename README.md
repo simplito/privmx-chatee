@@ -33,21 +33,30 @@ You need Node.js preferably version **20.10 or higher**
 1. Copy **.env.example** to **.env.local**
 2. You need to have a running MongoDb instance with a replica set
     - Fill in the replica set name and MongoDB URI in your **.env.local**
-3. On **[PrivMX Cloud (PrivMX Bridge)](https://privmx.cloud)**
+3. On **[PrivMX Cloud (PrivMX Cloud Platform)](https://privmx.cloud)**
 
-    - create an Organization and copy it's API URL (more about PrivMX Bridge can be found [here](https://docs.privmx.cloud/bridge))
+    - create an Organization and copy it's `Api URL` (more about PrivMX Bridge can be found [here](https://docs.privmx.cloud/bridge))
     - create a Solution and copy it's ID
     - inside a Solution create new Access Key (more about keys generation can be found [here](https://docs.privmx.cloud/keys/))
    
 4. On env.local
-    - Copy your **SOLUTION_ID**, **API_URL**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **.env.local**.
+    - Copy your **API_URL**, **SOLUTION_ID**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **.env.local**.
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
+      
+      ```ENV
+      API_URL={Replace with your PrivMX Cloud Platform Organisation's Api URL}
+      SOLUTION_ID={Replace with your Solution ID}
+      ACCESS_KEY={Replace with Solution's PubKey}
+      ACCESS_KEY_SECRET={Replace with Solution's Secret}
+      NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+      
+      ```
 
 5. Generate random **JWT_SALT** and **OWNER_TOKEN** and fill in your .env.file
     - You can run the following command in the terminal to generate these values: `openssl rand -base64 20`
-6. Run **npm install**
+6. Run `npm install`
 
-7. Run **npm run dev**
+7. Run `npm run dev`
 
 ### Domain system & first user
 
