@@ -1,6 +1,6 @@
 import { createContextResponse } from '@/lib/endpoint-api/utils';
 import { CLOUD_URL, SOLUTION_ID } from '@/shared/utils/env';
-import { getSigHeader } from '@utils/crypto';
+import { getAccessSig } from '@utils/crypto';
 
 export async function createCloudContext(name: string) {
     try {
@@ -13,11 +13,12 @@ export async function createCloudContext(name: string) {
                 profile: { name, description: '', scope: 'private' }
             }
         };
+
         const addToContextRequest = await fetch(CLOUD_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Access-Sig': await getSigHeader(requestBody)
+                'X-Access-Sig': await getAccessSig(JSON.stringify(requestBody))
             },
             body: JSON.stringify(requestBody)
         });

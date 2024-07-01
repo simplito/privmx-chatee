@@ -141,18 +141,32 @@ export function validatePassword(password: string, salt: string) {
     }
 }
 
-export async function getSigHeader(body: any) {
+function generateNonce(): string {
+    const arr = new Uint8Array(10);
+    if (typeof window === 'undefined') {
+        require('crypto').webcrypto.getRandomValues(arr);
+    } else {
+        window.crypto.getRandomValues(arr);
+    }
+    return Buffer.from(arr).toString('base64');
+}
+
+export async function getAccessSig(requestPayload: string): Promise<string> {
     const timestamp = Date.now();
-    const nonce = crypto.randomUUID().slice(0, 13);
-    const signatureToSign = `${ACCESS_KEY};1;${timestamp};${nonce};${ACCESS_KEY_SECRET};${JSON.stringify(
-        body
-    )}`;
+    const nonce = generateNonce();
+    const dataToSign = `${ACCESS_KEY};1;${timestamp};${nonce};${ACCESS_KEY_SECRET};${requestPayload}`;
+    const signature = (await sha256(dataToSign)).slice(0, 20).toString('base64');
+    return `${ACCESS_KEY};1;${timestamp};${nonce};${signature}`;
+}
 
+async function sha256(data: string): Promise<Buffer> {
     const encoder = new TextEncoder();
-    const encodedSignature = encoder.encode(signatureToSign);
-    const signatureDigest = (await crypto.subtle.digest('SHA-256', encodedSignature)).slice(0, 20);
-
-    const signatureBase64 = Buffer.from(new Uint8Array(signatureDigest)).toString('base64');
-
-    return `${ACCESS_KEY};1;${timestamp};${nonce};${signatureBase64}`;
+    const dataBuffer = encoder.encode(data);
+    let hashBuffer: ArrayBuffer;
+    if (typeof window === 'undefined') {
+        hashBuffer = await require('crypto').webcrypto.subtle.digest('SHA-256', dataBuffer);
+    } else {
+        hashBuffer = await window.crypto.subtle.digest('SHA-256', dataBuffer);
+    }
+    return Buffer.from(hashBuffer);
 }
