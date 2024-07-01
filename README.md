@@ -44,6 +44,7 @@ To use the application you need to have a **PrivMX Platform** account with Organ
    
 4. On env.local
     - Copy your **API_URL**, **SOLUTION_ID**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **.env.local**.
+
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
       
       ```ENV
