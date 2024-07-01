@@ -33,12 +33,12 @@ You need Node.js preferably version **20.10 or higher**
 1. Copy **.env.example** to **.env.local**
 2. You need to have a running MongoDb instance with a replica set
     - Fill in the replica set name and MongoDB URI in your **.env.local**
-3. On **cloud-public**
+3. On **[PrivMX Cloud](https://privmx.cloud)**
 
-    - create an organization
-    - create an instance
-    - create a solution
-    - Copy your **SOLUTION_ID**, **INSTANCE_ID**, **API_URL**, and **CLOUD_DEV_TOKEN** to **.env.local**.
+    - create an Organization and copy it's API URL
+    - create a Solution and copy it's ID
+    - inside a Solution create new Access Key
+    - Copy your **SOLUTION_ID**, **API_URL**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **.env.local**.
     - **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
 
 4. Generate random **JWT_SALT** and **OWNER_TOKEN** and fill in your .env.file
