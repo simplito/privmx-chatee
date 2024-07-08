@@ -21,8 +21,11 @@ Chat is in real-time. You can send text messages and files up to 50 MB.
 You need a **MongoDB** Instance with replica sets for transactions.
 
 You can use the `docker-compose-mongo.yml` from this repository.
-
+```
+sudo docker-compose -f docker-compose-mongo.yml up
+```
 This will create a mongodb instance running on `0.0.0.0:27017` with a replica set named **rs0**
+
 
 #### **Node.js**
 
