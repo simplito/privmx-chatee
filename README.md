@@ -90,7 +90,7 @@ Chatee has a subdomain system integrated.
 
 If run in production environment the localhost redirects to /home. If you try to access a subdomain that does not exist it redirects you to /domain-not-found.
 
-After creating a subdomain you can access the [http://subdomain.localhost/](http://subdomain.localhost/) With the invitation token returned from the /api/new-domain endpoint, you can create the first user. Go to /sign up and register.
+After creating a subdomain you can access the [http://subdomain.localhost/](http://subdomain.localhost/) With the invitation token returned from creating a domain, you can create the first user. Go to /sign up and register.
 
 Afterwards, you can generate more invitation tokens as a Staff user. Click on the domain name in the navigation bar and generate more tokens.
 
