@@ -40,8 +40,8 @@ You need Node.js preferably version **20.10 or higher**
 
 ## How to run?
 
-1.  Create file **.env.local** in root of your project.
-2.  You need to have a running MongoDb instance with a replica set from previous section.
+1. Create file **.env.local** in root of your project.
+2. You need to have a running MongoDb instance with a replica set from previous section.
 
     Fill in the replica set name and MongoDB URI in your **./.env.local**
 
@@ -50,13 +50,13 @@ You need Node.js preferably version **20.10 or higher**
     MONGODB_URI=mongodb://127.0.0.1:27017/?replicaSet=$REPLICA_SET
     ```
 
-3.  On **cloud-public**
+3. On **cloud-public**
 
-    -   create an Organization and copy it's `Api URL` (more about PrivMX Platform can be found [here](https://docs.privmx.cloud/bridge))
-    -   create a Solution and copy it's ID
-    -   inside a Solution create new Access Key (more about keys generation can be found [here](https://docs.privmx.cloud/keys/))
+    - create an Organization and copy it's `Api URL` (more about PrivMX Platform can be found [here](https://docs.privmx.cloud/bridge))
+    - create a Solution and copy it's ID
+    - inside a Solution create new Access Key (more about keys generation can be found [here](https://docs.privmx.cloud/keys/))
 
-4.  In your `./.env.local`
+4. In your `./.env.local`
 
     Copy your **PLATFORM_URL**, **INSTANCE_ID**, **SOLUTION_ID**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **./.env.local**.
     You can find them in [privmx.cloud](https://privmx.cloud/) panel. \
@@ -75,7 +75,7 @@ You need Node.js preferably version **20.10 or higher**
     CLOUD_URL=https://api.privmx.cloud/main
     ```
 
-5.  Generate random **JWT_SALT** using for example openssl:
+5. Generate random **JWT_SALT** using for example openssl:
 
     ```sh
     openssl rand -base64 20
@@ -87,12 +87,23 @@ You need Node.js preferably version **20.10 or higher**
     JWT_SALT={Replace with generated salt}
     ```
 
-6.  Run
+6. Run
+
     ```sh
     npm run install
     npm run dev
     ```
-7.  Open dev server on <http://localhost:3000>
+
+7. Open dev server on <http://localhost:3000>
+
+### Alternative way using our docker-compose-production.yml
+
+1. Create the same .env file but name it .env.production.local
+2. Run docker-compose
+
+```sh
+   docker-compose -f docker-compose-production.yml up
+```
 
 ### Domain system & first user
 

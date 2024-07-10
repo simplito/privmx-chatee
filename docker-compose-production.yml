@@ -11,7 +11,7 @@ services:
         volumes:
             - myvolume:/usr/src/app
         ports:
-            - 8169:3000
+            - 3000:3000
         depends_on:
             - mongo
         env_file:
