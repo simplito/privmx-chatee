@@ -8,7 +8,7 @@ import { openContextModal } from '@mantine/modals';
 import { IconMenu2 } from '@tabler/icons-react';
 import { MobileHeaderMenu } from './header-menu/MobileHeaderMenu';
 import { useMediaQuery } from '@mantine/hooks';
-// import { EndpointEventManager } from '@simplito/privmx-endpoint-web-sdk';
+import { EndpointEventManager } from '@simplito/privmx-endpoint-web-sdk';
 
 export function Navbar({ toggle }: { toggle: VoidFunction }) {
     const {
@@ -19,9 +19,9 @@ export function Navbar({ toggle }: { toggle: VoidFunction }) {
     const isMobile = useMediaQuery(`(max-width: 62em)`);
 
     const dispatchLogoutEvent = () => {
-        // EndpointEventManager.dispatchEvent({
-        //     type: 'libPlatformDisconnected'
-        // });
+        EndpointEventManager.dispatchEvent({
+            type: 'libPlatformDisconnected'
+        });
     };
 
     return (

@@ -144,21 +144,9 @@ export async function getIsDomainBlocked(name: string) {
     const db = await getDatabase();
     const collection = db.collection<Domain>(collectionName);
 
-    const domain = await collection
-        .aggregate<Domain>([
-            {
-                $match: {
-                    name
-                }
-            },
-            {
-                $project: {
-                    isBlocked: 1
-                }
-            }
-        ])
-        .toArray();
-    return domain.at(0).isBlocked;
+    const domain = await collection.findOne({ name });
+
+    return domain.isBlocked;
 }
 
 export async function getDomainNames() {

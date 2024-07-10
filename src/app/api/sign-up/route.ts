@@ -7,20 +7,26 @@ import { registerUser } from '@/lib/db/transactions/sign-up';
 import { CredentialError } from '@/lib/errors/credentialError';
 import { validatePassword } from '@/shared/utils/crypto';
 import { API_ERRORS } from '@/shared/utils/errors';
-import { headers } from 'next/headers';
 import { getIsDomainBlocked } from '@domains/data';
 
-async function getDomainServer() {
+async function getDomainServer(headers: Headers) {
     if (process.env.NODE_ENV === 'development') {
         return 'test';
     }
 
-    return headers().get('host').split('.')[0];
+    const url = new URL(headers.get('Origin'));
+    let hostnameParts = url.hostname.split('.');
+
+    if (hostnameParts[0] === 'localhost') {
+        return 'test';
+    }
+
+    return hostnameParts[0];
 }
 
 export async function POST(request: Request) {
     try {
-        const domainName = await getDomainServer();
+        const domainName = await getDomainServer(request.headers);
 
         const isDomainBlocked = await getIsDomainBlocked(domainName);
 
@@ -71,6 +77,7 @@ export async function POST(request: Request) {
             status: 201
         });
     } catch (e) {
+        console.log(e);
         if (e instanceof CredentialError) {
             return NextResponse.json(API_ERRORS.USER_IN_USE, { status: 400 });
         }
