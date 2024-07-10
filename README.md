@@ -98,7 +98,7 @@ You need Node.js preferably version **20.10 or higher**
 
 ### Alternative way using our docker-compose-production.yml
 
-1. Create the same .env file but name it .env.production.local
+1. Create the same .env file but name it **.env.production.local**
 2. Run docker-compose
 
 ```sh
