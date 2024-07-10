@@ -58,8 +58,8 @@ You need Node.js preferably version **20.10 or higher**
 
 4.  In your `./.env.local`
 
-    Copy your **PLATFORM_URL**,**INSTANCE_ID** **SOLUTION_ID**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **./.env.local**.\\
-
+    Copy your **PLATFORM_URL**, **INSTANCE_ID**, **SOLUTION_ID**, **ACCESS_KEY** and **ACCESS_KEY_SECRET** to **./.env.local**.
+    You can find them in [privmx.cloud](https://privmx.cloud/) panel. \
     **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
 
     ```env
@@ -120,7 +120,7 @@ To get started with Chatee you need to set up a minimum of one domain.
 
 If run in production environment the localhost redirects to /home. If you try to access a subdomain that does not exist it redirects you to /domain-not-found.
 
-After creating a subdomain you can access the [http://subdomain.localhost/](http://subdomain.localhost/) With the invitation token returned from creating a domain, you can create the first user. Go to /sign up and register.
+After creating a subdomain you can access the "http://{subdomain}.localhost:3000/" With the invitation token returned from creating a domain, you can create the first user. Go to /sign up and register.
 
 Afterwards, you can generate more invitation tokens as a Staff user. Click on the domain name in the navigation bar and generate more tokens.
 
