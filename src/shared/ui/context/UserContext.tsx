@@ -4,7 +4,7 @@ import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { EndpointEventTypes } from '@simplito/privmx-endpoint-web-sdk';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { useRouter } from 'next/navigation';
-import React, { ReactNode, createContext, useContext, useReducer } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect, useReducer } from 'react';
 
 export type UserStatus = 'logged-in' | 'logged-out';
 
