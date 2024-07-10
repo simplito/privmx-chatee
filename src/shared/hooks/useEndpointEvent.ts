@@ -13,9 +13,12 @@ export function useEndpointEvent<T extends EndpointApiEvent['type']>(
     useEffect(() => {
         const connection = Platform.getCurrent();
 
+        if (Platform.status !== 'connected') {
+            return () => {};
+        }
         const removeListener = connection.addEventListener(eventType, callback);
         return () => {
             removeListener();
         };
-    }, [eventType, callback]);
+    }, [eventType, callback, Platform.status]);
 }
