@@ -29,7 +29,7 @@ You can use the `docker-compose-mongo.yml` from this repository.
 Run following command to start mongoDB docker in your local environment:
 
 ```sh
-docker-compose docker-compose-mongo.yml up
+docker-compose -f docker-compose-mongo.yml up
 ```
 
 This will create a mongodb instance running on `0.0.0.0:27017` with a replica set named **rs0**
@@ -63,13 +63,13 @@ You need Node.js preferably version **20.10 or higher**
     **NEXT_PUBLIC_BACKEND_URL** should be your server URL. For example **<http://localhost:3000>** if running in dev mode
 
     ```env
-    PLATFORM_URL={Replace with your PrivMX Platform organization's Api URL}
+    PLATFORM_URL="{Replace with your PrivMX Platform organization's Api URL}"
 
-    SOLUTION_ID={Replace with your Solution ID}
-    ACCESS_KEY={Replace with Solution's PubKey}
-    ACCESS_KEY_SECRET={Replace with Solution's Secret}
+    SOLUTION_ID="{Replace with your Solution ID}"
+    ACCESS_KEY="{Replace with Solution's PubKey}"
+    ACCESS_KEY_SECRET="{Replace with Solution's Secret}"
 
-    INSTANCE_ID={Replace with instance id}
+    INSTANCE_ID="{Replace with instance id}"
 
     NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
     CLOUD_URL=https://api.privmx.cloud/main
@@ -90,7 +90,7 @@ You need Node.js preferably version **20.10 or higher**
 6. Run
 
     ```sh
-    npm run install
+    npm install
     npm run dev
     ```
 
