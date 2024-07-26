@@ -19,6 +19,7 @@
             "noChatSelectedTitle": "Nie wybrano czatu",
             "noChatSelectedSubtitle": "Wybierz czat z listy lub Stwórz nowy",
             "addNewChat": "Stwórz nowy czat",
+            "inviteMembers":"Zaproś Użytkowników",
             "deleteMessage": "Usunąć wiadomość?",
             "delete": "Usuń",
             "cancel": "Anuluj",
@@ -80,6 +81,7 @@
     },
     "owner": {
         "title": "Domeny",
+        "tokenCreated":"Token utworzony pomyślnie. Użyj go do zalogowania sie do Panelu Właściciela",
         "navbar": {
             "changeOwnerToken": "Zmień token ownera"
         },
@@ -177,6 +179,7 @@
     },
     "signIn": {
         "signinIn": "Logowanie",
+        "success":"Zalogowano pomyślnie",
         "form": {
             "username": "Nazwa użytkownika",
             "password": "Hasło",

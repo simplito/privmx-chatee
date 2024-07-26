@@ -19,6 +19,7 @@
             "noChatSelectedTitle": "No Chat Selected",
             "noChatSelectedSubtitle": "Select a chat from the list or create a new one",
             "addNewChat": "Create New Chat",
+            "inviteMembers":"Invite Members",
             "deleteMessage": "Delete message?",
             "delete": "Delete",
             "cancel": "Cancel",
@@ -80,6 +81,7 @@
     },
     "owner": {
         "title": "Domains",
+        "tokenCreated":"Token created successfully. Use it to sign in to your Owner Panel",
         "navbar": {
             "changeOwnerToken": "Change Owner Token"
         },
@@ -175,6 +177,7 @@
     },
     "signIn": {
         "signinIn": "Sign in",
+        "success":"Logged in successfully",
         "form": {
             "username": "Username",
             "password": "Password",

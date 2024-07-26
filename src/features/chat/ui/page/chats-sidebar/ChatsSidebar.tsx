@@ -31,7 +31,7 @@ export function ChatsSidebar({
                 </ActionIcon>
             </Group>
 
-            <Group gap="sm">
+            <Group gap="sm" wrap="nowrap">
                 <SearchInput
                     onChange={changeChatsQuerry}
                     value={chatsQuery}

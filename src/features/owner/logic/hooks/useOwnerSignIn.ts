@@ -9,6 +9,7 @@ import { useNotification } from '@/shared/hooks/useNotification';
 import { signInAction, useUserContext } from '@/shared/ui/context/UserContext';
 import { Platform } from '@simplito/privmx-endpoint-web-sdk';
 import { generateEndpointKeyPair } from '../../../../lib/endpoint-api/utils';
+import { useTranslations } from 'next-intl';
 
 type SignInFormStatus = FormStatus | 'invalid-credentials';
 
@@ -16,7 +17,9 @@ export function useOwnerSignIn() {
     const [status, setStatus] = useState<SignInFormStatus>('default');
     const router = useRouter();
     const { dispatch } = useUserContext();
-    const { showError } = useNotification();
+    const { showError, showSuccess } = useNotification();
+
+    const t = useTranslations();
 
     const ownerSignIn = async (ownerToken: string) => {
         setStatus('loading');
@@ -63,6 +66,8 @@ export function useOwnerSignIn() {
 
             return;
         }
+
+        showSuccess(t('signIn.success'));
 
         dispatch(
             signInAction({
