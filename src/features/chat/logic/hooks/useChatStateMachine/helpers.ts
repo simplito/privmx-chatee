@@ -41,11 +41,11 @@ export function getNextMessages(
 
     if (event.type === 'SETTLE_MESSAGE') {
         let settledMessage: ChatMessage | undefined = undefined;
-
         const newPendingMessages = currentPendingMessages.filter((pendingMsg) => {
             const isTargetMessage = getMessageId(pendingMsg) === event.newMessage.msgId;
+
             if (isTargetMessage && pendingMsg.status === 'pending') {
-                settledMessage = toSendMessage(event.newMessage.threadId, pendingMsg);
+                settledMessage = toSendMessage(event.newMessage.info.messageId, pendingMsg);
             }
 
             return !isTargetMessage;

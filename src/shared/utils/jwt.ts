@@ -53,7 +53,6 @@ export async function decryptCookie(cookie: string | undefined) {
         const { payload } = await jwtVerify(cookie, encodedKey, {
             algorithms: ['HS256']
         });
-
         return payload;
     } catch (e) {
         return null;

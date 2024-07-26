@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { OwnerSignInRequestBody, OwnerSignInResult } from '@/app/api/owner/sign-in';
 import { useNotification } from '@/shared/hooks/useNotification';
 import { signInAction, useUserContext } from '@/shared/ui/context/UserContext';
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
+import { Platform } from '@simplito/privmx-endpoint-web-sdk';
 import { generateEndpointKeyPair } from '../../../../lib/endpoint-api/utils';
 
 type SignInFormStatus = FormStatus | 'invalid-credentials';
@@ -25,8 +25,7 @@ export function useOwnerSignIn() {
 
         const { privateKey } = await generateEndpointKeyPair(ownerToken);
 
-        const endpoint = await Endpoint.getInstance();
-        const signature = await endpoint.cryptoSign(Buffer.from(date), privateKey);
+        const signature = await Platform.cryptoSign(Buffer.from(date), privateKey);
 
         const signInRequest: OwnerSignInRequestBody = {
             date,

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { FormStatus } from '@/shared/utils/types';
 import { NEXT_PUBLIC_BACKEND_URL } from '@/shared/utils/env';
 import { SignUpRequestBody, SignUpResult } from '@/app/api/sign-up';
+import { Platform } from '@simplito/privmx-endpoint-web-sdk';
 
 export type SignUpFormStatus =
     | FormStatus
@@ -19,9 +19,8 @@ export default function useSignUp() {
         setStatus('loading');
 
         try {
-            const endpoint = await Endpoint.getInstance();
-            const privateKey = await endpoint.cryptoPrivKeyNewPbkdf2(username, password);
-            const publicKey = await endpoint.cryptoPubKeyNew(privateKey);
+            const privateKey = await Platform.cryptoPrivKeyNewPbkdf2(username, password);
+            const publicKey = await Platform.cryptoPubKeyNew(privateKey);
 
             const body: SignUpRequestBody = {
                 inviteToken,

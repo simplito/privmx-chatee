@@ -77,7 +77,7 @@ export async function POST(request: Request) {
             status: 201
         });
     } catch (e) {
-        console.log(e);
+        console.error(e);
         if (e instanceof CredentialError) {
             return NextResponse.json(API_ERRORS.USER_IN_USE, { status: 400 });
         }

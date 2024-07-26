@@ -1,10 +1,8 @@
 'use client';
 
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
-import { EndpointEventTypes } from '@simplito/privmx-endpoint-web-sdk';
-import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
-import { useRouter } from 'next/navigation';
-import React, { ReactNode, createContext, useContext, useReducer } from 'react';
+import { EndpointEventTypes, Platform } from '@simplito/privmx-endpoint-web-sdk';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { ReactNode, createContext, useContext, useEffect, useReducer } from 'react';
 
 export type UserStatus = 'logged-in' | 'logged-out';
 
@@ -81,15 +79,27 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> =
     function UserContextProvider({ children }) {
         const [state, dispatch] = useReducer(userReducer, initialState);
         const router = useRouter();
-        useEndpointEvent(EndpointEventTypes.DISCONNECTED, async (event) => {
-            const endPoint = await Endpoint.getInstance();
-            await endPoint.platformDisconnect();
+        const pathname = usePathname();
 
-            if (event.data && event?.data?.type === 'time-out') {
-                router.push('/sign-in?session-expired=true');
+        useEffect(() => {
+            const connection = Platform.connection();
+
+            if (!connection || Platform.status() !== 'connected') {
+                return () => {};
             }
-            dispatch(signOutAction());
-        });
+
+            const removeListener = connection.addEventListener(
+                EndpointEventTypes.LIBDISCONNECTED,
+                () => {
+                    router.push('/');
+                    dispatch(signOutAction());
+                    window.location.reload();
+                }
+            );
+            return () => {
+                removeListener();
+            };
+        }, [router, pathname]);
 
         return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
     };

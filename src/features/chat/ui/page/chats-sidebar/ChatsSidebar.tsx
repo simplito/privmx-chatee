@@ -6,7 +6,6 @@ import { openContextModal } from '@mantine/modals';
 import { useTranslations } from 'next-intl';
 import { SearchInput } from '@/shared/ui/atoms/search-input/SearchInput';
 import { Virtuoso } from 'react-virtuoso';
-import { useUserContext } from '@/shared/ui/context/UserContext';
 import { THREADS_PER_PAGE, ThreadWithReadInfo, useThreadList } from '@chat/logic';
 
 export function ChatsSidebar({
@@ -17,9 +16,6 @@ export function ChatsSidebar({
     navigate: (threadId: string | undefined, threadTitle: string) => void;
     toggle: VoidFunction;
 }) {
-    const {
-        state: { contextId }
-    } = useUserContext();
     const [chatsQuery, changeChatsQuerry] = useInputState('');
 
     const { threads, status, startIndex, setStartIndex, getThreadList, hasMore, deleteThread } =
@@ -74,7 +70,7 @@ export function ChatsSidebar({
                         endReached={() => {
                             if (hasMore) {
                                 const nextStartIndex = startIndex + THREADS_PER_PAGE;
-                                getThreadList(contextId, nextStartIndex);
+                                getThreadList(nextStartIndex);
                                 setStartIndex(nextStartIndex);
                             }
                         }}

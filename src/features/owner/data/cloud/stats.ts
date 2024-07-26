@@ -66,18 +66,15 @@ export const getCloudStats = async (domainName: string) => {
             }
         });
 
-        console.log({ response });
-
         const result: CloudStatsResponse = await response.json();
 
-        console.log({ result });
         if (Object.hasOwn(result, 'result')) {
             return result as CloudStatsSuccess;
         }
 
         return null;
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return null;
     }
 };

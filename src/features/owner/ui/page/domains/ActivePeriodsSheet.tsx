@@ -14,9 +14,11 @@ import {
     Button,
     Alert,
     Menu,
-    MenuItem
+    MenuItem,
+    Box
 } from '@mantine/core';
 import {
+    IconCalendarOff,
     IconCalendarTime,
     IconCalendarX,
     IconDeviceFloppy,
@@ -32,6 +34,7 @@ import { FormLoadingButton } from '@/shared/ui/atoms/forn-loading-button/FormLoa
 import { useTranslations } from 'next-intl';
 import { useLocaleDate } from '@/shared/hooks/useLocaleDate';
 import { disablePeriodAction, addActivePeriodAction, deleteActivePeriod } from '@owner/logic';
+import { Blankslate } from '@atoms/blankslate';
 
 export function ActivePeriods({ domain }: { domain: Domain }) {
     const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -39,23 +42,30 @@ export function ActivePeriods({ domain }: { domain: Domain }) {
     const [fieldErrors, setFieldErrors] = useState<FormErrors<{ range: '' }>>();
 
     const t = useTranslations();
-    const { displayDate } = useLocaleDate();
+
+    const hasAccessPeriod = Boolean(domain.accessPeriods) && domain.accessPeriods.length !== 0;
 
     return (
         <Sheet p="lg">
             <Stack gap="lg">
                 <Group justify="space-between">
                     <Title order={4}>{t('owner.domain.activePeriods.title')}</Title>
-                    <Button
-                        leftSection={<IconPlus size={16} />}
-                        variant="light"
-                        onClick={() => setIsEditing((prv) => !prv)}>
-                        {t('owner.domain.activePeriods.addPeriod')}
-                    </Button>
+                    {hasAccessPeriod && (
+                        <Button
+                            leftSection={<IconPlus size={16} />}
+                            variant="light"
+                            onClick={() => setIsEditing((prv) => !prv)}>
+                            {t('owner.domain.activePeriods.addPeriod')}
+                        </Button>
+                    )}
                 </Group>
                 <Divider c="dimmed" />
 
-                <Grid bg="gray.0" p="sm" style={{ borderRadius: 'var(--mantine-radius-md)' }}>
+                <Grid
+                    bg="gray.0"
+                    opacity={hasAccessPeriod ? 1 : 0.7}
+                    p="sm"
+                    style={{ borderRadius: 'var(--mantine-radius-md)' }}>
                     <GridCol miw="fit-content" span={3}>
                         <Text c="dimmed" size="sm">
                             {t('owner.domain.activePeriods.startDate')}
@@ -73,7 +83,7 @@ export function ActivePeriods({ domain }: { domain: Domain }) {
                     </GridCol>
                     <GridCol span={1}></GridCol>
                 </Grid>
-                {isEditing && (
+                {isEditing ? (
                     <>
                         <form
                             onSubmit={async (e) => {
@@ -120,82 +130,111 @@ export function ActivePeriods({ domain }: { domain: Domain }) {
                             <Alert color="red" title={t('owner.errors.unableToAddPeriod')} />
                         )}
                     </>
+                ) : (
+                    <>
+                        {hasAccessPeriod ? (
+                            <AccessPeriodsList
+                                domainName={domain.name}
+                                accessPeriods={domain.accessPeriods}
+                            />
+                        ) : (
+                            <Box h={300}>
+                                <Blankslate
+                                    icon={<IconCalendarOff size={48} />}
+                                    primaryAction={
+                                        <Button
+                                            leftSection={<IconPlus size={16} />}
+                                            onClick={() => setIsEditing((prv) => !prv)}>
+                                            {t('owner.domain.activePeriods.addPeriod')}
+                                        </Button>
+                                    }
+                                    title="No Access Period created"
+                                />
+                            </Box>
+                        )}
+                    </>
                 )}
-                <ScrollArea h={300} scrollbars="y">
-                    {domain.accessPeriods.toSorted(sortActivePeriods).map((v) => (
-                        <Grid key={v.id} px="sm" mb="sm">
-                            <GridCol miw="fit-content" span={3}>
-                                <Text>{displayDate(v.startTimestamp)}</Text>
-                            </GridCol>
-                            <GridCol miw="fit-content" span={3}>
-                                <Text>{displayDate(v.endTimestamp)}</Text>
-                            </GridCol>
-                            <GridCol span={'auto'}>
-                                <PeriodStatus period={v} />
-                            </GridCol>
-                            <GridCol span={1}>
-                                <Group justify="flex-end">
-                                    <Menu
-                                        position="bottom-end"
-                                        withinPortal={false}
-                                        closeOnItemClick={false}>
-                                        <Menu.Target>
-                                            <ActionIcon variant="subtle">
-                                                <IconDotsVertical size={'1rem'} />
-                                            </ActionIcon>
-                                        </Menu.Target>
-                                        <Menu.Dropdown>
-                                            <form action={disablePeriodAction}>
-                                                <input
-                                                    type="hidden"
-                                                    value={domain.name}
-                                                    name="name"
-                                                />
-                                                <input type="hidden" value={v.id} name="id" />
-                                                <input
-                                                    type="hidden"
-                                                    value={`${!v.active}`}
-                                                    name="isActive"
-                                                />
-                                                <MenuItem
-                                                    type="submit"
-                                                    leftSection={
-                                                        <FormLoadingButton>
-                                                            <IconCalendarTime size={'1rem'} />
-                                                        </FormLoadingButton>
-                                                    }>
-                                                    {v.active
-                                                        ? t('common.block')
-                                                        : t('common.unblock')}
-                                                </MenuItem>
-                                            </form>
-                                            <form action={deleteActivePeriod}>
-                                                <input type="hidden" name="id" value={v.id} />
-                                                <input
-                                                    type="hidden"
-                                                    value={domain.name}
-                                                    name="name"
-                                                />
-                                                <MenuItem
-                                                    type="submit"
-                                                    leftSection={
-                                                        <FormLoadingButton>
-                                                            <IconCalendarX size={'1rem'} />
-                                                        </FormLoadingButton>
-                                                    }
-                                                    color="red">
-                                                    {t('common.delete')}
-                                                </MenuItem>
-                                            </form>
-                                        </Menu.Dropdown>
-                                    </Menu>
-                                </Group>
-                            </GridCol>
-                        </Grid>
-                    ))}
-                </ScrollArea>
             </Stack>
         </Sheet>
+    );
+}
+
+function AccessPeriodsList({
+    domainName,
+    accessPeriods
+}: {
+    domainName: string;
+    accessPeriods: AccessPeriod[];
+}) {
+    const { displayDate } = useLocaleDate();
+    const t = useTranslations();
+
+    return (
+        <>
+            <ScrollArea h={300} scrollbars="y">
+                {accessPeriods.toSorted(sortActivePeriods).map((v) => (
+                    <Grid key={v.id} px="sm" mb="sm">
+                        <GridCol miw="fit-content" span={3}>
+                            <Text>{displayDate(v.startTimestamp)}</Text>
+                        </GridCol>
+                        <GridCol miw="fit-content" span={3}>
+                            <Text>{displayDate(v.endTimestamp)}</Text>
+                        </GridCol>
+                        <GridCol span={'auto'}>
+                            <PeriodStatus period={v} />
+                        </GridCol>
+                        <GridCol span={1}>
+                            <Group justify="flex-end">
+                                <Menu
+                                    position="bottom-end"
+                                    withinPortal={false}
+                                    closeOnItemClick={false}>
+                                    <Menu.Target>
+                                        <ActionIcon variant="subtle">
+                                            <IconDotsVertical size={'1rem'} />
+                                        </ActionIcon>
+                                    </Menu.Target>
+                                    <Menu.Dropdown>
+                                        <form action={disablePeriodAction}>
+                                            <input type="hidden" value={domainName} name="name" />
+                                            <input type="hidden" value={v.id} name="id" />
+                                            <input
+                                                type="hidden"
+                                                value={`${!v.active}`}
+                                                name="isActive"
+                                            />
+                                            <MenuItem
+                                                type="submit"
+                                                leftSection={
+                                                    <FormLoadingButton>
+                                                        <IconCalendarTime size={'1rem'} />
+                                                    </FormLoadingButton>
+                                                }>
+                                                {v.active ? t('common.block') : t('common.unblock')}
+                                            </MenuItem>
+                                        </form>
+                                        <form action={deleteActivePeriod}>
+                                            <input type="hidden" name="id" value={v.id} />
+                                            <input type="hidden" value={domainName} name="name" />
+                                            <MenuItem
+                                                type="submit"
+                                                leftSection={
+                                                    <FormLoadingButton>
+                                                        <IconCalendarX size={'1rem'} />
+                                                    </FormLoadingButton>
+                                                }
+                                                color="red">
+                                                {t('common.delete')}
+                                            </MenuItem>
+                                        </form>
+                                    </Menu.Dropdown>
+                                </Menu>
+                            </Group>
+                        </GridCol>
+                    </Grid>
+                ))}
+            </ScrollArea>
+        </>
     );
 }
 

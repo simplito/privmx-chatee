@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FormStatus } from '@/shared/utils/types';
 import { usePagination } from '@mantine/hooks';
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { useThreadContext } from '..';
 import {
     FILE_PAGE_SIZE,
@@ -9,6 +8,7 @@ import {
     startPageLoadAction,
     useStoreCache
 } from './StoreCacheContext';
+import { usePlatformContext } from '@/shared/hooks/usePlatformContext';
 
 export function useFilesList() {
     const [status, setStatus] = useState<FormStatus>('loading');
@@ -20,6 +20,7 @@ export function useFilesList() {
     });
 
     const client = useThreadContext();
+    const platformCtx = usePlatformContext();
 
     const loadFiles = useCallback(async () => {
         const storeId = client.chatInfo.storeId;
@@ -33,13 +34,10 @@ export function useFilesList() {
             if (!pageStatus?.isLoaded && !pageStatus?.isLoading) {
                 dispatch(startPageLoadAction({ storeId, page: currentPage }));
 
-                const endpoint = await Endpoint.getInstance();
-                const filesList = await endpoint.storeFileList(
-                    storeId,
-                    (currentPage - 1) * FILE_PAGE_SIZE,
-                    FILE_PAGE_SIZE,
-                    'desc'
-                );
+                const filesList = await platformCtx.store(storeId).getFiles(currentPage, {
+                    sort: 'desc',
+                    pageSize: FILE_PAGE_SIZE
+                });
 
                 dispatch(loadPageAction({ storeId, files: filesList.files, page: currentPage }));
             }
@@ -47,7 +45,7 @@ export function useFilesList() {
         } catch (e) {
             setStatus('error');
         }
-    }, [cacheState.stores, dispatch, client.chatInfo.storeId, active]);
+    }, [cacheState.stores, dispatch, client.chatInfo.storeId, active, platformCtx]);
 
     useEffect(() => {
         const storeCache = cacheState.stores.get(client.chatInfo.storeId);

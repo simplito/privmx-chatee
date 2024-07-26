@@ -5,7 +5,6 @@ import {
     Group,
     ThemeIcon,
     Title,
-    InputLabel,
     Button,
     Box,
     Input,
@@ -46,6 +45,7 @@ const formDataSchema = z.object({
         .string()
         .datetime({ message: 'owner.newDomain.errors.invalidDateTime' })
         .transform((val) => new Date(val).valueOf())
+        .or(z.string().length(0))
 });
 
 type FormFields<T> = T extends z.ZodObject<infer R> ? R : never;
@@ -92,10 +92,13 @@ ContextModalProps<{}>) {
             return;
         }
 
+        const parsedActiveTo =
+            typeof parseResult.data.activeTo === 'string' ? undefined : parseResult.data.activeTo;
+
         const newDomainBody: NewDomainRequestBody = {
             domainDisplayName: parseResult.data.name,
             domainName: parseResult.data.domain,
-            domainActiveTo: parseResult.data.activeTo
+            domainActiveTo: parsedActiveTo
         };
 
         startTransition(async () => {
@@ -145,22 +148,26 @@ ContextModalProps<{}>) {
                         onSubmit={handleSubmit}>
                         <Group gap={4} align="center" mt="md">
                             <ThemeIcon variant="transparent" size={'sm'}>
-                                <IconHomePlus />
-                            </ThemeIcon>
-                            <Title order={3}>{t('owner.createDomain.title')}</Title>
+                                <IconHomePlus />{' '}
+                            </ThemeIcon>{' '}
+                            <Title order={3}>{t('owner.createDomain.title')}</Title>{' '}
                         </Group>
                         <Space h="lg" mb="xl" />
                         <Stack py="md" gap="xs">
                             <TextInput
                                 label={t('owner.createDomain.name')}
                                 name="name"
+                                required
                                 error={fieldErrors?.name && fieldErrors.name}
                             />
                             <Group gap={0} align="flex-top">
                                 <TextInput
+                                    required
                                     flex={1}
                                     label={t('owner.createDomain.domain')}
                                     name="domain"
+                                    description={t('owner.createDomain.domainDescription')}
+                                    placeholder="example"
                                     error={fieldErrors?.domain && fieldErrors.domain}
                                     styles={{
                                         input: {
@@ -171,8 +178,8 @@ ContextModalProps<{}>) {
                                     }}
                                 />
                                 <Box>
-                                    <InputLabel />
                                     <Input
+                                        mt={80 - 36}
                                         component="div"
                                         w="auto"
                                         variant="filled"
@@ -187,6 +194,7 @@ ContextModalProps<{}>) {
                                 </Box>
                             </Group>
                             <DateInput
+                                description={t('owner.createDomain.activeToDescription')}
                                 error={fieldErrors?.activeTo && fieldErrors.activeTo}
                                 name="activeTo"
                                 minDate={new Date()}

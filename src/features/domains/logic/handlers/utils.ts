@@ -45,9 +45,9 @@ export const newDomainRequestBodySchema = z.object({
         )
         .refine(
             (val) => {
-                console.log({ val: new Date(val).toDateString() });
                 return val >= Date.now();
             },
             { message: 'domainActiveTo date Must be in the future' }
         )
+        .or(z.undefined())
 });

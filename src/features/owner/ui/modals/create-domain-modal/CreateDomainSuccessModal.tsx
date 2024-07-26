@@ -11,10 +11,11 @@ import {
     TextInput,
     Tooltip,
     rem,
-    Button
+    Button,
+    Alert
 } from '@mantine/core';
 import { ContextModalProps } from '@mantine/modals';
-import { IconCheck, IconCopy, IconHomeCheck } from '@tabler/icons-react';
+import { IconCheck, IconCopy, IconHomeCheck, IconInfoCircle } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
 export function CreateDomainSuccessModal({
@@ -22,6 +23,7 @@ export function CreateDomainSuccessModal({
     innerProps
 }: ContextModalProps<{ invitationToken: string }>) {
     const t = useTranslations();
+    const icon = <IconInfoCircle />;
 
     return (
         <FormContainer mih={0} pos="relative">
@@ -34,10 +36,17 @@ export function CreateDomainSuccessModal({
                         </ThemeIcon>
                         <Title order={2}>{t('owner.createDomainSuccess.title')}</Title>
                     </Group>
-                    <Text size="sm" c="dimmed">
-                        {t('owner.createDomainSuccess.subtitle')}
-                    </Text>
-                    <Space my="lg" h="lg" />
+                    <Text size="sm" c="dimmed"></Text>
+                    <Alert
+                        mb="md"
+                        variant="light"
+                        color="orange"
+                        title={t('owner.createDomainSuccess.alertTitle')}
+                        icon={icon}>
+                        <Text c="orange.7" size="sm">
+                            {t('owner.createDomainSuccess.subtitle')}
+                        </Text>
+                    </Alert>
                     <Group>
                         <TextInput
                             disabled
@@ -49,7 +58,7 @@ export function CreateDomainSuccessModal({
                                 }
                             }}
                             flex={1}
-                            size="sm"
+                            size="md"
                             value={innerProps.invitationToken || ''}
                         />
                         <CopyButton value={innerProps.invitationToken} timeout={2000}>

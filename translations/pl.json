@@ -123,14 +123,17 @@
         },
         "createDomain": {
             "title": "Nowa Domena",
-            "name": "Nazwa",
+            "name": "Nazwa własna Domeny",
             "domain": "Domena",
+            "domainDescription":"Nazwa subdomeny",
             "activeTo": "Aktywna do",
+            "activeToDescription":"Data wygaśnięcia pierwszego Okresu Dostępu. Jeśli pozostawione puste Domena nie wygaśnie",
             "submit": "Stwórz domenę"
         },
         "createDomainSuccess": {
             "title": "Domena Utworzona",
-            "subtitle": "Przekaż token zaproszenia pierwszemu adminowi domeny"
+            "alertTitle":"Ostrzeżenie",
+            "subtitle": "Przekaż token zaproszenia pierwszemu adminowi domeny. Po zamknięciu okienka stracisz dostęp do tokenu."
         },
         "create-token": {
             "header": "Stwórz token właściciela",

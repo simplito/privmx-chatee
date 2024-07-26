@@ -11,14 +11,11 @@ export function useEndpointEvent<T extends EndpointApiEvent['type']>(
     callback: (event: ExtractEvent<T>) => void
 ) {
     useEffect(() => {
-        const connection = Platform.getCurrent();
-
+        const connection = Platform.connection();
         if (!connection) {
             return () => {};
         }
-
         const removeListener = connection.addEventListener(eventType, callback);
-
         return () => {
             removeListener();
         };

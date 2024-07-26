@@ -66,23 +66,14 @@ export default function useSignIn() {
             return;
         }
 
-        dispatch(
-            signInAction({
-                userStatus: 'logged-in',
-                token: result.token,
-                contextId: result.cloudData.contextId,
-                username,
-                publicKey,
-                isStaff: result.isStaff
-            })
-        );
-
         const con = await Platform.connect({
             platformUrl: result.cloudData.platformUrl,
             privKey: privateKey,
             solutionId: result.cloudData.solutionId
         });
-
+        con.startEventLoop({
+            dispatchDecodedMessageEvent: true
+        });
         await con.channel('thread2');
         await con.channel('store');
 
@@ -101,6 +92,18 @@ export default function useSignIn() {
                 );
             }
         }
+
+        dispatch(
+            signInAction({
+                userStatus: 'logged-in',
+                token: result.token,
+                contextId: result.cloudData.contextId,
+                username,
+                publicKey,
+                isStaff: result.isStaff
+            })
+        );
+
         setStatus('success');
         router.push('/');
     };

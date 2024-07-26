@@ -37,7 +37,7 @@ ContextModalProps<{ navigate: (threadId: string | undefined, threadTitle: string
     const { contacts, status } = useContactsGet();
     const { createThread, status: threadStatus } = useThreadCreate();
     const {
-        state: { username, publicKey, contextId }
+        state: { username, publicKey }
     } = useUserContext();
 
     const t = useTranslations();
@@ -97,11 +97,7 @@ ContextModalProps<{ navigate: (threadId: string | undefined, threadTitle: string
                             }
 
                             if (name && selectedCheckboxes.length >= 2) {
-                                const newThreadInfo = await createThread(
-                                    contextId,
-                                    selectedCheckboxes,
-                                    name
-                                );
+                                const newThreadInfo = await createThread(selectedCheckboxes, name);
                                 if (newThreadInfo)
                                     innerProps.navigate(newThreadInfo.id, newThreadInfo.name);
                             }

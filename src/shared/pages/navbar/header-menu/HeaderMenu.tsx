@@ -21,12 +21,12 @@ export function HeaderMenu({
 
     const locale = useLocale();
 
-    function changeNextLocaleCookieValue() {
+    async function changeNextLocaleCookieValue() {
         const cookieVal = locale;
         const newValue = cookieVal == 'pl' ? 'en' : 'pl';
 
         document.cookie = `NEXT_LOCALE=${newValue}; path=/; max-age=31536000; SameSite=Lax`;
-        onLogOut();
+        await onLogOut();
     }
 
     return (

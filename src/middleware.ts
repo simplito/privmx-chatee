@@ -1,4 +1,3 @@
-'use server';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { NEXT_PUBLIC_BACKEND_URL } from './shared/utils/env';

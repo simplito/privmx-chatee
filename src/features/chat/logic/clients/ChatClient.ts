@@ -1,20 +1,30 @@
 'use client';
-import { Endpoint, StoreClient, ThreadMessage } from '@simplito/privmx-endpoint-web-sdk';
-import { PAGE_SIZE, ThreadMessageCache } from './ThreadMessageCache';
-import { toChatInfo, updateMetadataFile } from './utils';
-import { LastReadMessageFileContent } from '../hooks/useThreadCreate';
-import { ChatMessage, ThreadBindingData } from '@chat/data';
 
-export class ThreadClient {
-    private _threadId: string = '';
+import {
+    StoreClient,
+    PlatformContext,
+    UserWithPubKey,
+    Platform
+} from '@simplito/privmx-endpoint-web-sdk';
+import { PAGE_SIZE, ThreadMessageCache } from './ThreadMessageCache';
+import { createNewMetaFile, toChatInfo, updateMetadataFile } from './utils';
+import { LastReadMessageFileContent } from '../hooks/useThreadCreate';
+import { ChatMessage, ThreadBindingData, ThreadUsers, UserMetadata } from '@chat/data';
+import { DecryptedChatMessage, DecryptedPrivateMessageData } from '@chat/data/types/types';
+
+const defaultFileContent: LastReadMessageFileContent = { lastReadMessageDate: 0 };
+
+export class ChatClient {
+    private _thread;
+    private _platformContext: PlatformContext = undefined;
 
     protected _threadCache: ThreadMessageCache;
     protected _storeClient: StoreClient;
     public chatInfo: ThreadBindingData;
 
-    constructor(thread: { title: string; id: string }) {
-        this._threadId = thread.id;
-
+    constructor(thread: { title: string; id: string; contextId: string }) {
+        this._platformContext = Platform.context(thread.contextId);
+        this._thread = this._platformContext.thread(thread.id);
         const parsedThreadData = toChatInfo(thread.title);
 
         this.chatInfo = {
@@ -30,22 +40,63 @@ export class ThreadClient {
         this._threadCache = ThreadMessageCache.getInstance();
     }
 
-    async loadMessages(id: string) {
-        const endpoint = await Endpoint.getInstance();
-        const currentPage = this._threadCache.getThreadMetaData(this._threadId)?.currentPage || 0;
+    static async newChat(platformContext: PlatformContext, users: ThreadUsers[], title: string) {
+        const allUsers: UserWithPubKey[] = users.map((user) => {
+            return {
+                userId: user.userId,
+                pubKey: user.publicKey
+            };
+        });
 
-        const allMessages: ThreadMessage[] = [];
+        const managers: UserWithPubKey[] = users
+            .filter((user) => user.isAdmin)
+            .map((user) => {
+                return {
+                    userId: user.userId,
+                    pubKey: user.publicKey
+                };
+            });
+
+        const chatMeta = { users: allUsers, managers, title };
+        const storeId = await platformContext.stores.new(chatMeta);
+        const userMetadata: UserMetadata[] = [];
+        for (let i = 0; i < allUsers.length; i++) {
+            const fileId = await createNewMetaFile(allUsers[i].userId, defaultFileContent, storeId);
+
+            userMetadata.push({
+                username: allUsers[i].userId,
+                fileId
+            });
+        }
+
+        const threadMetadata = JSON.stringify({ name: title, storeId: storeId, userMetadata });
+        const threadId = await platformContext.threads.new({
+            users: allUsers,
+            managers,
+            name: threadMetadata
+        });
+        return new ChatClient({
+            title: threadMetadata,
+            id: threadId,
+            contextId: platformContext.contextId()
+        });
+    }
+
+    async loadMessages(id: string) {
+        const currentPage = this._threadCache.getThreadMetaData(this.threadId)?.currentPage || 0;
+
+        const allMessages: DecryptedChatMessage[] = [];
         let totalMessages: number = 0;
 
         for (let i = 0; i <= currentPage; i++) {
-            const pageMessages = await endpoint.threadMessagesGet(
-                id,
-                i * PAGE_SIZE,
-                PAGE_SIZE,
-                'desc'
-            );
+            const pageMessages = await this._thread.getMessages(i, {
+                sort: 'desc',
+                pageSize: PAGE_SIZE
+            });
             if (pageMessages?.messages) {
-                allMessages.unshift(...pageMessages.messages.toReversed());
+                const encryptedMessages =
+                    pageMessages.messages as unknown as DecryptedChatMessage[];
+                allMessages.unshift(...encryptedMessages.toReversed());
                 totalMessages = pageMessages.messagesTotal;
             }
         }
@@ -59,11 +110,11 @@ export class ThreadClient {
     }
 
     public async loadNextMessagesPage(id: string | undefined) {
-        this._threadCache.loadNextMessagesPage(this._threadId);
+        this._threadCache.loadNextMessagesPage(this.threadId);
         return await this.loadMessages(id);
     }
 
-    public loadNewMessage(threadId: string, newMessage: ThreadMessage) {
+    public loadNewMessage(threadId: string, newMessage: DecryptedChatMessage) {
         this._threadCache.upsertMessage(threadId, newMessage);
         const newMessages = this._threadCache.getMessages(threadId);
         return newMessages;
@@ -74,16 +125,16 @@ export class ThreadClient {
     }
 
     public get threadId(): string {
-        return this._threadId;
+        return this._thread.id;
     }
 
     public hasMoreMessages(): boolean {
-        if (!this._threadCache.hasThreadMetaData(this._threadId)) return false;
-        return this._threadCache.getThreadMetaData(this._threadId).hasMoreMessages || false;
+        if (!this._threadCache.hasThreadMetaData(this.threadId)) return false;
+        return this._threadCache.getThreadMetaData(this.threadId).hasMoreMessages || false;
     }
 
     public getMessages(): ChatMessage[] | undefined {
-        return this._threadCache.getMessages(this._threadId);
+        return this._threadCache.getMessages(this.threadId);
     }
 
     public createNewMessage(
@@ -140,17 +191,23 @@ export class ThreadClient {
     }
 
     public async sendTextMessage(msg: Extract<ChatMessage, { status: 'pending' }>) {
-        const endpoint = await Endpoint.getInstance();
+        const privateMetaToSend: DecryptedPrivateMessageData = {
+            msgId: msg.msgId,
+            type: msg.mimeType,
+            author: {
+                pubKey: 'pubKey',
+                userId: msg.author
+            },
+            createDate: msg.createDate,
+            text: msg.text,
+            deleted: false
+        };
 
-        const threadMessageId = await endpoint.threadMessageSend(
-            msg.threadId,
-            msg.msgId,
-            msg.author,
-            msg.mimeType,
-            JSON.stringify(msg.text)
-        );
-
-        this._threadCache.updateMessage(msg.msgId, threadMessageId, msg.threadId);
+        const threadMessageId = await this._thread.sendMessage({
+            data: msg.text,
+            privateMeta: privateMetaToSend,
+            publicMeta: ''
+        });
 
         return threadMessageId;
     }
@@ -159,7 +216,6 @@ export class ThreadClient {
         msg: Extract<ChatMessage, { status: 'pending' }>,
         file: File
     ): Promise<[threadMessageId: string, fileId: string]> {
-        const endpoint = await Endpoint.getInstance();
         const readFile = (file: File): Promise<Uint8Array> => {
             return new Promise((resolve, reject) => {
                 const fileReader = new FileReader();
@@ -190,21 +246,11 @@ export class ThreadClient {
             });
 
             if (msg.text.type === 'fileupload') msg.text.fileId = fileId;
-
-            const [threadMessageId] = await Promise.all([
-                endpoint.threadMessageSend(
-                    msg.threadId,
-                    msg.msgId,
-                    msg.author,
-                    msg.mimeType,
-                    JSON.stringify(msg.text)
-                )
-            ]);
+            const threadMessageId = await this.sendTextMessage(msg);
 
             this._threadCache.updateMessage(msg.msgId, threadMessageId, msg.threadId);
             return [threadMessageId, fileId];
         } catch (error) {
-            console.log(error);
             throw new Error('Unable to send file', { cause: 'file_send_error' });
         }
     }
@@ -223,10 +269,8 @@ export class ThreadClient {
     }
 
     public async deleteMessage(messageId: string, threadId: string) {
-        const endPoint = await Endpoint.getInstance();
-
         try {
-            await endPoint.threadMessageDelete(messageId);
+            await this._platformContext.threads.deleteMessage(messageId);
             this._threadCache.deleteMessage(messageId, threadId);
         } catch (error) {
             throw new Error('Unable to delete message', { cause: 'message_Delete_error' });
@@ -247,20 +291,20 @@ export class ThreadClient {
             const fileReadContent: LastReadMessageFileContent = {
                 lastReadMessageDate: lastRead
             };
-            this._threadCache.updateReadMessageData(this._threadId, {
+            this._threadCache.updateReadMessageData(this.threadId, {
                 lastReadMessageDate: lastRead
             });
             await updateMetadataFile(fileId, username, fileReadContent);
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     }
 
     get isRead() {
-        return this._threadCache.isThreadRead(this._threadId);
+        return this._threadCache.isThreadRead(this.threadId);
     }
 
     get lastReadMessageDate() {
-        return this._threadCache.getLastReadMessageDate(this._threadId);
+        return this._threadCache.getLastReadMessageDate(this.threadId);
     }
 }
