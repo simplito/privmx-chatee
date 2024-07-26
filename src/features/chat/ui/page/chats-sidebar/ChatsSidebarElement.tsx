@@ -98,7 +98,10 @@ export function ChatsSidebarElement({
                 <Stack gap={4} w="85%">
                     <Group gap={4}>
                         {isUnread && <IconPointFilled size={13} />}
-                        <Text size="sm" fw={isUnread ? 'bold' : 'normal'}>
+                        <Text
+                            size="sm"
+                            fw={isUnread ? 'bold' : 'normal'}
+                            style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
                             {name ? toChatInfo(name).name : 'Default name'}
                         </Text>
                     </Group>

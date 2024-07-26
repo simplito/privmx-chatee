@@ -24,6 +24,7 @@ import {
 } from '@owner/ui';
 import { CreateChatModal } from '@chat/ui';
 import { DomainConfigModal } from '@modals/domain-config-modal/DomainConfigModal';
+import { PlatformContextProvider } from '@/shared/hooks/usePlatformContext';
 
 const themeOverride = createTheme({
     primaryColor: 'dark',
@@ -158,8 +159,10 @@ export function AppStyleProvider({ children }: { children: ReactNode }) {
             theme={themeOverride}
             cssVariablesResolver={resolver}>
             <UserContextProvider>
-                <ModalsProvider modals={modals}>{children}</ModalsProvider>
-                <Notifications limit={3} />
+                <PlatformContextProvider>
+                    <ModalsProvider modals={modals}>{children}</ModalsProvider>
+                    <Notifications limit={3} />
+                </PlatformContextProvider>
             </UserContextProvider>
         </MantineProvider>
     );

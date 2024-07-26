@@ -6,9 +6,9 @@ import { useLocale, useTranslations } from 'next-intl';
 import { IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useUserContext } from '@/shared/ui/context/UserContext';
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
 import { useNotification } from '@/shared/hooks/useNotification';
 import { ChatMessage } from '@chat/data';
+import { usePlatformContext } from '@/shared/hooks/usePlatformContext';
 
 export function MessageContent({
     message,
@@ -25,14 +25,14 @@ export function MessageContent({
     const t = useTranslations('chat.chat');
     const { state } = useUserContext();
     const { showError } = useNotification();
+    const platformCtx = usePlatformContext();
 
     const handleMessageDelete = async () => {
         if (message.status === 'sent') {
             try {
                 deleteMessage(message.messageId, message.threadId);
                 if (message.data.text.type === 'fileupload') {
-                    const endpoint = await Endpoint.getInstance();
-                    endpoint.storeFileDelete(message.data.text.fileId);
+                    platformCtx.stores.deleteFile(message.data.text.fileId);
                 }
             } catch {
                 showError(t('messageDeleteError'));

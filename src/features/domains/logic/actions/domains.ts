@@ -35,18 +35,14 @@ export async function createDomainUseCase(newDomain: NewDomainRequestBody) {
 
         return generateNewDomainResponse(inviteToken);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return API_ERRORS.UNEXPECTED;
     }
 }
 
-// Dodaj nowy okres, dezaktywuj pozostałe
-
 export async function isDomainBlocked(
-    domainName: string
+    domain: Domain
 ): Promise<{ blocked: true; reason: string; code: 1 | 2 } | { blocked: false }> {
-    const domain = await getDomainByName(domainName);
-
     if (domain.isBlocked) {
         return { blocked: true, reason: 'Blocked by admin', code: 1 };
     }

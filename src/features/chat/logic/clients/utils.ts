@@ -1,6 +1,12 @@
 import { ChatMessage, ThreadBindingData } from '@chat/data';
 import { LastReadMessageFileContent } from '../hooks/useThreadCreate';
-import { StoreClient, ThreadMessage } from '@simplito/privmx-endpoint-web-sdk';
+import { StoreClient } from '@simplito/privmx-endpoint-web-sdk';
+import { DecryptedChatMessage } from '@chat/data/types/types';
+
+export type EncryptedMessageList = {
+    messages: DecryptedChatMessage[];
+    messagesTotal: number;
+};
 
 export type Asset = {
     name: string;
@@ -29,7 +35,7 @@ export function toSendMessage(
         createDate: msg.createDate,
         messageId: threadMessageId,
         status: 'sent',
-        threadId: msg.msgId,
+        threadId: msg.threadId,
         data: {
             author: { userId: msg.author, pubKey: 'pub' },
             deleted: false,
@@ -41,27 +47,45 @@ export function toSendMessage(
                 threadId: msg.threadId,
                 author: msg.author,
                 createDate: Date.now(),
-                messageId: msg.msgId
+                messageId: threadMessageId
             }
         }
     };
     return sentMessage;
 }
 
-export function toChatMessage(message: ThreadMessage): ChatMessage {
+export function toChatMessage(message: DecryptedChatMessage): ChatMessage {
     try {
-        const parsedData = JSON.parse(message.data.text);
         return {
-            ...message,
+            author: message.info.author,
+            createDate: message.privateMeta.createDate,
+            messageId: message.info.messageId,
+            threadId: message.info.threadId,
             status: 'sent',
-            data: { ...message.data, text: parsedData }
+            data: {
+                author: { userId: message.info.author, pubKey: 'pubkey' },
+                date: message.privateMeta.createDate,
+                deleted: false,
+                destination: message.info,
+                msgId: message.privateMeta.msgId,
+                text: message.data,
+                type: 'text'
+            }
         };
     } catch (error) {
         const fallbackMessage: ChatMessage = {
-            ...message,
+            author: message.info.author,
+            createDate: message.privateMeta.createDate,
+            messageId: message.info.messageId,
+            threadId: message.info.threadId,
             status: 'sent',
             data: {
-                ...message.data,
+                author: { userId: message.info.author, pubKey: 'pubkey' },
+                date: message.privateMeta.createDate,
+                deleted: false,
+                destination: message.info,
+                msgId: message.privateMeta.msgId,
+                type: 'text',
                 text: { type: 'text', content: 'Invalid content' }
             }
         };

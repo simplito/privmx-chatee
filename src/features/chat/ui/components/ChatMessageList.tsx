@@ -12,7 +12,7 @@ import { useTranslations } from 'next-intl';
 import { ChatMessage } from '@chat/data';
 import { useThreadContext } from '@chat/logic';
 
-const READ_DELAY = 1000 * 5;
+const READ_DELAY = 1000 * 4;
 
 export function ChatMessageList({
     allMessagesLength,

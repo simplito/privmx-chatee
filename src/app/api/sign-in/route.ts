@@ -48,13 +48,20 @@ export async function POST(request: NextRequest) {
         }
         const { username, domainName, sign } = validationResult.data;
 
-        const blockedStatus = await isDomainBlocked(domainName);
+        const domain = await getDomainByName(domainName);
 
-        if (blockedStatus.blocked) {
-            if (blockedStatus.code === 1) {
-                return NextResponse.json(API_ERRORS.DOMAIN_BLOCKED, { status: 300 });
-            } else {
-                return NextResponse.json(API_ERRORS.NO_ACCESS_PERIOD, { status: 300 });
+        const accessPeriodsEnabled = domain.accessPeriods.length > 0;
+
+        //If owner didn't created access periods ignore them
+        if (accessPeriodsEnabled) {
+            const blockedStatus = await isDomainBlocked(domain);
+
+            if (blockedStatus.blocked) {
+                if (blockedStatus.code === 1) {
+                    return NextResponse.json(API_ERRORS.DOMAIN_BLOCKED, { status: 300 });
+                } else {
+                    return NextResponse.json(API_ERRORS.NO_ACCESS_PERIOD, { status: 300 });
+                }
             }
         }
 
@@ -80,11 +87,10 @@ export async function POST(request: NextRequest) {
             domain: domainName
         });
 
-        const domain = await getDomainByName(domainName);
-
-        const lastPeriodEndDate = user.isStaff
-            ? getTimeToPeriodEnd(Date.now(), domain.accessPeriods)
-            : null;
+        const lastPeriodEndDate =
+            user.isStaff && accessPeriodsEnabled
+                ? getTimeToPeriodEnd(Date.now(), domain.accessPeriods)
+                : null;
 
         return NextResponse.json(
             generateSignInResponse(token, domain.contextId, user.isStaff, lastPeriodEndDate),

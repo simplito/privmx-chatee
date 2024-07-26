@@ -1,29 +1,25 @@
 import { Sheet } from '@/shared/ui/atoms/sheet/Sheet';
 import { ActionIcon, Box, Button, Flex, Group, Menu, Space, Text, Title } from '@mantine/core';
 import { HeaderMenu } from './header-menu/HeaderMenu';
-import { signOutAction, useUserContext } from '@/shared/ui/context/UserContext';
+import { useUserContext } from '@/shared/ui/context/UserContext';
 import { getDomainClient } from '@/shared/utils/domain';
 import { IconDoamin } from '@icon';
 import { openContextModal } from '@mantine/modals';
 import { IconMenu2 } from '@tabler/icons-react';
 import { MobileHeaderMenu } from './header-menu/MobileHeaderMenu';
 import { useMediaQuery } from '@mantine/hooks';
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
+import { Platform } from '@simplito/privmx-endpoint-web-sdk';
 
 export function Navbar({ toggle }: { toggle: VoidFunction }) {
     const {
-        state: { username, isStaff },
-        dispatch
+        state: { username, isStaff }
     } = useUserContext();
 
     const currentDomain = getDomainClient();
     const isMobile = useMediaQuery(`(max-width: 62em)`);
 
     const dispatchLogoutEvent = async () => {
-        const endPoint = await Endpoint.getInstance();
-        await endPoint.platformDisconnect();
-
-        dispatch(signOutAction());
+        await Platform.connection().disconnect();
     };
 
     return (

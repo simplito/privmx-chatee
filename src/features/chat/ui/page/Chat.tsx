@@ -1,7 +1,7 @@
 'use client';
 import { ReactNode } from 'react';
-import { Group, Stack, Box, ThemeIcon, Text, Button, Tabs } from '@mantine/core';
-import { IconFiles, IconMessage, IconMessages, IconPlus } from '@tabler/icons-react';
+import { Group, Stack, Box, ThemeIcon, Text, Button, Tabs, Divider } from '@mantine/core';
+import { IconFiles, IconMessage, IconMessages, IconPlus, IconUserPlus } from '@tabler/icons-react';
 import { Sheet } from '@atoms/sheet';
 import { Blankslate } from '@atoms/blankslate';
 import { openContextModal } from '@mantine/modals';
@@ -94,16 +94,30 @@ export function Chat({ navigate }: { navigate: (id: string, title: string) => vo
                     title={t('chat.chat.noChatSelectedTitle')}
                     subTitle={t('chat.chat.noChatSelectedSubtitle')}
                     primaryAction={
-                        <Button
-                            onClick={() =>
-                                openContextModal({
-                                    modal: 'createChat',
-                                    innerProps: { navigate }
-                                })
-                            }
-                            leftSection={<IconPlus size={16} />}>
-                            {t('chat.chat.addNewChat')}
-                        </Button>
+                        <Stack>
+                            <Button
+                                onClick={() =>
+                                    openContextModal({
+                                        modal: 'domainModal',
+                                        innerProps: { navigate }
+                                    })
+                                }
+                                leftSection={<IconUserPlus size={16} />}>
+                                {t('chat.chat.inviteMembers')}
+                            </Button>
+                            <Divider label="or" />
+                            <Button
+                                variant="light"
+                                onClick={() =>
+                                    openContextModal({
+                                        modal: 'createChat',
+                                        innerProps: { navigate }
+                                    })
+                                }
+                                leftSection={<IconPlus size={16} />}>
+                                {t('chat.chat.addNewChat')}
+                            </Button>
+                        </Stack>
                     }
                 />
             </ChatContainer>

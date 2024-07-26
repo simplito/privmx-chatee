@@ -62,3 +62,19 @@ export interface ThreadUsers {
     publicKey: string;
     isAdmin: boolean;
 }
+
+export interface DecryptedPrivateMessageData {
+    msgId: string;
+    type: string;
+    text: MessageContent;
+    createDate: number;
+    deleted: boolean;
+    author: UserWithPubKey;
+}
+
+export interface DecryptedChatMessage {
+    info: ServerInfo;
+    privateMeta: DecryptedPrivateMessageData;
+    publicMeta: '';
+    data: MessageContent;
+}

@@ -1,5 +1,5 @@
 import { CLOUD_URL } from '@/shared/utils/env';
-import { Endpoint } from '@simplito/privmx-endpoint-web-sdk';
+import { Platform } from '@simplito/privmx-endpoint-web-sdk';
 import { splitStringInHalf } from '@/shared/utils/string';
 import { getAccessSig } from '@utils/crypto';
 
@@ -46,12 +46,10 @@ export type createContextResponse =
       };
 
 export const generateEndpointKeyPair = async (string: string) => {
-    const endpoint = await Endpoint.getInstance();
-
     const [salt, password] = splitStringInHalf(string);
 
-    const privateKey = await endpoint.cryptoPrivKeyNewPbkdf2(salt, password);
-    const publicKey = await endpoint.cryptoPubKeyNew(privateKey);
+    const privateKey = await Platform.cryptoPrivKeyNewPbkdf2(salt, password);
+    const publicKey = await Platform.cryptoPubKeyNew(privateKey);
 
     return {
         privateKey,

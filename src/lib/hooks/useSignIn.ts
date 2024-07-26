@@ -18,7 +18,7 @@ export default function useSignIn() {
     const [status, setStatus] = useState<SignInFormStatus>('default');
     const router = useRouter();
     const { dispatch } = useUserContext();
-    const { showInfo } = useNotification();
+    const { showInfo, showSuccess } = useNotification();
 
     const t = useTranslations();
 
@@ -66,25 +66,18 @@ export default function useSignIn() {
             return;
         }
 
-        dispatch(
-            signInAction({
-                userStatus: 'logged-in',
-                token: result.token,
-                contextId: result.cloudData.contextId,
-                username,
-                publicKey,
-                isStaff: result.isStaff
-            })
-        );
-
         const con = await Platform.connect({
             platformUrl: result.cloudData.platformUrl,
             privKey: privateKey,
             solutionId: result.cloudData.solutionId
         });
-
+        con.startEventLoop({
+            dispatchDecodedMessageEvent: true
+        });
         await con.channel('thread2');
         await con.channel('store');
+
+        showSuccess(t('signIn.success'));
 
         if (result.periodEndDate) {
             const daysToPeriodEnd = Math.round((result.periodEndDate - Date.now()) / Time.day);
@@ -101,6 +94,18 @@ export default function useSignIn() {
                 );
             }
         }
+
+        dispatch(
+            signInAction({
+                userStatus: 'logged-in',
+                token: result.token,
+                contextId: result.cloudData.contextId,
+                username,
+                publicKey,
+                isStaff: result.isStaff
+            })
+        );
+
         setStatus('success');
         router.push('/');
     };

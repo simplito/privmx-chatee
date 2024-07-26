@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { useUserContext } from '../../../../shared/ui/context/UserContext';
-import { Endpoint, StoreFileInfo, StoreInfo } from '@simplito/privmx-endpoint-web-sdk';
+import { FileInfo, StoreFileInfo, StoreInfo } from '@simplito/privmx-endpoint-web-sdk';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { EndpointEventTypes } from '@simplito/privmx-endpoint-web-sdk';
 import { useThreadContext } from '@chat/logic';
+import { usePlatformContext } from '@/shared/hooks/usePlatformContext';
 
 type StoreState = 'None' | 'InfoInitialized';
 
@@ -229,7 +230,7 @@ export function deleteFilesFromCache(payload: {
 
 export function loadPageAction(payload: {
     storeId: string;
-    files: StoreFileInfo[];
+    files: FileInfo[];
     page: number;
 }): LoadPageAction {
     return {
@@ -260,6 +261,7 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
         state: { contextId }
     } = useUserContext();
     const threadClient = useThreadContext();
+    const platformCtx = usePlatformContext();
 
     useEndpointEvent(EndpointEventTypes.STORE_FILE_CREATED, (event) => {
         try {
@@ -298,8 +300,7 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
                 if (contextId && threadClient.chatInfo.storeId) {
                     const isInitialized = state.stores.get(threadClient.chatInfo.storeId);
                     if (!isInitialized) {
-                        const endPoint = await Endpoint.getInstance();
-                        const store = await endPoint.storeGet(threadClient.chatInfo.storeId);
+                        const store = await platformCtx.store(threadClient.chatInfo.storeId).info();
 
                         dispatch(storeInfoInitAction(store));
                     }
@@ -308,7 +309,7 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
                 console.error(e);
             }
         })();
-    }, [contextId, threadClient.chatInfo.storeId, state.stores]);
+    }, [contextId, threadClient.chatInfo.storeId, state.stores, platformCtx]);
 
     return (
         <StoreCacheContext.Provider value={{ state, dispatch }}>

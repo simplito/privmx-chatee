@@ -1,4 +1,4 @@
-export * from './clients/ThreadClient';
+export * from './clients/ChatClient';
 export * from './clients/ThreadMessageCache';
 export * from './clients/utils';
 

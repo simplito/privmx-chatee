@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat curl
+RUN apk add --no-cache libc6-compat curl 
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -20,7 +20,7 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 # Install bash
-RUN apk add --no-cache
+RUN apk add --no-cache 
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -61,6 +61,7 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/.env.production.local ./
 
 USER nextjs
 

@@ -19,6 +19,7 @@
             "noChatSelectedTitle": "No Chat Selected",
             "noChatSelectedSubtitle": "Select a chat from the list or create a new one",
             "addNewChat": "Create New Chat",
+            "inviteMembers":"Invite Members",
             "deleteMessage": "Delete message?",
             "delete": "Delete",
             "cancel": "Cancel",
@@ -80,6 +81,7 @@
     },
     "owner": {
         "title": "Domains",
+        "tokenCreated":"Token created successfully. Use it to sign in to your Owner Panel",
         "navbar": {
             "changeOwnerToken": "Change Owner Token"
         },
@@ -121,14 +123,17 @@
         },
         "createDomain": {
             "title": "New Domain",
-            "name": "Name",
+            "name": "Display Name",
             "domain": "Domain",
+            "domainDescription":"Subdomain part of a domain",
             "activeTo": "Active to",
+            "activeToDescription":"First Active Period expiration date. If left empty domain won't expire.",
             "submit": "Create Domain"
         },
         "createDomainSuccess": {
             "title": "Domain Created",
-            "subtitle": "Share the invitation token with a person to let them create an account"
+            "alertTitle":"Warning",
+            "subtitle": "Share the invitation token with a person to let them create an account. After closing modal you will lose access to it."
         },
         "create-token": {
             "header": "Create a owner token",
@@ -172,6 +177,7 @@
     },
     "signIn": {
         "signinIn": "Sign in",
+        "success":"Logged in successfully",
         "form": {
             "username": "Username",
             "password": "Password",
@@ -202,7 +208,7 @@
             "repeatPassword": "Repeat password",
             "error": {
                 "invalidInviteToken": "Invalid invitation token",
-                "usernameIsTaken": "Username is taken",
+                "usernameIsTaken": "Username is not available",
                 "signUpError": "An error occured while creating your account. Please try again later."
             },
 

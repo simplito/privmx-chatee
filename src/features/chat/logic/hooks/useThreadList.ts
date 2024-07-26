@@ -1,15 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Endpoint, StoreClient } from '@simplito/privmx-endpoint-web-sdk';
+import {
+    EndpointEventTypes,
+    Platform,
+    StoreClient,
+    ThreadInfo
+} from '@simplito/privmx-endpoint-web-sdk';
 import { FormStatus } from '@/shared/utils/types';
-import { ThreadInfo } from '@simplito/privmx-endpoint-web-sdk';
 import { useUserContext } from '@/shared/ui/context/UserContext';
-import { EndpointEventTypes } from '@simplito/privmx-endpoint-web-sdk';
 import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { readLastReadFile, toChatInfo } from '../clients/utils';
 import { LastReadMessageFileContent } from './useThreadCreate';
 import { ChangeEventType, ThreadMessageCache } from '../clients/ThreadMessageCache';
 import { useThreadContext } from '..';
 import { ThreadBindingData } from '@chat/data';
+import { usePlatformContext } from '@/shared/hooks/usePlatformContext';
+import { DecryptedChatMessage } from '@chat/data/types/types';
 
 export const THREADS_PER_PAGE = 100;
 
@@ -26,74 +31,26 @@ export function useThreadList(
     const threadClient = useThreadContext();
     const [threads, setThreads] = useState<ThreadWithReadInfo[]>([]);
     const {
-        state: { contextId, username }
+        state: { username }
     } = useUserContext();
+    const platformContext = usePlatformContext();
     const [startIndex, setStartIndex] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
     const getThreadList = useCallback(
-        async (contextId: string, startIndex: number) => {
-            const threadCache = ThreadMessageCache.getInstance();
-
+        async (page: number = 0) => {
             if (!hasMore) {
                 return;
             }
             try {
                 setStatus('loading');
-                const endpoint = await Endpoint.getInstance();
-                const threadList = await endpoint.threadList(
-                    contextId,
-                    startIndex,
-                    THREADS_PER_PAGE,
-                    'desc'
-                );
-
+                const threadList = await platformContext.threads.list(page);
                 const threadsWithUnread = await Promise.all(
-                    threadList.threads.map(async (thread) => {
-                        try {
-                            const { userMetadata } = toChatInfo(thread.data.title);
-                            if (!userMetadata) {
-                                return null;
-                            } else {
-                                const userFile = userMetadata.find(
-                                    (file) => file.username === username
-                                );
-                                if (!userFile) {
-                                    return null;
-                                }
-                                const { streamReader, mimetype, name } = await StoreClient.readFile(
-                                    userFile.fileId
-                                );
-
-                                while (await streamReader.readNextChunk()) {}
-
-                                const date: LastReadMessageFileContent = readLastReadFile({
-                                    data: streamReader.data,
-                                    mimetype: mimetype,
-                                    name
-                                });
-
-                                threadCache.updateReadMessageData(thread.threadId, {
-                                    lastReadMessageDate: date.lastReadMessageDate,
-                                    lastThreadMessageDate: thread.lastMsgDate
-                                });
-                                return {
-                                    ...thread,
-                                    lastReadMessageDate: date.lastReadMessageDate,
-                                    metadataFileId: userFile.fileId
-                                };
-                            }
-                        } catch (e) {
-                            console.log(e);
-                            return null;
-                        }
-                    })
+                    threadList.threads.map((thread) => getThreadUnreadData(thread, username))
                 );
-
                 const filteredThreadsWithUnread = threadsWithUnread.filter(
                     (thread) => thread !== null
                 );
-
                 subscribeToThreads(threadList.threads);
                 setHasMore(threadList.threads.length === THREADS_PER_PAGE);
 
@@ -108,14 +65,14 @@ export function useThreadList(
                 setStatus('error');
             }
         },
-        [hasMore, username]
+        [hasMore, username, platformContext, startIndex]
     );
 
     useEffect(() => {
-        getThreadList(contextId, 0);
-    }, [contextId, getThreadList]);
+        getThreadList();
+    }, [getThreadList]);
 
-    function updateThreadList(threadInfo: ThreadInfo) {
+    async function updateThreadList(threadInfo: ThreadInfo) {
         setThreads((prev) => {
             const createDate = threadInfo.createDate;
             const { userMetadata } = toChatInfo(threadInfo.data.title);
@@ -131,7 +88,7 @@ export function useThreadList(
             const newThreads = [newThread, ...prev];
             return newThreads;
         });
-        subscribeToThreads([threadInfo]);
+        await subscribeToThreads([threadInfo]);
     }
 
     useEndpointEvent(EndpointEventTypes.THREAD_CREATED, (event) => {
@@ -157,7 +114,7 @@ export function useThreadList(
             }
         });
 
-        return unsubscribe;
+        return () => unsubscribe();
     }, []);
 
     useEndpointEvent(EndpointEventTypes.THREAD_DELETED, async (event) => {
@@ -171,23 +128,24 @@ export function useThreadList(
         }
     });
 
-    useEndpointEvent(EndpointEventTypes.THREAD_NEW_MESSAGE, async (event) => {
+    useEndpointEvent(EndpointEventTypes.DECODED_NEW_MESSAGE, async (event) => {
+        const message = event.data as unknown as DecryptedChatMessage;
         setThreads((prevThreads) => {
             return prevThreads.map((prevThread) => {
-                if (prevThread.threadId === event.data.threadId) {
-                    if (event.data.author === username) {
+                if (prevThread.threadId === message.info.threadId) {
+                    if (message.privateMeta.author.userId === username) {
                         const threadCache = ThreadMessageCache.getInstance();
-                        threadCache.updateReadMessageData(event.data.threadId, {
-                            lastReadMessageDate: event.data.data.date,
-                            lastThreadMessageDate: event.data.data.date
+                        threadCache.updateReadMessageData(message.info.threadId, {
+                            lastReadMessageDate: message.privateMeta.createDate,
+                            lastThreadMessageDate: message.privateMeta.createDate
                         });
                         return {
                             ...prevThread,
-                            lastReadMessageDate: event.data.data.date,
-                            lastMsgDate: event.data.data.date
+                            lastReadMessageDate: message.privateMeta.createDate,
+                            lastMsgDate: message.privateMeta.createDate
                         };
                     }
-                    return { ...prevThread, lastMsgDate: event.data.data.date };
+                    return { ...prevThread, lastMsgDate: message.privateMeta.createDate };
                 } else {
                     return prevThread;
                 }
@@ -203,17 +161,16 @@ export function useThreadList(
                 return;
             }
             const threadBinding = toChatInfo(thread.data.title);
-            const endpoint = await Endpoint.getInstance();
-            await endpoint.threadDelete(thread.threadId);
+
+            await platformContext.thread(thread.threadId).delete();
 
             setThreads((prev) => {
                 const newThreads = prev.filter((item) => item.threadId !== thread.threadId);
                 return newThreads;
             });
-
-            endpoint.storeDelete(threadBinding.storeId);
+            await platformContext.store(threadBinding.storeId).delete();
         },
-        [threads]
+        [threads, platformContext]
     );
 
     return {
@@ -227,17 +184,53 @@ export function useThreadList(
     };
 }
 
-async function subscribeToThreads(threads: ThreadInfo[]) {
-    const endpoint = await Endpoint.getInstance();
+async function subscribeToThreads(threadsList: ThreadInfo[]) {
+    const con = Platform.connection();
 
-    threads.forEach(async (thread) => {
+    threadsList.forEach(async (thread) => {
         try {
             const { storeId } = JSON.parse(thread.data.title) as ThreadBindingData;
-
-            await endpoint.subscribeToChannel(`thread2/${thread.threadId}/messages`);
-            await endpoint.subscribeToChannel(`store/${storeId}/files`);
+            await con.channel(`thread2/${thread.threadId}/messages`);
+            await con.channel(`store/${storeId}/files`);
         } catch (e) {
             console.error(e);
         }
     });
 }
+const getThreadUnreadData = async (thread: ThreadInfo, username: string) => {
+    const threadCache = ThreadMessageCache.getInstance();
+    try {
+        const { userMetadata } = toChatInfo(thread.data.title);
+        if (!userMetadata) {
+            return null;
+        } else {
+            const userFile = userMetadata.find((file) => file.username === username);
+            if (!userFile) {
+                return null;
+            }
+            const { streamReader, mimetype, name } = await StoreClient.readFile(userFile.fileId);
+
+            while (await streamReader.readNextChunk()) {}
+
+            await streamReader.close();
+
+            const date: LastReadMessageFileContent = readLastReadFile({
+                data: streamReader.data,
+                mimetype: mimetype,
+                name
+            });
+
+            threadCache.updateReadMessageData(thread.threadId, {
+                lastReadMessageDate: date.lastReadMessageDate,
+                lastThreadMessageDate: thread.lastMsgDate
+            });
+            return {
+                ...thread,
+                lastReadMessageDate: date.lastReadMessageDate,
+                metadataFileId: userFile.fileId
+            };
+        }
+    } catch (e) {
+        return null;
+    }
+};

@@ -5,6 +5,7 @@ import { useEndpointEvent } from '@/shared/hooks/useEndpointEvent';
 import { EndpointEventTypes } from '@simplito/privmx-endpoint-web-sdk';
 import { useUserContext } from '@/shared/ui/context/UserContext';
 import { ChangeEventType, ThreadMessageCache, useChatStateMachine } from '..';
+import { DecryptedChatMessage } from '@chat/data/types/types';
 
 export function useThreadMessageContext() {
     const chatClient = useThreadContext();
@@ -24,6 +25,7 @@ export function useThreadMessageContext() {
     }, []);
 
     const [state, send] = useChatStateMachine();
+    const [lastReadMessageDate, setLastReadMessageDate] = useState(chatClient.lastReadMessageDate);
 
     const loadMessages = useCallback(
         async (id?: string | undefined) => {
@@ -42,21 +44,22 @@ export function useThreadMessageContext() {
         [chatClient, currentThreadId, send]
     );
 
-    const [lastReadMessageDate, setLastReadMessageDate] = useState(chatClient.lastReadMessageDate);
-    useEndpointEvent(EndpointEventTypes.THREAD_NEW_MESSAGE, (e) => {
-        chatClient.loadNewMessage(currentThreadId, e.data);
+    useEndpointEvent(EndpointEventTypes.DECODED_NEW_MESSAGE, (e) => {
+        const message = e.data as unknown as DecryptedChatMessage;
+        chatClient.loadNewMessage(currentThreadId, message);
 
-        if (e.data.threadId !== currentThreadId) return;
+        if (message.info.threadId !== currentThreadId) return;
 
         send({
             type: 'SETTLE_MESSAGE',
             newMessage: {
-                ...e.data,
-                msgId: e.data.data.msgId,
-                threadId: e.data.messageId
+                ...message,
+                ...message.privateMeta,
+                msgId: message.privateMeta.msgId,
+                threadId: message.info.threadId
             }
         });
-        createReadTimeout(e.data.createDate);
+        createReadTimeout(message.info.createDate);
     });
 
     function createReadTimeout(readDate: number) {
@@ -79,12 +82,16 @@ export function useThreadMessageContext() {
     useEffect(() => {
         const unsubscribe = ThreadMessageCache.getInstance().subscribe((event) => {
             if (event.type === ChangeEventType.THREAD_READ_STATE) {
-                setLastReadMessageDate(event.data.newLastReadDate);
+                setTimeout(() => {
+                    if (event.data.newLastReadDate > lastReadMessageDate) {
+                        setLastReadMessageDate(event.data.newLastReadDate);
+                    }
+                }, 4000);
             }
         });
 
         return unsubscribe;
-    }, []);
+    }, [lastReadMessageDate]);
 
     useEffect(() => {
         if (!currentThreadId) {

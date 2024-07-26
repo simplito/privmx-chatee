@@ -1,6 +1,6 @@
 'use client';
-import { ThreadMessage, ThreadMessagesList } from '@simplito/privmx-endpoint-web-sdk';
-import { settleMessage, toChatMessage } from './utils';
+import { DecryptedChatMessage } from '@chat/data/types/types';
+import { EncryptedMessageList, settleMessage, toChatMessage } from './utils';
 import { ChatMessage } from '@chat/data';
 
 export const PAGE_SIZE = 100;
@@ -68,7 +68,7 @@ export class ThreadMessageCache {
         this._messages.set(threadId, [...messages, msg]);
     }
 
-    public upsertMessage(threadId: string, newMessage: ThreadMessage) {
+    public upsertMessage(threadId: string, newMessage: DecryptedChatMessage) {
         if (this.hasThreadMetaData(threadId)) {
             this.pushMessage(threadId, toChatMessage(newMessage));
         } else {
@@ -139,7 +139,7 @@ export class ThreadMessageCache {
         }
     }
 
-    public setMessages(threadId: string, messagesList: ThreadMessagesList) {
+    public setMessages(threadId: string, messagesList: EncryptedMessageList) {
         const newMessages: ChatMessage[] = messagesList.messages.map(toChatMessage);
 
         this._messages.set(threadId, newMessages);
@@ -186,7 +186,6 @@ export class ThreadMessageCache {
         };
 
         this._readMessageData.set(threadId, newMessageData);
-
         if (messageData.lastReadMessageDate) {
             this.emitChange({
                 type: ChangeEventType.THREAD_READ_STATE,

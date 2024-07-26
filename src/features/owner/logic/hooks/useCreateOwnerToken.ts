@@ -13,7 +13,7 @@ export function useCreateOwnerToken() {
     const t = useTranslations();
     const [status, setStatus] = useState<FormStatus>('default');
     const router = useRouter();
-    const { showError } = useNotification();
+    const { showError, showSuccess } = useNotification();
 
     const createOwnerToken = async (ownerToken: string) => {
         setStatus('loading');
@@ -46,6 +46,8 @@ export function useCreateOwnerToken() {
             }
             return;
         }
+
+        showSuccess(t('owner.tokenCreated'));
 
         setStatus('success');
         router.push('/owner/sign-in');

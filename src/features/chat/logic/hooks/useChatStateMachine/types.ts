@@ -1,5 +1,5 @@
 import { ChatMessage } from '@chat/data';
-import { ThreadMessage } from '@simplito/privmx-endpoint-web-sdk';
+import { DecryptedChatMessage } from '@chat/data/types/types';
 
 export type Graph<Field extends keyof State> = Record<State['status'], Partial<Connection<Field>>>;
 
@@ -50,7 +50,7 @@ export type Event =
           newMessage: {
               msgId: string;
               threadId: string;
-          } & ThreadMessage;
+          } & DecryptedChatMessage;
           effect?: EffectCallback;
       }
     | { type: 'START_FETCHING'; effect?: EffectCallback; newMessages?: ChatMessage[] | undefined }

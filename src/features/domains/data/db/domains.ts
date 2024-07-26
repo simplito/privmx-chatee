@@ -39,20 +39,25 @@ export async function getCollection() {
     return collection;
 }
 
-export async function createDomain(
-    name: string,
-    displayName: string,
-    activeTo: number,
-    activeFrom: number,
-    contextId: string,
-    session: ClientSession
-) {
+export async function createDomain({
+    contextId,
+    displayName,
+    name,
+    session,
+    firstAccessPeriod
+}: {
+    name: string;
+    displayName: string;
+    contextId: string;
+    session: ClientSession;
+    firstAccessPeriod?: AccessPeriod;
+}) {
     const db = await getDatabase();
 
     const collection = db.collection<Domain>(collectionName);
     const result = await db.createCollection<User>(`domain-${name}`, { session });
 
-    const id = crypto.randomBytes(16).toString('hex');
+    const accessPeriods = firstAccessPeriod ? [firstAccessPeriod] : [];
 
     await collection.insertOne(
         {
@@ -60,9 +65,7 @@ export async function createDomain(
             contextId,
             displayName,
             isBlocked: false,
-            accessPeriods: [
-                { id, active: true, endTimestamp: activeTo, startTimestamp: activeFrom }
-            ]
+            accessPeriods
         },
         { session }
     );

@@ -1,6 +1,7 @@
 'use client';
 import { ReactNode, createContext, useContext, useMemo } from 'react';
-import { ThreadClient } from '..';
+import { ChatClient } from '..';
+import { usePlatformContext } from '@/shared/hooks/usePlatformContext';
 
 const threadContext = createContext<{ id: string | undefined; title: string | undefined }>({
     id: '',
@@ -9,10 +10,10 @@ const threadContext = createContext<{ id: string | undefined; title: string | un
 
 export function useThreadContext() {
     const ctx = useContext(threadContext);
-
+    const platformCtx = usePlatformContext();
     const chatClient = useMemo(
-        () => new ThreadClient({ title: ctx.title, id: ctx.id }),
-        [ctx.title, ctx.id]
+        () => new ChatClient({ title: ctx.title, id: ctx.id, contextId: platformCtx.contextId() }),
+        [ctx.title, ctx.id, platformCtx]
     );
 
     return chatClient;
