@@ -3,7 +3,7 @@
       Chatee
    </h1>
 <p>
-Chatee is a chat application that provides you with full end-to-end encryption using the <b>[PrivMX Platform](https://privmx.cloud)</b>.
+Chatee is a chat application that provides you with full end-to-end encryption using the <b>PrivMX Platform(https://privmx.cloud)</b>.
 </p>
 </div>
 
