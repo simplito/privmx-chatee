@@ -1,0 +1,20 @@
+.badge{
+    cursor: pointer;
+    
+    border: 1px solid color-mix(in srgb, currentColor 20%, var(--mantine-color-gray-1))
+}
+
+.badge:hover{
+    opacity: 1;
+    border: 1px solid currentColor;
+}
+
+.delete_btn{
+    margin-left: 2px;
+}
+
+.delete_btn:hover{
+    background-color: var(--mantine-color-red-light);
+    cursor: pointer;
+    color:var(--mantine-color-red-light-color)
+}

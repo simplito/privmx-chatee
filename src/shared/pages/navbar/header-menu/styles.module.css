@@ -1,0 +1,6 @@
+.avatar:hover {
+    cursor: pointer;
+    opacity: 1;
+    border: 1px solid var(--avatar-color);
+
+}

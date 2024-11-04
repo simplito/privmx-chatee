@@ -1,0 +1,13 @@
+.input-override[data-variant=default]:not([data-error]){
+    --_input-bd: var(--mantine-color-gray-2)
+}
+
+
+@media screen and (max-width: 62em) {
+    .modal_inner{
+        padding: 0;
+        align-items: flex-end;
+    }
+    
+    
+}

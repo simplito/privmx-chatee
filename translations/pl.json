@@ -1,0 +1,249 @@
+{
+    "chat": {
+        "navbar": {
+            "menu": {
+                "signOut": "Wyloguj się"
+            }
+        },
+        "sidebar": {
+            "header": "Czaty",
+            "newChatTooltip": "Stwórz nowy czat",
+            "noChats": "Nie masz jeszcze żadnych czatów, stwórz czat żeby z kimś porozmawiać",
+            "deleteThread": "Usuń wątek",
+            "deleteThreadQuestion": "Czy na pewno chcesz usunąć wątek {name}? Ta akcja jest nieodwracalna.",
+            "deleteThreadError": "Wystąpił błąd podczas usuwania wątku."
+        },
+        "chat": {
+            "chatMessages": "Wiadomości czatu",
+            "chatFiles": "Pliki czatu",
+            "noChatSelectedTitle": "Nie wybrano czatu",
+            "noChatSelectedSubtitle": "Wybierz czat z listy lub Stwórz nowy",
+            "addNewChat": "Stwórz nowy czat",
+            "inviteMembers": "Zaproś Użytkowników",
+            "deleteMessage": "Usunąć wiadomość?",
+            "delete": "Usuń",
+            "cancel": "Anuluj",
+            "messageDeleteError": "Wystąpił błąd podczas usuwania wiadomości"
+        },
+        "chatFiles": {
+            "loadingFiles": "Pobieranie plików",
+            "error": {
+                "errorTitle": "Nie udało się pobrać plików",
+                "errorSubtitle": "Odśwież stronę lub spróbuj ponownie",
+                "errorDuringFileDownload": "Wystąpił błąd podczas pobierania plików",
+                "errorFileTooBig": "Pliku {name} jest za duży. Maksymalny rozmiar: 50MB"
+            },
+            "fileDownloadSuccess": "Plik został pobrany pomyślnie",
+            "downloadFile": "Pobierz plik",
+            "author": "Autor",
+            "name": "Nazwa",
+            "size": "Rozmiar",
+            "creationDate": "Data utworzenia"
+        },
+        "chatMessageList": {
+            "sendMessageError": "Nie udało się wysłać wiadomości. Odśwież stronę i spróbuj ponownie",
+            "sendMessagePlaceholder": "Nowa wiadomość do:"
+        },
+        "modals": {
+            "createChatModal": {
+                "title": "Nowy czat",
+                "chatNamePlaceholder": "Nowy czat",
+                "noContacts": "Brak kontaktów",
+                "members": "Członkowie",
+                "admin": "Staff",
+                "loading": "Tworzenie nowego Czatu",
+                "errors": {
+                    "errorLoadingContacts": "Nie udało się pobrać kontaktów"
+                }
+            },
+
+            "inviteUserModal": {
+                "inviteNewMember": "Zaproś nową osobę",
+                "howToPassInviteToken": "Jak przekazać Token zaproszenia",
+                "inviteToken": "Token zaproszenia",
+                "giveAdminRights": "Przyznaj status Staff",
+                "generateNewToken": "Generuj nowy Token",
+                "copy": "Kopiuj",
+                "copied": "Skopiowane"
+            },
+            "domainModal": {
+                "domain": "Domena",
+                "inviteNewMember": "Zaproś nową osobę",
+                "inviteNewMemberSubTitle": "Udostepnij Token zaproszenia osobie żeby mogła założyć konto",
+                "copy": "Kopiuj",
+                "copied": "Skopiowano",
+                "newToken": "Nowy Token",
+                "userWithAdminPrivileges": "Staff",
+                "members": "Osoby",
+                "grantAdminPrivileges": "Przyznaj status Staff",
+                "revokeAdminPrivileges": "Odbierz status Staff"
+            }
+        }
+    },
+    "owner": {
+        "title": "Domeny",
+        "tokenCreated": "Token utworzony pomyślnie. Użyj go do zalogowania sie do Panelu Właściciela",
+        "navbar": {
+            "changeOwnerToken": "Zmień token ownera"
+        },
+        "sign-in": {
+            "title": "Panel Właściciela",
+            "ownerToken": "Token Właściciela"
+        },
+        "newDomain": {
+            "newDomainButton": "Dodaj domenę",
+            "errors": {
+                "invalidDomain": "Zły format subdomeny",
+                "invalidDateTime": "Zły format daty"
+            }
+        },
+        "domain": {
+            "header": {
+                "blockDomain": "Zablokuj domenę",
+                "unblockDomain": "Odblokuj domenę"
+            },
+            "summary": {
+                "title": "Podsumowanie",
+                "lastActive": "Ostatnia Aktywność",
+                "usersCount": "Liczba Użytkowników",
+                "createdAt": "Data utworzenia",
+                "startDate": "Data rozpoczęcia",
+                "endDate": "Data wygaśnięcia"
+            },
+            "activePeriods": {
+                "title": "Okresy Dostępu",
+                "addPeriod": "Dodaj okres",
+                "startDate": "Rozpoczęcie",
+                "endDate": "Wygaśnięcie",
+                "status": "Status",
+                "statusState": {
+                    "expired": "Wygasły",
+                    "active": "Aktywny",
+                    "blocked": "Zablokowany"
+                },
+                "pickDatesRange": "Przedział dat"
+            }
+        },
+        "createDomain": {
+            "title": "Nowa Domena",
+            "name": "Nazwa własna Domeny",
+            "domain": "Domena",
+            "domainDescription": "Nazwa subdomeny",
+            "activeTo": "Aktywna do",
+            "activeToDescription": "Data wygaśnięcia pierwszego Okresu Dostępu. Jeśli pozostawione puste Domena nie wygaśnie",
+            "submit": "Stwórz domenę"
+        },
+        "createDomainSuccess": {
+            "title": "Domena Utworzona",
+            "alertTitle": "Ostrzeżenie",
+            "subtitle": "Przekaż token zaproszenia pierwszemu adminowi domeny. Po zamknięciu okienka stracisz dostęp do tokenu."
+        },
+        "create-token": {
+            "header": "Stwórz token właściciela",
+            "input-label": "Token właściciela",
+            "create": "Stwórz",
+            "error": {
+                "duringCreation": "Wystąpił błąd podczas tworzenia tokenu właściciela"
+            }
+        },
+        "errors": {
+            "unableToAddPeriod": "Błąd podczas dodawania okresu"
+        },
+        "cloudStats": {
+            "header": "Zużycie danych",
+            "requests": "Żądania",
+            "erros": "Błędy",
+            "dataReceived": "Odebrane dane",
+            "dataSent": "Wysłane dane",
+            "minTime": "Minimalny czas żądania",
+            "maxTime": "Maksymalny czas żądania",
+            "totalTime": "Łączny czas przetwarzania",
+            "noData": "Nie udało się pobrać informacji o zużyciu danych"
+        }
+    },
+    "common": {
+        "tryAgainLater": "Spróbuj ponownie później",
+        "tryAgain": "Spróbuj ponownie",
+        "error": "Błąd",
+        "somethingWentWrong": "Coś poszło nie tak",
+        "search": "Szukaj...",
+        "save": "Zapisz",
+        "cancel": "Anuluj",
+        "done": "Gotowe",
+        "success": "Sukces",
+        "back": "Wstecz",
+        "block": "Zablokuj",
+        "unblock": "Odblokuj",
+        "delete": "Usuń",
+        "sessionExpired": "Sesja wygasła, zaloguj się ponownie.",
+        "invalidFormData": "Niepoprawne dane formularza"
+    },
+    "signIn": {
+        "signinIn": "Logowanie",
+        "success": "Zalogowano pomyślnie",
+        "form": {
+            "username": "Nazwa użytkownika",
+            "password": "Hasło",
+            "signIn": "Zaloguj się",
+
+            "errors": {
+                "invalidCredentials": "Niepoprawna nazwa użytkownika lub hasło",
+                "signInFailed": "Logowanie nie powiodło się",
+                "domainUnavailable": "Domena jest obecnie zablokowana...",
+                "noAccessPeriod": "Brak aktywnego okresu dostępu, skontaktuj się z dostawcą po więcej informacji"
+            }
+        },
+        "endOfPeriod": {
+            "info": "Okres dostępu wygasa za {daysToPeriodEnd} ",
+            "daysPlural": "dni",
+            "daysSingular": "dzień"
+        },
+        "noAccount": "Nie masz jeszcze konta?",
+        "register": "Zarejestruj się"
+    },
+    "signUp": {
+        "signUp": "Rejestracja",
+        "form": {
+            "header": "Nowe konto",
+            "inviteToken": "Token zaproszenia",
+            "username": "Nazwa użytkownika",
+            "password": "Hasło",
+            "repeatPassword": "Powtórz hasło",
+            "error": {
+                "invalidInviteToken": "Nieprawidłowy Token zaproszenia",
+                "usernameIsTaken": "Nazwa użytkownika jest zajęta",
+                "signUpError": "Założenie konta nie powiodło się. Spróbuj ponownie później."
+            },
+
+            "requirements": {
+                "passwordLength": "6 znaków",
+                "passwordsAreNotEqual": "Hasła nie są takie same",
+                "numbers": "Cyfra",
+                "smallCharacters": "Mała litera",
+                "bigCharacters": "Wielka litera",
+                "specialCharacters": "Znak specjalny"
+            },
+            "createAccount": "Utwórz konto"
+        },
+        "finished": {
+            "done": "Gotowe",
+            "accountCreated": "Konto utworzone. Możesz przejść do logowania",
+            "signIn": "Zaloguj się"
+        }
+    },
+    "error": {
+        "looksLikeSomethingWentWrong": "Coś poszło nie tak.",
+        "errorMessage": "Komunikat o błędzie:",
+        "minLength3": "Minimum 3 znaki",
+        "maxLength20": "Maximum 20 znaków",
+        "maxLength40": "Maximum 40 znaków"
+    },
+    "notFound": {
+        "siteNotFound": "Strona nie istnieje",
+        "goToHomePage": "Przejdź na stronę główną"
+    },
+    "domainNotFound": {
+        "domainNotFound": "Podana domena nie istnieje",
+        "goToHomePage": "Przejdź na stronę główną"
+    }
+}

@@ -1,0 +1,247 @@
+{
+    "chat": {
+        "navbar": {
+            "menu": {
+                "signOut": "Sign Out"
+            }
+        },
+        "sidebar": {
+            "header": "Chats",
+            "newChatTooltip": "Create New Chat",
+            "noChats": "You don't have any chats yet, create a chat to start a conversation",
+            "deleteThread": "Delete thread",
+            "deleteThreadQuestion": "Are you sure you want to delete the thread {name}? This action is irreversible.",
+            "deleteThreadError": "An error occured during deleting deleting the thread."
+        },
+        "chat": {
+            "chatMessages": "Chat Messages",
+            "chatFiles": "Chat Files",
+            "noChatSelectedTitle": "No Chat Selected",
+            "noChatSelectedSubtitle": "Select a chat from the list or create a new one",
+            "addNewChat": "Create New Chat",
+            "inviteMembers": "Invite Members",
+            "deleteMessage": "Delete message?",
+            "delete": "Delete",
+            "cancel": "Cancel",
+            "messageDeleteError": "An error occured during deleting the message"
+        },
+        "chatFiles": {
+            "loadingFiles": "Loading Files",
+            "error": {
+                "errorTitle": "Failed to display files",
+                "errorSubtitle": "Refresh the page or try again later",
+                "errorDuringFileDownload": "Error while downloading files",
+                "errorFileTooBig": "File {name} is too big. Max size: 50MB"
+            },
+            "fileDownloadSuccess": "File downloaded successfully",
+            "downloadFile": "Download File",
+            "author": "Author",
+            "name": "Name",
+            "size": "Size",
+            "creationDate": "Creation date"
+        },
+        "chatMessageList": {
+            "sendMessageError": "Failed to send message. Refresh the page and try again",
+            "sendMessagePlaceholder": "New message to: "
+        },
+        "modals": {
+            "createChatModal": {
+                "title": "New Chat",
+                "chatNamePlaceholder": "Create New Chat",
+                "noContacts": "No Contacts",
+                "members": "Members",
+                "admin": "Staff",
+                "loading": "Creating new Chat",
+                "errors": {
+                    "errorLoadingContacts": "Error loading contacts"
+                }
+            },
+
+            "inviteUserModal": {
+                "inviteNewMember": "Invite a New Member",
+                "howToPassInviteToken": "How to share the invitation token",
+                "inviteToken": "Invitation Token",
+                "giveAdminRights": "Staff",
+                "generateNewToken": "Generate New Token",
+                "copy": "Copy",
+                "copied": "Copied"
+            },
+            "domainModal": {
+                "domain": "Domain",
+                "inviteNewMember": "Invite a New Member",
+                "inviteNewMemberSubTitle": "Share the invitation token with a person to let them create an account",
+                "copy": "Copy",
+                "copied": "Copied",
+                "newToken": "New Token",
+                "userWithAdminPrivileges": "User with Staff permissions",
+                "members": "Members",
+                "grantAdminPrivileges": "Grant Staff permissions",
+                "revokeAdminPrivileges": "Revoke Staff permissions"
+            }
+        }
+    },
+    "owner": {
+        "title": "Domains",
+        "tokenCreated": "Token created successfully. Use it to sign in to your Owner Panel",
+        "navbar": {
+            "changeOwnerToken": "Change Owner Token"
+        },
+        "sign-in": {
+            "title": "Owner Panel",
+            "ownerToken": "Owner Token"
+        },
+        "newDomain": {
+            "newDomainButton": "Add domain",
+            "errors": {
+                "invalidDomain": "Must be valid subdomain name",
+                "invalidDateTime": "Incorect date time format"
+            }
+        },
+        "domain": {
+            "header": {
+                "blockDomain": "Block domain",
+                "unblockDomain": "Unblock domain"
+            },
+            "summary": {
+                "title": "Summary",
+                "lastActive": "Last Activity",
+                "usersCount": "Users Count",
+                "createdAt": "Created At"
+            },
+            "activePeriods": {
+                "title": "Access Periods",
+                "addPeriod": "Add Period",
+                "startDate": "Start date",
+                "endDate": "Expiration date",
+                "status": "Status",
+                "statusState": {
+                    "expired": "Expired",
+                    "active": "Active",
+                    "blocked": "Blocked"
+                },
+                "pickDatesRange": "Dates range"
+            }
+        },
+        "createDomain": {
+            "title": "New Domain",
+            "name": "Display Name",
+            "domain": "Domain",
+            "domainDescription": "Subdomain part of a domain",
+            "activeTo": "Active to",
+            "activeToDescription": "First Active Period expiration date. If left empty domain won't expire.",
+            "submit": "Create Domain"
+        },
+        "createDomainSuccess": {
+            "title": "Domain Created",
+            "alertTitle": "Warning",
+            "subtitle": "Share the invitation token with a person to let them create an account. After closing modal you will lose access to it."
+        },
+        "create-token": {
+            "header": "Create a owner token",
+            "input-label": "Owner token",
+            "create": "Create",
+            "error": {
+                "duringCreation": "An error occured during creation of the owner token"
+            }
+        },
+        "errors": {
+            "unableToAddPeriod": "Error while adding period"
+        },
+        "cloudStats": {
+            "header": "Cloud Usage",
+            "requests": "Requests",
+            "erros": "Errors",
+            "dataReceived": "Data received",
+            "dataSent": "Data sent",
+            "minTime": "Min request time",
+            "maxTime": "Max request time",
+            "totalTime": "Total Execution Time",
+            "noData": "Failed to retrieve data usage information"
+        }
+    },
+    "common": {
+        "tryAgainLater": "Try again later",
+        "tryAgain": "Try again",
+        "error": "Error",
+        "somethingWentWrong": "Something went wrong",
+        "search": "Search...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "done": "Done",
+        "success": "Success",
+        "back": "Back",
+        "block": "Block",
+        "unblock": "Unblock",
+        "delete": "Delete",
+        "sessionExpired": "Session has expired, log in again",
+        "invalidFormData": "Invalid form data"
+    },
+    "signIn": {
+        "signinIn": "Sign in",
+        "success": "Logged in successfully",
+        "form": {
+            "username": "Username",
+            "password": "Password",
+            "signIn": "Sign in",
+
+            "errors": {
+                "invalidCredentials": "Invalid credentials",
+                "signInFailed": "Sign in failed",
+                "domainUnavailable": "Domain is currently disabled, please contact your provider for more information",
+                "noAccessPeriod": "No active Access Period, contact your provider for more information"
+            }
+        },
+        "endOfPeriod": {
+            "info": "Your current period ends in {daysToPeriodEnd} ",
+            "daysPlural": "days",
+            "daysSingular": "day"
+        },
+        "noAccount": "No account yet?",
+        "register": "Sign up"
+    },
+    "signUp": {
+        "signUp": "Sign up",
+        "form": {
+            "header": "New account",
+            "inviteToken": "Invitation token",
+            "username": "Username",
+            "password": "Password",
+            "repeatPassword": "Repeat password",
+            "error": {
+                "invalidInviteToken": "Invalid invitation token",
+                "usernameIsTaken": "Username is not available",
+                "signUpError": "An error occured while creating your account. Please try again later."
+            },
+
+            "requirements": {
+                "passwordLength": "6 characters",
+                "passwordsAreNotEqual": "Passwords are not equal",
+                "numbers": "A number",
+                "smallCharacters": "A lowercase character",
+                "bigCharacters": "Am uppercase character",
+                "specialCharacters": "A special character"
+            },
+            "createAccount": "Create account"
+        },
+        "finished": {
+            "done": "Done",
+            "accountCreated": "Account created.",
+            "signIn": "Sign in"
+        }
+    },
+    "error": {
+        "looksLikeSomethingWentWrong": "Something went wrong.",
+        "errorMessage": "Error message:",
+        "minLength3": "Minimum 3 characters",
+        "maxLength20": "Maximum 20 characters",
+        "maxLength40": "Maximum 40 characters"
+    },
+    "notFound": {
+        "siteNotFound": "Page not found",
+        "goToHomePage": "Go to home page"
+    },
+    "domainNotFound": {
+        "domainNotFound": "Domain not found",
+        "goToHomePage": "Go to home page"
+    }
+}

@@ -1,0 +1,10 @@
+.hoverable:not([data-active="true"]):hover{
+    background-color: var(--mantine-color-default-hover);
+    cursor: pointer;
+    box-shadow: var(--mantine-shadow-xs);
+}
+
+.hoverable[data-active="true"]{
+    background-color: var(--mantine-color-gray-0);
+    --paper-bd: var(--mantine-color-gray-2);
+}

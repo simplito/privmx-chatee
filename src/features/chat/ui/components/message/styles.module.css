@@ -1,0 +1,39 @@
+.message_author {
+    display: none;
+    align-items: baseline;
+    --group-gap: var(--mantine-spacing-sm);
+}
+
+.divider {
+    display: none;
+}
+
+
+.group_message:first-child .message_author {
+    display: flex;
+}
+
+.group_message:not(:first-child) .message {
+    margin-bottom: 4px;
+}
+
+.message {
+    margin-bottom: 2px;
+}
+
+.message:hover,
+.message[data-open='true'] {
+    background-color: var(--mantine-color-gray-0);
+}
+
+.trashcan {
+    /* display: none; */
+    visibility: hidden;
+    margin-bottom: auto;
+}
+
+.message:hover .trashcan,
+.message[data-open='true'] .trashcan {
+    /* display: block; */
+    visibility: visible;
+}

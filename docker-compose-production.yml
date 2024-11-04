@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  app:
+    container_name: chatee
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: chatee:simplito
+    restart: always
+    volumes:
+      - myvolume:/usr/src/app
+    ports:
+      - ${PORT}:3000
+    depends_on:
+      - mongo
+    env_file:
+      - .env.production
+  mongo:
+    container_name: chatee_mongo
+    image: mongo
+    restart: always
+    command: [ '--replSet', 'rs0', '--bind_ip_all', '--port', '27017' ]
+    volumes:
+      - myvolume:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mongo_init:
+    image: mongo
+    depends_on:
+      - mongo
+    command: >
+      /bin/bash -c "
+      while ! echo 'try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"mongo:27017\"}]}); }' | mongosh --host mongo --port 27017 --quiet; do
+      sleep 5;
+      done;"
+    restart: on-failure
+
+volumes:
+  myvolume:
