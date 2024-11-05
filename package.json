@@ -1,6 +1,6 @@
 {
     "name": "chatee",
-    "version": "0.1.1-2.0.0-alpha9",
+    "version": "1.0.0",
     "private": true,
     "license": "MIT",
     "scripts": {
@@ -18,7 +18,7 @@
         "@mantine/hooks": "^7.5.3",
         "@mantine/modals": "^7.5.3",
         "@mantine/notifications": "^7.5.3",
-        "@simplito/privmx-webendpoint-sdk": "file:simplito-privmx-webendpoint-sdk-2.0.0.tgz",
+        "@simplito/privmx-webendpoint-sdk": "^2.0.0",
         "@tabler/icons-react": "^2.47.0",
         "bs58check": "^3.0.1",
         "dayjs": "^1.11.10",
