@@ -3,11 +3,11 @@
       Chatee
    </h1>
 <p>
-Chatee is a chat application that provides you with full end-to-end encryption using <b>[PrivMX Bridge](https://privmx.cloud)</b>.
+Chatee is a chat application that provides you with full end-to-end encryption using <b>[PrivMX Bridge](https://privmx.dev)</b>.
 </p>
 </div>
 
-![chatee](https://github.com/simplito/privmx-chatee0/assets/160479989/9a8f1195-a324-4d6d-8352-4d5a736cec3e)
+![chatee](./chatee.png)
 
 ## Basics
 
