@@ -1,4 +1,12 @@
-import { Endpoint } from '@simplito/privmx-webendpoint';
+import {
+    Connection,
+    CryptoApi,
+    Endpoint,
+    EventQueue,
+    InboxApi,
+    StoreApi,
+    ThreadApi
+} from '@simplito/privmx-webendpoint';
 import {
     ConnectionEventsManager,
     EventManager,
@@ -7,16 +15,16 @@ import {
 } from '@simplito/privmx-webendpoint/extra';
 
 export class EndpointConnectionManager {
-    private static connection: Awaited<ReturnType<typeof Endpoint.connect>>;
-    private static threadApi: Promise<Awaited<ReturnType<typeof Endpoint.createThreadApi>>>;
-    private static storeApi: Promise<Awaited<ReturnType<typeof Endpoint.createStoreApi>>>;
-    private static inboxApi: Promise<Awaited<ReturnType<typeof Endpoint.createInboxApi>>>;
-    private static cryptoApi: Promise<Awaited<ReturnType<typeof Endpoint.createCryptoApi>>>;
-    private static eventQueue: Promise<Awaited<ReturnType<typeof Endpoint.getEventQueue>>>;
-    private static eventManager: Promise<Awaited<EventManager>>;
-    private static threadEventManager: Promise<Awaited<ThreadEventsManager>>;
-    private static storeEventManager: Promise<Awaited<StoreEventsManager>>;
-    private static connectionEventManager: Promise<Awaited<ConnectionEventsManager>>;
+    private static connection: Connection;
+    private static threadApi: Promise<ThreadApi>;
+    private static storeApi: Promise<StoreApi>;
+    private static inboxApi: Promise<InboxApi>;
+    private static cryptoApi: Promise<CryptoApi>;
+    private static eventQueue: Promise<EventQueue>;
+    private static eventManager: Promise<EventManager>;
+    private static threadEventManager: Promise<ThreadEventsManager>;
+    private static storeEventManager: Promise<StoreEventsManager>;
+    private static connectionEventManager: Promise<ConnectionEventsManager>;
     private static isSetup = false;
 
     static async getConnection() {
