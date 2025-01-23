@@ -1,14 +1,12 @@
 import { Resource, Service } from '@srs/App';
 import { AppContext } from '@srs/AppContext';
-import { Endpoint, serializeObject } from '@simplito/privmx-webendpoint-sdk';
 import { StoreFilePublicData } from '@chat/logic/messages-system/types';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
+import { downloadFile, FileUploader } from '@simplito/privmx-webendpoint/extra';
+import { serializeObject } from '@simplito/privmx-webendpoint/extra/utils';
 
 export class ThreadFileService implements Service {
     private _ctx: AppContext;
-
-    private connection() {
-        return Endpoint.connection();
-    }
 
     getName = () => 'FilesService';
 
@@ -18,20 +16,26 @@ export class ThreadFileService implements Service {
     }
 
     async sendAttachment(fileMessage: { chatId: string; storeId: string; file: File }) {
-        const store = this.connection().store(fileMessage.storeId);
-        const fileId = await store.uploadFile({
+        const storeApi = await EndpointConnectionManager.getStoreApi();
+        const streamer = await FileUploader.uploadStoreFile({
+            storeApi,
             file: fileMessage.file,
+            storeId: fileMessage.storeId,
+            privateMeta: serializeObject({}),
             publicMeta: serializeObject({
                 name: fileMessage.file.name,
                 chatId: fileMessage.chatId,
                 mimetype: fileMessage.file.type
-            } satisfies StoreFilePublicData),
-            privateMeta: serializeObject({})
+            } satisfies StoreFilePublicData)
         });
+
+        const fileId = (await streamer.uploadFileContent()) as unknown as string;
+
         return { attachmentId: fileId, attachmentName: fileMessage.file.name };
     }
 
     async downloadAttachment(attachmentId: string, name: string) {
-        await this.connection().stores.downloadFile({ fileId: attachmentId, fileName: name });
+        const storeApi = await EndpointConnectionManager.getStoreApi();
+        await downloadFile(storeApi, attachmentId, name);
     }
 }

@@ -1,31 +1,36 @@
 'use client';
-import { Endpoint } from '@simplito/privmx-webendpoint-sdk';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useUserContext } from '../ui/context/UserContext';
-import { useApp } from '@srs/ReactBindings';
+import { Endpoint } from '@simplito/privmx-webendpoint';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
-const platformContext = createContext(undefined);
+const EndpointContext = createContext<Awaited<ReturnType<typeof Endpoint.connect>>>(undefined);
 
 export function useEndpointContext() {
-    return useContext(platformContext);
+    const ctx = useContext(EndpointContext);
+
+    if (!ctx) {
+        throw new Error('useEndPointContext can only be used in a EndpointContextProvider');
+    }
+
+    return ctx;
 }
 
 export function EndpointContextProvider({ children }: { children: ReactNode }) {
-    const app = useApp();
     const {
         state: { userStatus }
     } = useUserContext();
-    const [context, setContext] = useState<Endpoint>();
-
-    const contextId = app.context.user?.contextId;
+    const [context, setContext] = useState<Awaited<ReturnType<typeof Endpoint.connect>>>();
 
     useEffect(() => {
-        if (userStatus === 'logged-in') {
-            setContext(Endpoint.connection());
-        } else {
-            setContext(null);
-        }
-    }, [contextId, userStatus]);
+        (async () => {
+            if (userStatus === 'logged-in') {
+                setContext(await EndpointConnectionManager.getConnection());
+            } else {
+                setContext(null);
+            }
+        })();
+    }, [userStatus]);
 
-    return <platformContext.Provider value={context}>{children}</platformContext.Provider>;
+    return <EndpointContext.Provider value={context}>{children}</EndpointContext.Provider>;
 }

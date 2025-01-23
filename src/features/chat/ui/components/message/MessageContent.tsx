@@ -7,9 +7,8 @@ import { IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useUserContext } from '@/shared/ui/context/UserContext';
 import { useNotification } from '@/shared/hooks/useNotification';
-import { useEndpointContext } from '@/shared/hooks/useEndpointContext';
-
 import { ChatMessage } from '@chat/logic/messages-system/types';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
 export function MessageContent({
     message,
@@ -23,14 +22,14 @@ export function MessageContent({
     const t = useTranslations('chat.chat');
     const { state } = useUserContext();
     const { showError } = useNotification();
-    const platformCtx = useEndpointContext();
 
     const handleMessageDelete = async () => {
         if (message.status === 'sent') {
             try {
                 deleteMessage(message.messageId, message.chatId);
                 if (message.mimetype === 'file') {
-                    platformCtx.stores.deleteFile(message.fileId);
+                    const storeApi = await EndpointConnectionManager.getStoreApi();
+                    storeApi.deleteFile(message.fileId);
                 }
             } catch {
                 showError(t('messageDeleteError'));

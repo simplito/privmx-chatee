@@ -2,7 +2,6 @@ import { BindInfo, System } from '@srs/App';
 import { UserEvent } from './AppBus';
 import { ThreadResourceEvent } from '@srs/ThreadResourceEvent';
 import { MessageResourceEvent } from '@chat/logic/messages-system/MessageResourceEvent';
-import { Endpoint } from '@simplito/privmx-webendpoint-sdk';
 
 export class LoggerSystem implements System {
     getName(): string {
@@ -11,7 +10,6 @@ export class LoggerSystem implements System {
 
     bind({ bus }: BindInfo) {
         const subscriber = UserEvent.createSubscriber('sign_in', (userContext) => {
-            console.log(Endpoint.connection());
             console.log('User signed in', userContext);
         });
         subscriber.add('page_enter', (page) => {
@@ -21,7 +19,6 @@ export class LoggerSystem implements System {
             console.log('Page leave', page, page.chatId);
         });
         subscriber.add('sign_out', (userContext) => {
-            console.log(Endpoint.connection());
             console.log('User signed out', userContext);
         });
         const threadSubscriber = ThreadResourceEvent.createSubscriber('created', (newChat) => {

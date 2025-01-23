@@ -18,7 +18,7 @@
         "@mantine/hooks": "^7.5.3",
         "@mantine/modals": "^7.5.3",
         "@mantine/notifications": "^7.5.3",
-        "@simplito/privmx-webendpoint-sdk": "2.0.4",
+        "@simplito/privmx-webendpoint": "^2.1.4",
         "@tabler/icons-react": "^2.47.0",
         "bs58check": "^3.0.1",
         "dayjs": "^1.11.10",

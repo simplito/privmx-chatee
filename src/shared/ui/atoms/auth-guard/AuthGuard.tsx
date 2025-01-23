@@ -5,7 +5,7 @@ import { signOutAction, useUserContext } from '../../context/UserContext';
 import { useEffect } from 'react';
 import { UserEvent } from '@srs/AppBus';
 import { useApp } from '@srs/ReactBindings';
-import { Endpoint } from '@simplito/privmx-webendpoint-sdk';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
     const {
@@ -24,7 +24,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         return app.eventBus.registerSubscriber(
             UserEvent.createSubscriber('sign_out', async () => {
-                await Endpoint.connection().disconnect();
+                const connection = await EndpointConnectionManager.getConnection();
+                connection.disconnect();
                 dispatch(signOutAction());
             })
         );
