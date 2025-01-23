@@ -81,7 +81,7 @@ export class ThreadMessageResource implements Resource {
 
         const userSubscriber = UserEvent.createSubscriber('page_enter', async (page) => {
             if (page.chatId === '') return;
-            await manager.onMessageEvent(page.chatId, {
+            const removeNewMessageEvent = await manager.onMessageEvent(page.chatId, {
                 event: 'threadNewMessage',
                 callback: (payload) => {
                     this._bus.emit(
@@ -92,7 +92,7 @@ export class ThreadMessageResource implements Resource {
                 }
             });
 
-            await manager.onMessageEvent(page.chatId, {
+            const removeMessageDeletedEvent = await manager.onMessageEvent(page.chatId, {
                 event: 'threadMessageDeleted',
                 callback: (payload) => {
                     this._bus.emit(
@@ -107,7 +107,8 @@ export class ThreadMessageResource implements Resource {
             this._currentSubscriptions.push({
                 chatId: page.chatId,
                 unsubscribe: async () => {
-                    return await manager.unsubscribeFromModuleElementsEvents(page.chatId);
+                    await removeMessageDeletedEvent();
+                    await removeNewMessageEvent();
                 }
             });
         });

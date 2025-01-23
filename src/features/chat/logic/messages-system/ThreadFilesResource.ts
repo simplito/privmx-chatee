@@ -46,7 +46,7 @@ export class ThreadFilesResource implements Resource {
         const pageEnterSubscriber = UserEvent.createSubscriber('page_enter', async (page) => {
             if (page.chatId === '') return;
 
-            await eventManager.onFileEvent(page.storeId, {
+            const removeFileCreatedEvent = await eventManager.onFileEvent(page.storeId, {
                 event: 'storeFileCreated',
                 callback: (payload) => {
                     this._bus.emit(
@@ -57,7 +57,7 @@ export class ThreadFilesResource implements Resource {
                 }
             });
 
-            await eventManager.onFileEvent(page.storeId, {
+            const removeFileDeletedEvent = await eventManager.onFileEvent(page.storeId, {
                 event: 'storeFileDeleted',
                 callback: (payload) => {
                     this._bus.emit(
@@ -73,7 +73,8 @@ export class ThreadFilesResource implements Resource {
             this._currentSubscriptions.push({
                 chatId: page.chatId,
                 unsubscribe: async () => {
-                    return await eventManager.unsubscribeFromModuleElementsEvents(page.storeId);
+                    await removeFileCreatedEvent();
+                    await removeFileDeletedEvent();
                 }
             });
         });

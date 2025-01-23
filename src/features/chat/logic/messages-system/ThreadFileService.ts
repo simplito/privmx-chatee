@@ -15,8 +15,12 @@ export class ThreadFileService implements Service {
         return this;
     }
 
+    async api() {
+        return await EndpointConnectionManager.getStoreApi();
+    }
+
     async sendAttachment(fileMessage: { chatId: string; storeId: string; file: File }) {
-        const storeApi = await EndpointConnectionManager.getStoreApi();
+        const storeApi = await this.api();
         const streamer = await FileUploader.uploadStoreFile({
             storeApi,
             file: fileMessage.file,
@@ -35,7 +39,7 @@ export class ThreadFileService implements Service {
     }
 
     async downloadAttachment(attachmentId: string, name: string) {
-        const storeApi = await EndpointConnectionManager.getStoreApi();
+        const storeApi = await this.api();
         await downloadFile(storeApi, attachmentId, name);
     }
 }
