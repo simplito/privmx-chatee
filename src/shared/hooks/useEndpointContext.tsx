@@ -1,10 +1,10 @@
 'use client';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useUserContext } from '../ui/context/UserContext';
-import { Endpoint } from '@simplito/privmx-webendpoint';
+import { Connection } from '@simplito/privmx-webendpoint';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
-const EndpointContext = createContext<Awaited<ReturnType<typeof Endpoint.connect>>>(undefined);
+const EndpointContext = createContext<Connection>(undefined);
 
 export function useEndpointContext() {
     const ctx = useContext(EndpointContext);
@@ -20,7 +20,7 @@ export function EndpointContextProvider({ children }: { children: ReactNode }) {
     const {
         state: { userStatus }
     } = useUserContext();
-    const [context, setContext] = useState<Awaited<ReturnType<typeof Endpoint.connect>>>();
+    const [context, setContext] = useState<Connection>();
 
     useEffect(() => {
         (async () => {
