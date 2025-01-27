@@ -1,12 +1,12 @@
 import { BindInfo, System } from '@srs/App';
 import { AppEventBus, UserEvent } from '@srs/AppBus';
-import { Endpoint, PrivmxCrypto } from '@simplito/privmx-webendpoint-sdk';
 import { AppContext, AppUserContext } from '@srs/AppContext';
 import { SignInRequestBody, SignInResult } from '@/app/api/sign-in';
 import { NEXT_PUBLIC_BACKEND_URL } from '@utils/env';
 import { ContactsResponse } from '@/app/api/contacts';
 import { InviteTokenRequestBody, InviteTokenResponse } from '@/lib/handlers/invite-tokens/schemas';
 import { SetStaffRequestBody, SetStaffResponse } from '@/app/api/set-staff';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
 export class UserSystem implements System {
     private bus: AppEventBus;
@@ -35,10 +35,11 @@ export class UserSystem implements System {
     }
 
     async signIn(username: string, password: string) {
-        const privateKey = await PrivmxCrypto.derivePrivateKey(username, password);
-        const publicKey = await PrivmxCrypto.derivePublicKey(privateKey);
+        const cryptoApi = await EndpointConnectionManager.getCryptoApi();
+        const privateKey = await cryptoApi.derivePrivateKey(username, password);
+        const publicKey = await cryptoApi.derivePublicKey(privateKey);
 
-        const signature = await PrivmxCrypto.signData(Buffer.from(username), privateKey);
+        const signature = await cryptoApi.signData(Buffer.from(username), privateKey);
 
         const signInRequest: SignInRequestBody = {
             username,
@@ -64,15 +65,11 @@ export class UserSystem implements System {
             }
         }
 
-        await Endpoint.connect({
-            bridgeUrl: result.cloudData.platformUrl,
-            privKey: privateKey,
-            solutionId: result.cloudData.solutionId
-        });
-
-        await Endpoint.startEventLoop({
-            debug: true
-        });
+        await EndpointConnectionManager.connect(
+            privateKey,
+            result.cloudData.solutionId,
+            result.cloudData.platformUrl
+        );
 
         const userContext = {
             userStatus: 'logged-in',

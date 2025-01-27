@@ -1,5 +1,5 @@
 import { AppEvent, Subscriber } from '@srs/AppBus';
-import { ChatAttachment, ChatMessage } from '@chat/logic';
+import { ChatAttachment } from '@chat/logic';
 
 class FileResourceSubscriber implements Subscriber<FileResourceEvent, FileResourceEventType> {
     private callbacks: Map<

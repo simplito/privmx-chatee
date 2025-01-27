@@ -1,14 +1,11 @@
 import { Resource, Service } from '@srs/App';
 import { AppContext } from '@srs/AppContext';
-import { Endpoint, serializeObject } from '@simplito/privmx-webendpoint-sdk';
 import { ThreadMessageData, ThreadMessagePublicData } from '@chat/logic/messages-system/types';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadMessageService implements Service {
     private _ctx: AppContext;
-
-    private connection() {
-        return Endpoint.connection();
-    }
 
     getName = () => 'MessageService';
 
@@ -17,18 +14,24 @@ export class ThreadMessageService implements Service {
         return this;
     }
 
+    async getThreadApi() {
+        return await EndpointConnectionManager.getInstance().getThreadApi();
+    }
+
     async sendTextMessage(chatId: string, message: string, pendingId: string): Promise<void> {
-        const thread = this.connection().thread(chatId);
-        await thread.sendMessage({
-            data: serializeObject({
-                text: message
-            } satisfies ThreadMessageData),
-            publicMeta: serializeObject({
+        const threadApi = await this.getThreadApi();
+
+        await threadApi.sendMessage(
+            chatId,
+            Utils.serializeObject({
                 mimetype: 'text',
                 pendingId
             } satisfies ThreadMessagePublicData),
-            privateMeta: new Uint8Array()
-        });
+            new Uint8Array(),
+            Utils.serializeObject({
+                text: message
+            } satisfies ThreadMessageData)
+        );
     }
 
     async sendFileMessage(fileMessage: {
@@ -38,22 +41,23 @@ export class ThreadMessageService implements Service {
         attachmentName: string;
         pendingId: string;
     }): Promise<void> {
-        const thread = this.connection().thread(fileMessage.chatId);
-        await thread.sendMessage({
-            data: serializeObject({
-                fileId: fileMessage.attachmentId,
-                fileName: fileMessage.attachmentName
-            } satisfies ThreadMessageData),
-            publicMeta: serializeObject({
+        const threadApi = await this.getThreadApi();
+        threadApi.sendMessage(
+            fileMessage.chatId,
+            Utils.serializeObject({
                 mimetype: 'file',
                 pendingId: fileMessage.pendingId
             } satisfies ThreadMessagePublicData),
-            privateMeta: new Uint8Array()
-        });
+            new Uint8Array(),
+            Utils.serializeObject({
+                fileId: fileMessage.attachmentId,
+                fileName: fileMessage.attachmentName
+            } satisfies ThreadMessageData)
+        );
     }
 
     async deleteMessage(messageId: string) {
-        const threads = Endpoint.connection().threads;
-        await threads.deleteMessage(messageId);
+        const threadApi = await this.getThreadApi();
+        threadApi.deleteMessage(messageId);
     }
 }

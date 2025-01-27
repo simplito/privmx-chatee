@@ -46,8 +46,11 @@ export function getNextMessages(
             const isTargetMessage = pendingMsg.pendingId === event.newMessage.pendingId;
 
             if (isTargetMessage && pendingMsg.status === 'pending') {
-                console.log('Settled new message', pendingMsg);
                 settledMessage = toSendMessage(event.newMessage.messageId, pendingMsg);
+                if (event.newMessage.mimetype === 'file' && settledMessage.mimetype === 'file') {
+                    (settledMessage.fileId = event.newMessage.fileId),
+                        (settledMessage.messageId = event.newMessage.messageId);
+                }
             }
 
             return !isTargetMessage;

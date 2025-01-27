@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FormStatus } from '@/shared/utils/types';
 import { NEXT_PUBLIC_BACKEND_URL } from '@/shared/utils/env';
 import { SignUpRequestBody, SignUpResult } from '@/app/api/sign-up';
-import { PrivmxCrypto } from '@simplito/privmx-webendpoint-sdk';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
 export type SignUpFormStatus =
     | FormStatus
@@ -19,8 +19,9 @@ export default function useSignUp() {
         setStatus('loading');
 
         try {
-            const privateKey = await PrivmxCrypto.derivePrivateKey(username, password);
-            const publicKey = await PrivmxCrypto.derivePublicKey(privateKey);
+            const cryptoApi = await EndpointConnectionManager.getCryptoApi();
+            const privateKey = await cryptoApi.derivePrivateKey(username, password);
+            const publicKey = await cryptoApi.derivePublicKey(privateKey);
 
             const body: SignUpRequestBody = {
                 inviteToken,

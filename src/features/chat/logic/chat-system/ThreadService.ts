@@ -1,31 +1,32 @@
 import { Service } from '@srs/App';
 import { AppContext } from '@srs/AppContext';
-import { AppEventBus, UserEvent } from '@srs/AppBus';
-import { Endpoint, serializeObject, UserWithPubKey } from '@simplito/privmx-webendpoint-sdk';
+import { AppEventBus } from '@srs/AppBus';
 import { Chat, ThreadPrivateData, ThreadResource, ThreadUsers } from '@chat/logic';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
+import { UserWithPubKey } from '@simplito/privmx-webendpoint/Types';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadService implements Service {
     getName = () => 'ThreadService';
     private _ctx: AppContext;
     private _bus: AppEventBus;
-    private platform: Endpoint;
 
     bind(ctx: AppContext, bus: AppEventBus) {
         this._ctx = ctx;
         this._bus = bus;
-        const subscriber = UserEvent.createSubscriber('sign_in', () => {
-            this.setupEvents();
-        });
-        this._bus.registerSubscriber(subscriber);
         return this;
-    }
-
-    setupEvents() {
-        this.platform = Endpoint.connection();
     }
 
     contextId() {
         return this._ctx.user.contextId;
+    }
+
+    async storeApi() {
+        return await EndpointConnectionManager.getInstance().getStoreApi();
+    }
+
+    async threadApi() {
+        return await EndpointConnectionManager.getInstance().getThreadApi();
     }
 
     async createThread({ users, title }: { title: string; users: ThreadUsers[] }) {
@@ -44,28 +45,30 @@ export class ThreadService implements Service {
                     pubKey: user.publicKey
                 };
             });
+        const storeApi = await this.storeApi();
 
-        const storeId = await this.platform.stores.new({
-            contextId: this.contextId(),
-            users: allUsers,
-            managers: managers,
-            privateMeta: serializeObject({
-                title: title
-            }),
-            publicMeta: serializeObject({})
-        });
+        const storeId = await storeApi.createStore(
+            this.contextId(),
+            allUsers,
+            managers,
+            Utils.serializeObject({}),
+            Utils.serializeObject({ title })
+        );
+
+        const threadApi = await this.threadApi();
 
         const threadMeta: ThreadPrivateData = {
             storeId,
             name: title
         };
-        const threadId = await this.platform.threads.new({
-            contextId: this.contextId(),
-            users: allUsers,
+
+        const threadId = await threadApi.createThread(
+            this.contextId(),
+            allUsers,
             managers,
-            privateMeta: serializeObject(threadMeta),
-            publicMeta: serializeObject({})
-        });
+            Utils.serializeObject({}),
+            Utils.serializeObject(threadMeta)
+        );
 
         return {
             storeId,
@@ -81,9 +84,12 @@ export class ThreadService implements Service {
     }
 
     async deleteThread(threadId: string) {
-        const thread = this.platform.thread(threadId);
-        const info = ThreadResource.threadToChat(await thread.info());
-        await thread.delete();
-        await this.platform.store(info.storeId).delete();
+        const threadApi = await this.threadApi();
+        const thread = await threadApi.getThread(threadId);
+        const info = ThreadResource.threadToChat(thread);
+        await threadApi.deleteThread(threadId);
+
+        const storeApi = await this.storeApi();
+        await storeApi.deleteStore(info.storeId);
     }
 }

@@ -7,7 +7,7 @@ import { useNotification } from '@/shared/hooks/useNotification';
 import { useTranslations } from 'next-intl';
 import { useApp, useEmitEvent, useUserSystem } from '@srs/ReactBindings';
 import { UserEvent } from '@srs/AppBus';
-import { Endpoint } from '@simplito/privmx-webendpoint-sdk';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 
 type SignInFormStatus = FormStatus | 'invalid-credentials' | 'domain-blocked' | 'no-access-period';
 
@@ -28,9 +28,15 @@ export default function useSignIn() {
 
         try {
             const context = await userSystem.signIn(username, password);
-            Endpoint.connection().on('libDisconnected', () => {
-                emit(UserEvent.signOut());
+            const connectionManager =
+                await EndpointConnectionManager.getInstance().getConnectionEventManager();
+            connectionManager.onConnectionEvent({
+                event: 'libDisconnected',
+                callback: () => {
+                    emit(UserEvent.signOut());
+                }
             });
+
             setStatus('success');
             dispatch(signInAction(context));
             showSuccess(t('signIn.success'));
