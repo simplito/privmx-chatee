@@ -15,7 +15,7 @@ export class ThreadFileService implements Service {
     }
 
     async api() {
-        return await EndpointConnectionManager.getStoreApi();
+        return await EndpointConnectionManager.getInstance().getStoreApi();
     }
 
     async sendAttachment(fileMessage: { chatId: string; storeId: string; file: File }) {

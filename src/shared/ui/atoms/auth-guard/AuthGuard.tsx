@@ -24,8 +24,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         return app.eventBus.registerSubscriber(
             UserEvent.createSubscriber('sign_out', async () => {
-                const connection = await EndpointConnectionManager.getConnection();
+                const connection = EndpointConnectionManager.getInstance().getConnection();
                 connection.disconnect();
+                EndpointConnectionManager.removeInstance();
                 dispatch(signOutAction());
             })
         );

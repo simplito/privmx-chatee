@@ -28,7 +28,8 @@ export default function useSignIn() {
 
         try {
             const context = await userSystem.signIn(username, password);
-            const connectionManager = await EndpointConnectionManager.getConnectionEventManager();
+            const connectionManager =
+                await EndpointConnectionManager.getInstance().getConnectionEventManager();
             connectionManager.onConnectionEvent({
                 event: 'libDisconnected',
                 callback: () => {

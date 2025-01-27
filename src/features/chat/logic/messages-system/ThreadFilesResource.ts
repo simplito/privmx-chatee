@@ -15,11 +15,11 @@ export class ThreadFilesResource implements Resource {
     private static PAGE_SIZE = 100;
 
     private async getApi() {
-        return await EndpointConnectionManager.getStoreApi();
+        return await EndpointConnectionManager.getInstance().getStoreApi();
     }
 
     private async getStoreEventManager() {
-        return await EndpointConnectionManager.getStoreEventManager();
+        return await EndpointConnectionManager.getInstance().getStoreEventManager();
     }
 
     private eventCleanUpCallback: VoidFunction | null = null;

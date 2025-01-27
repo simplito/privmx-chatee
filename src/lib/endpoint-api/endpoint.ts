@@ -8,46 +8,63 @@ import {
     ThreadApi
 } from '@simplito/privmx-webendpoint';
 import {
-    ConnectionEventsManager,
     EventManager,
     StoreEventsManager,
     ThreadEventsManager
 } from '@simplito/privmx-webendpoint/extra';
+import {
+    ConnectionEventsManager,
+    InboxEventsManager
+} from '@simplito/privmx-webendpoint/extra/events';
 
 export class EndpointConnectionManager {
-    private static connection: Connection;
-    private static threadApi: Promise<ThreadApi>;
-    private static storeApi: Promise<StoreApi>;
-    private static inboxApi: Promise<InboxApi>;
-    private static cryptoApi: Promise<CryptoApi>;
-    private static eventQueue: Promise<EventQueue>;
-    private static eventManager: Promise<EventManager>;
-    private static threadEventManager: Promise<ThreadEventsManager>;
-    private static storeEventManager: Promise<StoreEventsManager>;
-    private static connectionEventManager: Promise<ConnectionEventsManager>;
+    private static instance: EndpointConnectionManager | null = null;
+    private static cryptoApi: Promise<CryptoApi> | null = null;
+    private static eventQueue: Promise<EventQueue> | null = null;
     private static isSetup = false;
+    private eventManager: Promise<EventManager> | null = null;
+    private threadApi: Promise<ThreadApi> | null = null;
+    private storeApi: Promise<StoreApi> | null = null;
+    private inboxApi: Promise<InboxApi> | null = null;
+    private threadEventManager: Promise<ThreadEventsManager> | null = null;
+    private storeEventManager: Promise<StoreEventsManager> | null = null;
+    private connectionEventManager: Promise<ConnectionEventsManager> | null = null;
+    private inboxEventManager: Promise<InboxEventsManager> | null = null;
 
-    static async getConnection() {
+    private constructor(private connection: Connection) {}
+
+    public static getInstance(): EndpointConnectionManager {
+        if (!this.instance) {
+            throw new Error('no connection established');
+        }
+        return this.instance;
+    }
+
+    public static removeInstance(): void {
+        this.instance = null;
+    }
+
+    public getConnection(): Connection {
         if (!this.connection) {
             throw new Error('No active connection');
         }
         return this.connection;
     }
 
-    static async getEventManager() {
+    public async getEventManager(): Promise<EventManager> {
         if (this.eventManager) {
             return this.eventManager;
         }
 
         this.eventManager = (async () => {
-            const eventQueue = await this.getEventQueue();
+            const eventQueue = await EndpointConnectionManager.getEventQueue();
             return EventManager.startEventLoop(eventQueue);
         })();
 
         return await this.eventManager;
     }
 
-    static async getStoreEventManager() {
+    public async getStoreEventManager(): Promise<StoreEventsManager> {
         if (this.storeEventManager) {
             return this.storeEventManager;
         }
@@ -60,7 +77,7 @@ export class EndpointConnectionManager {
         return this.storeEventManager;
     }
 
-    static async getConnectionEventManager() {
+    public async getConnectionEventManager(): Promise<ConnectionEventsManager> {
         if (this.connectionEventManager) {
             return this.connectionEventManager;
         }
@@ -69,31 +86,39 @@ export class EndpointConnectionManager {
             const eventManager = await this.getEventManager();
             const connection = await this.getConnection();
             const connectionId = (await connection.getConnectionId()) as unknown as string;
-            const connectionEventManager = eventManager.getConnectionEventManager(connectionId);
-
-            return connectionEventManager;
+            return eventManager.getConnectionEventManager(connectionId);
         })();
 
         return this.connectionEventManager;
     }
 
-    static async getThreadEventManager() {
+    public async getThreadEventManager(): Promise<ThreadEventsManager> {
         if (this.threadEventManager) {
             return this.threadEventManager;
         }
 
         this.threadEventManager = (async () => {
             const eventManager = await this.getEventManager();
-            const threadApi = await this.getThreadApi();
-            const threadEventManager = eventManager.getThreadEventManager(threadApi);
-
-            return threadEventManager;
+            return eventManager.getThreadEventManager(await this.getThreadApi());
         })();
 
         return this.threadEventManager;
     }
 
-    static async getEventQueue() {
+    public async getInboxEventManager(): Promise<InboxEventsManager> {
+        if (this.inboxEventManager) {
+            return this.inboxEventManager;
+        }
+
+        this.inboxEventManager = (async () => {
+            const eventManager = await this.getEventManager();
+            return eventManager.getInboxEventManager(await this.getInboxApi());
+        })();
+
+        return this.inboxEventManager;
+    }
+
+    public static async getEventQueue(): Promise<EventQueue> {
         if (this.eventQueue) {
             return this.eventQueue;
         }
@@ -110,16 +135,17 @@ export class EndpointConnectionManager {
 
     static async connect(privateKey: string, solutionId: string, bridgeUrl: string) {
         await this.setup();
-        this.connection = await Endpoint.connect(privateKey, solutionId, bridgeUrl);
+        const connection = await Endpoint.connect(privateKey, solutionId, bridgeUrl);
 
-        if (!this.connection) {
+        if (!connection) {
             throw new Error('ERROR: Could not connect to bridge');
         }
+        this.instance = new EndpointConnectionManager(connection);
 
-        return this.connection;
+        return this.instance;
     }
 
-    static getThreadApi() {
+    public getThreadApi(): Promise<ThreadApi> {
         if (!this.threadApi) {
             this.threadApi = (async () => {
                 const connection = await this.getConnection();
@@ -129,7 +155,7 @@ export class EndpointConnectionManager {
         return this.threadApi;
     }
 
-    static getStoreApi() {
+    public getStoreApi(): Promise<StoreApi> {
         if (!this.storeApi) {
             this.storeApi = (async () => {
                 const connection = await this.getConnection();
@@ -139,7 +165,7 @@ export class EndpointConnectionManager {
         return this.storeApi;
     }
 
-    static getInboxApi() {
+    public getInboxApi(): Promise<InboxApi> {
         if (!this.inboxApi) {
             this.inboxApi = (async () => {
                 const connection = await this.getConnection();
@@ -151,7 +177,7 @@ export class EndpointConnectionManager {
         return this.inboxApi;
     }
 
-    static getCryptoApi() {
+    public static getCryptoApi(): Promise<CryptoApi> {
         if (!this.cryptoApi) {
             this.cryptoApi = (async () => {
                 await this.setup();
@@ -161,9 +187,9 @@ export class EndpointConnectionManager {
         return this.cryptoApi;
     }
 
-    static async setup() {
+    private static async setup(): Promise<void> {
         if (!this.isSetup) {
-            await Endpoint.setup('/wasm-assets');
+            await Endpoint.setup('/privmx-assets');
             this.isSetup = true;
         }
     }

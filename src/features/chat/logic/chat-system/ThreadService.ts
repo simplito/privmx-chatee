@@ -22,11 +22,11 @@ export class ThreadService implements Service {
     }
 
     async storeApi() {
-        return await EndpointConnectionManager.getStoreApi();
+        return await EndpointConnectionManager.getInstance().getStoreApi();
     }
 
     async threadApi() {
-        return await EndpointConnectionManager.getThreadApi();
+        return await EndpointConnectionManager.getInstance().getThreadApi();
     }
 
     async createThread({ users, title }: { title: string; users: ThreadUsers[] }) {
@@ -66,8 +66,8 @@ export class ThreadService implements Service {
             this.contextId(),
             allUsers,
             managers,
-            serializeObject({}),
-            serializeObject(threadMeta)
+            Utils.serializeObject({}),
+            Utils.serializeObject(threadMeta)
         );
 
         return {

@@ -14,8 +14,12 @@ export class ThreadMessageService implements Service {
         return this;
     }
 
+    async getThreadApi() {
+        return await EndpointConnectionManager.getInstance().getThreadApi();
+    }
+
     async sendTextMessage(chatId: string, message: string, pendingId: string): Promise<void> {
-        const threadApi = await EndpointConnectionManager.getThreadApi();
+        const threadApi = await this.getThreadApi();
 
         await threadApi.sendMessage(
             chatId,
@@ -37,7 +41,7 @@ export class ThreadMessageService implements Service {
         attachmentName: string;
         pendingId: string;
     }): Promise<void> {
-        const threadApi = await EndpointConnectionManager.getThreadApi();
+        const threadApi = await this.getThreadApi();
         threadApi.sendMessage(
             fileMessage.chatId,
             Utils.serializeObject({
@@ -53,7 +57,7 @@ export class ThreadMessageService implements Service {
     }
 
     async deleteMessage(messageId: string) {
-        const threadApi = await EndpointConnectionManager.getThreadApi();
+        const threadApi = await this.getThreadApi();
         threadApi.deleteMessage(messageId);
     }
 }

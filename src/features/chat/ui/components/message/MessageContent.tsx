@@ -28,7 +28,7 @@ export function MessageContent({
             try {
                 deleteMessage(message.messageId, message.chatId);
                 if (message.mimetype === 'file') {
-                    const storeApi = await EndpointConnectionManager.getStoreApi();
+                    const storeApi = await EndpointConnectionManager.getInstance().getStoreApi();
                     storeApi.deleteFile(message.fileId);
                 }
             } catch {

@@ -25,7 +25,7 @@ export function EndpointContextProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         (async () => {
             if (userStatus === 'logged-in') {
-                setContext(await EndpointConnectionManager.getConnection());
+                setContext(await EndpointConnectionManager.getInstance().getConnection());
             } else {
                 setContext(null);
             }

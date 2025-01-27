@@ -12,11 +12,11 @@ export class ThreadResource implements Resource {
     private _bus: AppEventBus;
 
     private async threads() {
-        return await EndpointConnectionManager.getThreadApi();
+        return await EndpointConnectionManager.getInstance().getThreadApi();
     }
 
     private async getThreadEventManager() {
-        return await EndpointConnectionManager.getThreadEventManager();
+        return await EndpointConnectionManager.getInstance().getThreadEventManager();
     }
 
     getName(): string {

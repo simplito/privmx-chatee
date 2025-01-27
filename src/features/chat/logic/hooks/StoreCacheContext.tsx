@@ -305,7 +305,8 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
                 if (contextId && threadClient?.storeId) {
                     const isInitialized = state.stores.get(threadClient?.storeId);
                     if (!isInitialized) {
-                        const storeApi = await EndpointConnectionManager.getStoreApi();
+                        const storeApi =
+                            await EndpointConnectionManager.getInstance().getStoreApi();
                         const store = await storeApi.getStore(threadClient.storeId);
                         dispatch(storeInfoInitAction(store));
                     }

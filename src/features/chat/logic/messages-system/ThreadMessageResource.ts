@@ -21,11 +21,11 @@ export class ThreadMessageResource implements Resource {
     private static PAGE_SIZE = 100;
 
     private async getApi() {
-        return await EndpointConnectionManager.getThreadApi();
+        return await EndpointConnectionManager.getInstance().getThreadApi();
     }
 
     private async getThreadEventManager() {
-        return await EndpointConnectionManager.getThreadEventManager();
+        return await EndpointConnectionManager.getInstance().getThreadEventManager();
     }
 
     private eventCleanUpCallback: VoidFunction | null = null;
