@@ -4,8 +4,8 @@ import { AppEventBus, UserEvent } from '@srs/AppBus';
 import { ThreadResourceEvent } from '@srs/ThreadResourceEvent';
 import { Chat, ThreadPrivateData } from '@chat/logic';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
-import { deserializeObject } from '@simplito/privmx-webendpoint/extra/utils';
 import { Thread } from '@simplito/privmx-webendpoint/Types';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadResource implements Resource {
     private _ctx: AppContext;
@@ -75,7 +75,7 @@ export class ThreadResource implements Resource {
     }
 
     static threadToChat(thread: Thread): Chat {
-        const chatInfo = deserializeObject(thread.privateMeta) as ThreadPrivateData;
+        const chatInfo = Utils.deserializeObject(thread.privateMeta) as ThreadPrivateData;
         return {
             chatId: thread.threadId,
             title: chatInfo.name,

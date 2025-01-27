@@ -2,8 +2,7 @@ import { Resource, Service } from '@srs/App';
 import { AppContext } from '@srs/AppContext';
 import { StoreFilePublicData } from '@chat/logic/messages-system/types';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
-import { downloadFile, FileUploader } from '@simplito/privmx-webendpoint/extra';
-import { serializeObject } from '@simplito/privmx-webendpoint/extra/utils';
+import { downloadFile, FileUploader, Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadFileService implements Service {
     private _ctx: AppContext;
@@ -25,8 +24,8 @@ export class ThreadFileService implements Service {
             storeApi,
             file: fileMessage.file,
             storeId: fileMessage.storeId,
-            privateMeta: serializeObject({}),
-            publicMeta: serializeObject({
+            privateMeta: Utils.serializeObject({}),
+            publicMeta: Utils.serializeObject({
                 name: fileMessage.file.name,
                 chatId: fileMessage.chatId,
                 mimetype: fileMessage.file.type

@@ -4,7 +4,7 @@ import { AppEventBus } from '@srs/AppBus';
 import { Chat, ThreadPrivateData, ThreadResource, ThreadUsers } from '@chat/logic';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
 import { UserWithPubKey } from '@simplito/privmx-webendpoint/Types';
-import { serializeObject } from '@simplito/privmx-webendpoint/extra/utils';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadService implements Service {
     getName = () => 'ThreadService';
@@ -51,8 +51,8 @@ export class ThreadService implements Service {
             this.contextId(),
             allUsers,
             managers,
-            serializeObject({}),
-            serializeObject({ title })
+            Utils.serializeObject({}),
+            Utils.serializeObject({ title })
         );
 
         const threadApi = await this.threadApi();

@@ -2,7 +2,7 @@ import { Resource, Service } from '@srs/App';
 import { AppContext } from '@srs/AppContext';
 import { ThreadMessageData, ThreadMessagePublicData } from '@chat/logic/messages-system/types';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
-import { serializeObject } from '@simplito/privmx-webendpoint/extra/utils';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadMessageService implements Service {
     private _ctx: AppContext;
@@ -19,12 +19,12 @@ export class ThreadMessageService implements Service {
 
         await threadApi.sendMessage(
             chatId,
-            serializeObject({
+            Utils.serializeObject({
                 mimetype: 'text',
                 pendingId
             } satisfies ThreadMessagePublicData),
             new Uint8Array(),
-            serializeObject({
+            Utils.serializeObject({
                 text: message
             } satisfies ThreadMessageData)
         );
@@ -40,12 +40,12 @@ export class ThreadMessageService implements Service {
         const threadApi = await EndpointConnectionManager.getThreadApi();
         threadApi.sendMessage(
             fileMessage.chatId,
-            serializeObject({
+            Utils.serializeObject({
                 mimetype: 'file',
                 pendingId: fileMessage.pendingId
             } satisfies ThreadMessagePublicData),
             new Uint8Array(),
-            serializeObject({
+            Utils.serializeObject({
                 fileId: fileMessage.attachmentId,
                 fileName: fileMessage.attachmentName
             } satisfies ThreadMessageData)

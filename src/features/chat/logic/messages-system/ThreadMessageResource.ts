@@ -11,8 +11,8 @@ import {
     ThreadMessagePublicData
 } from '@chat/logic/messages-system/types';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
-import { deserializeObject } from '@simplito/privmx-webendpoint/extra/utils';
 import { Message } from '@simplito/privmx-webendpoint/Types';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadMessageResource implements Resource {
     private _ctx: AppContext;
@@ -44,8 +44,8 @@ export class ThreadMessageResource implements Resource {
     }
 
     static toChatMessage(message: Message): ChatMessage {
-        const messageData = deserializeObject(message.data) as ThreadMessageData;
-        const publicData = deserializeObject(message.publicMeta) as ThreadMessagePublicData;
+        const messageData = Utils.deserializeObject(message.data) as ThreadMessageData;
+        const publicData = Utils.deserializeObject(message.publicMeta) as ThreadMessagePublicData;
         if (publicData.mimetype === 'file' && 'fileId' in messageData) {
             return {
                 author: message.info.author,

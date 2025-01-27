@@ -5,8 +5,8 @@ import { FileResourceEvent } from '@chat/logic/messages-system/FileResourceEvent
 
 import { ChatAttachment, StoreFilePublicData } from '@chat/logic/messages-system/types';
 import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
-import { deserializeObject } from '@simplito/privmx-webendpoint/extra/utils';
 import { Types } from '@simplito/privmx-webendpoint';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadFilesResource implements Resource {
     private _ctx: AppContext;
@@ -92,7 +92,7 @@ export class ThreadFilesResource implements Resource {
     }
 
     private toMessageAttachment(chatId: string, file: Types.File): ChatAttachment {
-        const publicData = deserializeObject(file.publicMeta) as StoreFilePublicData;
+        const publicData = Utils.deserializeObject(file.publicMeta) as StoreFilePublicData;
         return {
             attachmentId: file.info.fileId,
             author: file.info.author,
