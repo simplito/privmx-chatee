@@ -1,6 +1,6 @@
 # Chatee
 
-Chatee is a chat application that provides you with full end-to-end encryption using [PrivMX Bridge](https://privmx.dev).
+Chatee is a chat application that provides you with full end-to-end encryption using [PrivMX Bridge](https://github.com/simplito/privmx-bridge).
 
 ![chatee](./chatee.png)
 
