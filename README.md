@@ -1,11 +1,6 @@
-<div align="center">
-   <h1>
-      Chatee
-   </h1>
-<p>
-Chatee is a chat application that provides you with full end-to-end encryption using <b>[PrivMX Bridge](https://privmx.dev)</b>.
-</p>
-</div>
+# Chatee
+
+Chatee is a chat application that provides you with full end-to-end encryption using [PrivMX Bridge](https://privmx.dev).
 
 ![chatee](./chatee.png)
 
