@@ -3,7 +3,6 @@ import {
     CryptoApi,
     Endpoint,
     EventQueue,
-    InboxApi,
     StoreApi,
     ThreadApi
 } from '@simplito/privmx-webendpoint';
@@ -12,10 +11,7 @@ import {
     StoreEventsManager,
     ThreadEventsManager
 } from '@simplito/privmx-webendpoint/extra';
-import {
-    ConnectionEventsManager,
-    InboxEventsManager
-} from '@simplito/privmx-webendpoint/extra/events';
+import { ConnectionEventsManager } from '@simplito/privmx-webendpoint/extra/events';
 
 export class EndpointConnectionManager {
     private static instance: EndpointConnectionManager | null = null;
@@ -25,11 +21,9 @@ export class EndpointConnectionManager {
     private eventManager: Promise<EventManager> | null = null;
     private threadApi: Promise<ThreadApi> | null = null;
     private storeApi: Promise<StoreApi> | null = null;
-    private inboxApi: Promise<InboxApi> | null = null;
     private threadEventManager: Promise<ThreadEventsManager> | null = null;
     private storeEventManager: Promise<StoreEventsManager> | null = null;
     private connectionEventManager: Promise<ConnectionEventsManager> | null = null;
-    private inboxEventManager: Promise<InboxEventsManager> | null = null;
 
     private constructor(private connection: Connection) {}
 
@@ -105,19 +99,6 @@ export class EndpointConnectionManager {
         return this.threadEventManager;
     }
 
-    public async getInboxEventManager(): Promise<InboxEventsManager> {
-        if (this.inboxEventManager) {
-            return this.inboxEventManager;
-        }
-
-        this.inboxEventManager = (async () => {
-            const eventManager = await this.getEventManager();
-            return eventManager.getInboxEventManager(await this.getInboxApi());
-        })();
-
-        return this.inboxEventManager;
-    }
-
     public static async getEventQueue(): Promise<EventQueue> {
         if (this.eventQueue) {
             return this.eventQueue;
@@ -163,18 +144,6 @@ export class EndpointConnectionManager {
             })();
         }
         return this.storeApi;
-    }
-
-    public getInboxApi(): Promise<InboxApi> {
-        if (!this.inboxApi) {
-            this.inboxApi = (async () => {
-                const connection = await this.getConnection();
-                const threadApi = await this.getThreadApi();
-                const storeApi = await this.getStoreApi();
-                return Endpoint.createInboxApi(connection, await threadApi, await storeApi);
-            })();
-        }
-        return this.inboxApi;
     }
 
     public static getCryptoApi(): Promise<CryptoApi> {
