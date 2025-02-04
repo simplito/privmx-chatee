@@ -108,8 +108,8 @@ export class ThreadFilesResource implements Resource {
     async getChatFiles(chat: { storeId: string; chatId: string }, page: number) {
         const storeApi = await this.getApi();
         const storeFileList = await storeApi.listFiles(chat.storeId, {
-            limit: 100,
-            skip: page * 100,
+            limit: ThreadFilesResource.PAGE_SIZE,
+            skip: page * ThreadFilesResource.PAGE_SIZE,
             sortOrder: 'desc'
         });
         const assets = storeFileList.readItems.map(

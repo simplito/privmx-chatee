@@ -32,8 +32,7 @@ export class ThreadFileService implements Service {
             } satisfies StoreFilePublicData)
         });
 
-        const fileId = (await streamer.uploadFileContent()) as unknown as string;
-
+        const fileId = await streamer.uploadFileContent();
         return { attachmentId: fileId, attachmentName: fileMessage.file.name };
     }
 

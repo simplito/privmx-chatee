@@ -78,7 +78,7 @@ export class EndpointConnectionManager {
 
         this.connectionEventManager = (async () => {
             const eventManager = await this.getEventManager();
-            const connection = await this.getConnection();
+            const connection = this.getConnection();
             const connectionId = (await connection.getConnectionId()) as unknown as string;
             return eventManager.getConnectionEventManager(connectionId);
         })();
@@ -129,7 +129,7 @@ export class EndpointConnectionManager {
     public getThreadApi(): Promise<ThreadApi> {
         if (!this.threadApi) {
             this.threadApi = (async () => {
-                const connection = await this.getConnection();
+                const connection = this.getConnection();
                 return Endpoint.createThreadApi(connection);
             })();
         }
@@ -139,7 +139,7 @@ export class EndpointConnectionManager {
     public getStoreApi(): Promise<StoreApi> {
         if (!this.storeApi) {
             this.storeApi = (async () => {
-                const connection = await this.getConnection();
+                const connection = this.getConnection();
                 return Endpoint.createStoreApi(connection);
             })();
         }
