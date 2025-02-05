@@ -1,21 +1,8 @@
-<div align="center">
-   <h1>
-      Chatee
-   </h1>
-<p>
-Chatee is a chat application that provides you with full end-to-end encryption using <b>[PrivMX Bridge](https://privmx.dev)</b>.
-</p>
-</div>
+# Chatee
+
+Chatee is a simple chat application created for testing and demonstration purpose. Chatee provides you with full end-to-end encryption communication with the use of [PrivMX Bridge](https://privmx.dev) by Simplito. It is a great starting point for building your own chat application with end-to-end encryption.
 
 ![chatee](./chatee.png)
-
-## Basics
-
-Chatee consist of two parts: **Web Application** and **Server Backend** (both written in Next.js).
-**Server Backend** manages **user accounts** and utilizes MongoDB for persistent data storage.
-
-All the sent messages and files are managed by <b>[PrivMX Bridge](https://github.com/simplito/privmx-bridge)</b>, to ensure they are properly
-encrypted and are not stored in your server environment.
 
 ## Features
 
@@ -34,23 +21,67 @@ chats only with Staff members. Staff can add chats with all the users in the ser
 
 Chats occur in real-time. You can send text messages and files up to 50 MB.
 
+---
+
+## Basics
+
+Chatee consist of two parts: **Web Application** and **Server Backend** (both written in Next.js). **Server Backend** manages **user accounts** and utilizes MongoDB for persistent data storage.
+
+All the sent messages and files are managed by [PrivMX Bridge](https://github.com/simplito/privmx-bridge), to ensure they are properly encrypted and are not stored in your server environment.
+
 ## Requirements
 
-- Node.js in 20.10 version.
-- MongoDB instance or Docker, which allows to run our docker compose file to run the database.
-- PrivMX Bridge Instance and Docker for running it.
+- Node.js in 20.10 version;
+- Docker for running PrivMX Bridge instance;
+- MongoDB instance - you can instatiate MongoDB with our docker compose file, more info below.
 
 ## How to start?
 
-To begin, clone this repository. It includes the Chatee sources along with various helpful files.
+- To begin, clone this repository. It includes the Chatee sources along with various helpful files.
+- Copy or rename `./.env.example` to `./.env.local`. `.env.exemple` contains essential variables and / or placeholders. All environmental variables for local development should be put there, including MongoDB connection string, PrivMX Bridge URL, API Keys, PrivMX Solution & Context IDs. You can find more information about these variables in the following sections.
 
-You should also copy or rename `./.env.example` to `./.env.local`. All environmental variables for local development should be put there.
+ ### **Start Bridge Instance**
+
+ > To proceed, ensure that Docker is up and running.
+
+To succesfully run Chatee, you need to have a running PrivMX Bridge instance. PrivMX Bridge is a service that provides end-to-end encryption for your communication. It is a crucial part of Chatee's architecture.
+
+To set up a PrivMX Bridge instance locally clone [PrivMX Bridge Docker](https://github.com/simplito/privmx-bridge-docker) repository. Follow instructions included in its README. The PrivMX Bridge startup process will create all necessities required to run Chatee with end-to-end encryption, including essential ENV variables. After initialization, the terminal will output the following:
+
+- **PrivMX Bridge URL** - address of the running PrivMX Bridge instance;
+- **API Key ID** and **API Key Secret** - used to authorize Chatee requests to PrivMX Bridge;
+- **Solution ID** - ID of the created Solution;
+- **Context ID** - ID of one of the Contexts inside the Solution.
+
+Paste them into the `./env.local` file created earlier.
+
+> If you want to know more about PrivMX Bridge, visit our documentation [here](https://docs.privmx.dev/).
+
+#### JWT Salt
+
+Generate a random **JWT_SALT** using e.g. `openssl`:
+
+```sh
+openssl rand -base64 20
+```
+
+and paste it into your `.env.local`.
+
+```ENV
+JWT_SALT=GENERATED_RANDOM_SECRET
+```
+
+#### Next Public Backend URL
+
+For demo purposes, Chatee runs in localhost (port 3000). `NEXT_PUBLIC_BACKEND_URL` configures the app's default address. In production environment, you can use a fully qualified domain name.
+
+```ENV
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+```
 
 ### **Start MongoDB Instance**
 
 You need a **MongoDB** Instance with replica sets for transactions.
-
-> To proceed, ensure that Docker is up and running.
 
 For demo purpose, you can use the `docker-compose-mongo.yml` from this repository. Run the following command to start MongoDB Docker in your local environment:
 
@@ -69,41 +100,6 @@ MONGODB_URI=mongodb://127.0.0.1:27017/?replicaSet=$REPLICA_SET
 
 Feel free to adjust these settings if you opt for a custom setup.
 
-### **Start Bridge Instance**
-
-To set up a PrivMX Bridge instance locally clone CLI project from [here](https://github.com/simplito/privmx-bridge-docker). Follow instructions included in its README - they will create everything you need for your first app. After initialization, the terminal will output the following variables:
-
-- **PrivMX Bridge URL** - address of the running PrivMX Bridge instance;
-- **API Key ID** and **API Key Secret** - used to authorize Chatee requests to PrivMX Bridge;
-- **Solution ID** - ID of the created Solution;
-- **Context ID** - ID of one of the Contexts inside the Solution.
-
-Paste them into the `./env.local` file created earlier.
-
-### Additional Constants
-
-#### JWT Salt
-
-Generate a random **JWT_SALT** using e.g. `openssl`:
-
-```sh
-openssl rand -base64 20
-```
-
-and paste it into your `.env.local`.
-
-```
-JWT_SALT=GENERATED_RANDOM_SECRET
-```
-
-#### Next Public Backend URL
-
-For demo purposes, Chatee runs in localhost (port 3000). `NEXT_PUBLIC_BACKEND_URL` configures the app's default address. In production environment, you can use a fully qualified domain name.
-
-```ENV
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
-```
-
 ## Running the App
 
 In a new terminal, go to project root folder.
@@ -118,8 +114,8 @@ Go to <http://localhost:3000/sign-up> and create the first Staff user.
 
 ### Creating Threads
 
-When creating threads (chat rooms) you are given a list of all the users from your app.  
-Staff users can create chats with all the users in the app.  
+When creating threads (chat rooms) you are given a list of all the users from your app.
+Staff users can create chats with all the users in the app.
 Regular users can create chats only with Staff.
 
 ### Production Notes
