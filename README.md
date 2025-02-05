@@ -1,6 +1,6 @@
 # Chatee
 
-Chatee is a simple chat application created for testing and demonstration purpose. Chatee provides you with full end-to-end encryption communication with the use of [PrivMX Bridge](https://privmx.dev) by Simplito. It is a great starting point for building your own chat application with end-to-end encryption.
+Chatee is a simple chat application created for testing and demonstration purpose. Chatee provides you with full end-to-end encryption communication with the use of [PrivMX Bridge](https://github.com/simplito/privmx-bridge) by Simplito. It is a great starting point for building your own chat application with end-to-end encryption.
 
 ![chatee](./chatee.png)
 
