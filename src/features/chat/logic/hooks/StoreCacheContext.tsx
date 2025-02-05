@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { useEndpointContext } from '@/shared/hooks/useEndpointContext';
-import { Store } from '@simplito/privmx-webendpoint-sdk';
 import { useApp } from '@srs/ReactBindings';
 import { ChatAttachment, FileResourceEvent, useThreadContext } from '@chat/logic';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
+import { Store } from '@simplito/privmx-webendpoint/Types';
 
 type StoreState = 'None' | 'InfoInitialized';
 
@@ -257,8 +258,6 @@ export function startPageLoadAction(payload: {
 export function StoreCacheContextProvider({ children }: { children: React.ReactNode }) {
     const [state, dispatch] = useReducer(storeCacheReducer, initialState);
     const threadClient = useThreadContext();
-    const platformCtx = useEndpointContext();
-
     const app = useApp();
     const contextId = app.context.user.contextId;
 
@@ -306,7 +305,9 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
                 if (contextId && threadClient?.storeId) {
                     const isInitialized = state.stores.get(threadClient?.storeId);
                     if (!isInitialized) {
-                        const store = await platformCtx.store(threadClient?.storeId).info();
+                        const storeApi =
+                            await EndpointConnectionManager.getInstance().getStoreApi();
+                        const store = await storeApi.getStore(threadClient.storeId);
                         dispatch(storeInfoInitAction(store));
                     }
                 }
@@ -314,7 +315,7 @@ export function StoreCacheContextProvider({ children }: { children: React.ReactN
                 console.error(e);
             }
         })();
-    }, [contextId, threadClient?.storeId, state.stores, platformCtx]);
+    }, [contextId, threadClient?.storeId, state.stores]);
 
     return (
         <StoreCacheContext.Provider value={{ state, dispatch }}>

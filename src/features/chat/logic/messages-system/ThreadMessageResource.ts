@@ -1,7 +1,6 @@
 import { Resource } from '@srs/App';
 import { AppContext } from '@srs/AppContext';
 import { AppEventBus, UserEvent } from '@srs/AppBus';
-import { deserializeObject, Message, Endpoint } from '@simplito/privmx-webendpoint-sdk';
 import { MessageResourceEvent } from '@chat/logic/messages-system/MessageResourceEvent';
 
 import {
@@ -11,6 +10,9 @@ import {
     ThreadMessageData,
     ThreadMessagePublicData
 } from '@chat/logic/messages-system/types';
+import { EndpointConnectionManager } from '@lib/endpoint-api/endpoint';
+import { Message } from '@simplito/privmx-webendpoint/Types';
+import { Utils } from '@simplito/privmx-webendpoint/extra';
 
 export class ThreadMessageResource implements Resource {
     private _ctx: AppContext;
@@ -18,8 +20,12 @@ export class ThreadMessageResource implements Resource {
     getName = () => 'MessageResource';
     private static PAGE_SIZE = 100;
 
-    private thread(id: string) {
-        return Endpoint.connection().thread(id);
+    private async getApi() {
+        return await EndpointConnectionManager.getInstance().getThreadApi();
+    }
+
+    private async getThreadEventManager() {
+        return await EndpointConnectionManager.getInstance().getThreadEventManager();
     }
 
     private eventCleanUpCallback: VoidFunction | null = null;
@@ -38,8 +44,8 @@ export class ThreadMessageResource implements Resource {
     }
 
     static toChatMessage(message: Message): ChatMessage {
-        const messageData = deserializeObject(message.data) as ThreadMessageData;
-        const publicData = deserializeObject(message.publicMeta) as ThreadMessagePublicData;
+        const messageData = Utils.deserializeObject(message.data) as ThreadMessageData;
+        const publicData = Utils.deserializeObject(message.publicMeta) as ThreadMessagePublicData;
         if (publicData.mimetype === 'file' && 'fileId' in messageData) {
             return {
                 author: message.info.author,
@@ -71,33 +77,38 @@ export class ThreadMessageResource implements Resource {
     private _currentSubscriptions: { chatId: string; unsubscribe: () => Promise<void> }[] = [];
 
     async setupEvents() {
-        const context = Endpoint.connection();
-        const userSubscriber = UserEvent.createSubscriber('page_enter', (page) => {
+        const manager = await this.getThreadEventManager();
+
+        const userSubscriber = UserEvent.createSubscriber('page_enter', async (page) => {
             if (page.chatId === '') return;
-            const thread = context.thread(page.chatId);
-            thread.subscribeToMessageEvents().then((channel) => {
-                channel
-                    .on('threadNewMessage', (payload) => {
-                        this._bus.emit(
-                            MessageResourceEvent.newMessage(
-                                ThreadMessageResource.toChatMessage(payload.data)
-                            )
-                        );
-                    })
-                    .on('threadMessageDeleted', (payload) => {
-                        this._bus.emit(
-                            MessageResourceEvent.deletedMessage({
-                                messageId: payload.data.messageId,
-                                chatId: payload.data.threadId
-                            })
-                        );
-                    });
+            const removeNewMessageEvent = await manager.onMessageEvent(page.chatId, {
+                event: 'threadNewMessage',
+                callback: (payload) => {
+                    this._bus.emit(
+                        MessageResourceEvent.newMessage(
+                            ThreadMessageResource.toChatMessage(payload.data)
+                        )
+                    );
+                }
+            });
+
+            const removeMessageDeletedEvent = await manager.onMessageEvent(page.chatId, {
+                event: 'threadMessageDeleted',
+                callback: (payload) => {
+                    this._bus.emit(
+                        MessageResourceEvent.deletedMessage({
+                            messageId: payload.data.messageId,
+                            chatId: payload.data.threadId
+                        })
+                    );
+                }
             });
 
             this._currentSubscriptions.push({
                 chatId: page.chatId,
-                unsubscribe: () => {
-                    return thread.unsubscribeFromMessageEvents();
+                unsubscribe: async () => {
+                    await removeMessageDeletedEvent();
+                    await removeNewMessageEvent();
                 }
             });
         });
@@ -111,14 +122,15 @@ export class ThreadMessageResource implements Resource {
                 }
             });
         });
-
         this.eventCleanUpCallback = this._bus.registerSubscriber(userSubscriber);
     }
 
     async getMessages(threadId: string, page: number) {
-        const threadMessageList = await this.thread(threadId).getMessages(page, {
-            sort: 'desc',
-            pageSize: ThreadMessageResource.PAGE_SIZE
+        const api = await this.getApi();
+        const threadMessageList = await api.listMessages(threadId, {
+            limit: ThreadMessageResource.PAGE_SIZE,
+            sortOrder: 'desc',
+            skip: page * ThreadMessageResource.PAGE_SIZE
         });
 
         const messages: ChatMessage[] = threadMessageList.readItems.map(

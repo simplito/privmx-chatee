@@ -1,11 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { signOutAction, useUserContext } from '../../context/UserContext';
+import { useUserContext } from '../../context/UserContext';
 import { useEffect } from 'react';
 import { UserEvent } from '@srs/AppBus';
 import { useApp } from '@srs/ReactBindings';
-import { Endpoint } from '@simplito/privmx-webendpoint-sdk';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
     const {
@@ -24,8 +23,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         return app.eventBus.registerSubscriber(
             UserEvent.createSubscriber('sign_out', async () => {
-                await Endpoint.connection().disconnect();
-                dispatch(signOutAction());
+                window.location.href = '/sign-in';
             })
         );
     }, [app.eventBus, router, dispatch]);
