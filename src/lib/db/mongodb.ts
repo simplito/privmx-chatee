@@ -6,6 +6,9 @@ const options: MongoClientOptions = {
     replicaSet: REPLICA_SET
 };
 
+console.log({uri})
+
+
 let client;
 let clientPromise: Promise<MongoClient>;
 
@@ -20,8 +23,14 @@ if (process.env.NODE_ENV === 'development') {
     }
     clientPromise = globalWithMongo._mongoClientPromise;
 } else {
-    client = new MongoClient(uri, options);
-    clientPromise = client.connect();
+    try {
+        client = new MongoClient(uri, options);
+        clientPromise = client.connect();
+    }catch(e){
+       console.error(`[ERROR] MongoDB connection to: ${MONGODB_URI} failed`);
+       console.error(e);
+    }
+
 }
 
 export default clientPromise;

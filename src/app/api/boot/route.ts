@@ -5,11 +5,12 @@ import {
     ACCESS_KEY_SECRET,
     BRIDGE_URL,
     CONTEXT_ID,
-    JWT_SALT,
+    JWT_SALT, MONGODB_URI,
     SOLUTION_ID
 } from '@utils/env';
 
 function checkEnv(name: string, env: string | undefined) {
+    console.log(`[INFO] ${name} registered: ${env}`)
     if (!env) {
         console.error(`[ERROR] ${name} missing in env file`);
         return true;
@@ -29,7 +30,7 @@ export async function GET() {
         incompleteEnvs = checkEnv('ACCESS KEY SECRET', ACCESS_KEY_SECRET) || incompleteEnvs;
 
         incompleteEnvs = checkEnv('JWT SALT', JWT_SALT) || incompleteEnvs;
-        incompleteEnvs = checkEnv('MONGO_URI', JWT_SALT) || incompleteEnvs;
+        incompleteEnvs = checkEnv('MONGO_URI', MONGODB_URI) || incompleteEnvs;
 
         if (incompleteEnvs) {
             console.error('[ERROR] Invalid Envs');
