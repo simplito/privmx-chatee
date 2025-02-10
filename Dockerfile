@@ -34,6 +34,9 @@ COPY .env.production .
 ENV NODE_TLS_REJECT_UNAUTHORIZED="0"
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG DB_URI
+ENV MONGODB_URI=${DB_URI}
+
 RUN npm run build
 
 # If using npm comment out above and use below instead

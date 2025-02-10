@@ -6,54 +6,52 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        DB_URI: "mongodb://mongo/Chatee?replicaSet=rs0"
     image: chatee:simplito
     restart: always
     volumes:
       - myvolume:/usr/src/app
     ports:
-      - ${PORT}:3000
+      - "3000:3000"
     depends_on:
       - mongo
     environment:
-      - BRIDGE_URL=http://localhost:9111
-      - ACCESS_KEY_ID=5e7a4133f3453c57f69bf9783fb99f7f
-      - ACCESS_KEY_SECRET=510178c05d479286565747bf34ff9f82
-      - SOLUTION_ID=5a309546-0140-4bb9-901c-e9e427e81eaa
-      - CONTEXT_ID=811d4495-3857-4d9d-9235-058b29e69474
-      - NEXT_PUBLIC_BACKEND_URL=http://localhost:$PORT
-      - MONGODB_URI=mongodb://mongo:27017/Chatee?replicaSet=rs0
+      MONGODB_URI: "mongodb://172.21.0.2:27017/Chatee?replicaSet=rs0"
+      BRIDGE_URL: http://localhost:9111
+      ACCESS_KEY_ID: 5e7a4133f3453c57f69bf9783fb99f7f
+      ACCESS_KEY_SECRET: 510178c05d479286565747bf34ff9f82
+      SOLUTION_ID: 5a309546-0140-4bb9-901c-e9e427e81eaa
+      CONTEXT_ID: 811d4495-3857-4d9d-9235-058b29e69474
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:3000
     networks:
       - my_network
 
   mongo:
-    container_name: chatee_mongo_prod
     image: mongo
     restart: always
+    command: ['mongod','--replSet', 'rs0', '--bind_ip_all', ]
     ports:
-        - "27017:27017"
-    command: [ '--replSet', 'rs0', '--bind_ip_all', ]
+      - "27017:27017"
     volumes:
       - myvolume:/data/db
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
-      interval: 30s
-      timeout: 10s
-      retries: 3
     networks:
       - my_network
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      retries: 5
 
   mongo_init:
     image: mongo
     depends_on:
       - mongo
-    command: >
-      /bin/bash -c "
-      while ! echo 'try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"mongo:27017\"}]}); }' | mongosh --host mongo --port 27017 --quiet; do
-      sleep 5;
-      done;"
     restart: on-failure
     networks:
       - my_network
+    volumes:
+      - ./scripts/init-replica.sh:/scripts/init-replica.sh  # Mount script
+    entrypoint: ["/bin/bash", "-c", "/scripts/init-replica.sh"]
 
 volumes:
   myvolume:

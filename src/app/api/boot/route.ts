@@ -32,6 +32,7 @@ export async function GET() {
         incompleteEnvs = checkEnv('JWT SALT', JWT_SALT) || incompleteEnvs;
         incompleteEnvs = checkEnv('MONGO_URI', MONGODB_URI) || incompleteEnvs;
 
+
         if (incompleteEnvs) {
             console.error('[ERROR] Invalid Envs');
             process.exit(1);

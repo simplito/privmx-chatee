@@ -1,7 +1,7 @@
 'use server';
 
 import { ClientSession, Filter, UpdateFilter } from 'mongodb';
-import clientPromise from '../mongodb';
+import { connectToDatabase } from '../mongodb';
 import { generateInviteToken } from './utils';
 
 export interface InviteToken {
@@ -19,11 +19,11 @@ export interface InviteTokenClientDTO extends Omit<InviteToken, 'hashedValue'> {
 const collectionName = 'InviteTokens';
 
 async function getCollection() {
-    const mongoClient = await clientPromise;
-    const db = mongoClient.db();
-    const collection = db.collection<InviteTokenDbDTO>(collectionName);
 
+    const mongoClient = await connectToDatabase();
+    const collection = await mongoClient.db().collection<InviteTokenDbDTO>(collectionName);
     return collection;
+
 }
 
 export async function createInviteToken(
