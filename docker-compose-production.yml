@@ -13,7 +13,7 @@ services:
     volumes:
       - myvolume:/usr/src/app
     ports:
-      - "3000:3000"
+      - "${PORT}:3000"
     depends_on:
       - mongo
 
@@ -27,15 +27,6 @@ services:
       test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}) }" | mongosh --port 27017 --quiet
       start_period: 10s
       start_interval: 1s
-
-#  mongo_init:
-#    image: mongo
-#    depends_on:
-#      - mongo
-#    restart: on-failure
-#    volumes:
-#      - ./scripts/init-replica.sh:/scripts/init-replica.sh  # Mount script
-#    entrypoint: ["/bin/bash", "-c", "/scripts/init-replica.sh"]
 
 volumes:
   myvolume:
