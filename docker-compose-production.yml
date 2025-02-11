@@ -16,46 +16,26 @@ services:
       - "3000:3000"
     depends_on:
       - mongo
-    environment:
-      MONGODB_URI: "mongodb://172.21.0.2:27017/Chatee?replicaSet=rs0"
-      BRIDGE_URL: http://localhost:9111
-      ACCESS_KEY_ID: 5e7a4133f3453c57f69bf9783fb99f7f
-      ACCESS_KEY_SECRET: 510178c05d479286565747bf34ff9f82
-      SOLUTION_ID: 5a309546-0140-4bb9-901c-e9e427e81eaa
-      CONTEXT_ID: 811d4495-3857-4d9d-9235-058b29e69474
-      NEXT_PUBLIC_BACKEND_URL: http://localhost:3000
-    networks:
-      - my_network
 
   mongo:
     image: mongo
     restart: always
-    command: ['mongod','--replSet', 'rs0', '--bind_ip_all', ]
-    ports:
-      - "27017:27017"
+    command: ['--replSet', 'rs0', "--bind_ip_all"]
     volumes:
       - myvolume:/data/db
-    networks:
-      - my_network
     healthcheck:
-      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      retries: 5
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}) }" | mongosh --port 27017 --quiet
+      start_period: 10s
+      start_interval: 1s
 
-  mongo_init:
-    image: mongo
-    depends_on:
-      - mongo
-    restart: on-failure
-    networks:
-      - my_network
-    volumes:
-      - ./scripts/init-replica.sh:/scripts/init-replica.sh  # Mount script
-    entrypoint: ["/bin/bash", "-c", "/scripts/init-replica.sh"]
+#  mongo_init:
+#    image: mongo
+#    depends_on:
+#      - mongo
+#    restart: on-failure
+#    volumes:
+#      - ./scripts/init-replica.sh:/scripts/init-replica.sh  # Mount script
+#    entrypoint: ["/bin/bash", "-c", "/scripts/init-replica.sh"]
 
 volumes:
   myvolume:
-
-networks:
-  my_network:
-    driver: bridge

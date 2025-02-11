@@ -19,10 +19,15 @@ export interface InviteTokenClientDTO extends Omit<InviteToken, 'hashedValue'> {
 const collectionName = 'InviteTokens';
 
 async function getCollection() {
+    try {
+        const mongoClient = await connectToDatabase();
+        const collection = await mongoClient.db().collection<InviteTokenDbDTO>(collectionName);
+        return collection;
+    }catch (e){
+       console.error(collectionName);
+       console.error(e.message);
+    }
 
-    const mongoClient = await connectToDatabase();
-    const collection = await mongoClient.db().collection<InviteTokenDbDTO>(collectionName);
-    return collection;
 
 }
 
@@ -49,12 +54,18 @@ export async function getInviteTokenByValue(tokenValue: string) {
 }
 
 export async function getActiveInviteTokens() {
-    const collection = await getCollection();
-    const maxCreationDate = Date.now() - 1000 * 60 * 60 * 24 * 7;
-    const token = await collection
-        .find({ isUsed: false, creationDate: { $gte: maxCreationDate } })
-        .toArray();
-    return token;
+
+    try {
+        const collection = await getCollection();
+        const maxCreationDate = Date.now() - 1000 * 60 * 60 * 24 * 7;
+        const token = await collection
+            .find({ isUsed: false, creationDate: { $gte: maxCreationDate } })
+            .toArray();
+        return token;
+    }catch (e){
+        console.error("getActive");
+        console.error(e.message);
+    }
 }
 
 export async function updateInviteToken(

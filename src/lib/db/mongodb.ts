@@ -33,8 +33,9 @@ import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 //
 // }
 
-const uri = process.env.MONGODB_URI || "mongodb://user:password@host:port/database?replicaSet=myReplicaSet"; // Fallback for development
+const uri = MONGODB_URI || "mongodb://user:password@host:port/database?replicaSet=myReplicaSet"; // Fallback for development
 
+console.log(uri)
 let dbClient:MongoClient; // Store the MongoClient instance
 
 async function connectToDatabase() {

@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# Wait for MongoDB to be ready (optional but recommended)
 sleep 5  # Give MongoDB some time to start
 
-# Get the hostname of the mongodb service (important for Docker Compose)
-MONGODB_HOST=mongo
+# mongodb service (important for Docker Compose)
+MONGODB_HOST="mongo"
 
-# Attempt to initialize the replica set.  Retry a few times in case MongoDB isn't fully up yet.
-for i in {1..10}; do #retry up to 10 times
-  mongosh --host $MONGODB_HOST --eval "rs.initiate({ _id: 'rs0', members: [ { _id: 0, host: '$MONGODB_HOST' } ] })"
+for i in {1..10}; do
+  mongosh --host $MONGODB_HOST --port 27017 --eval "rs.initiate({ _id: 'rs0', members: [ { _id: 0, host: '$MONGODB_HOST:27017' } ] })"
   if [[ $? == 0 ]]; then
     echo "Replica set initialized successfully!"
     break  # Exit the loop if successful
