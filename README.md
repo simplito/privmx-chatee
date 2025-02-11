@@ -135,8 +135,9 @@ Regular users can create chats only with Staff.
     cd ./deployments
     mkdir -p certs && openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout certs/selfsigned.key -out certs/selfsigned.crt \
-    -subj "/CN=<APP_DOMAIN_NAME>"
+    -subj "/CN=APP_DOMAIN_NAME"
     ```
+    Replace `APP_DOMAIN_NAME` with domain of your app.
     If you don't have a domain name, you can pass `"localhost"` instead.  
 
     You can edit its configuration in `/deployments/nginx.conf` file, for example, if
