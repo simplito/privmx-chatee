@@ -1,39 +1,41 @@
 import { ACCESS_KEY_ID, ACCESS_KEY_SECRET, API_URL } from '@/shared/utils/env';
 
 export async function addUserToContext(userId: string, pubKey: string, contextId: string) {
-    const accessToken = await getAccessToken();
-    const requestBody = {
-        jsonrpc: '2.0',
-        id: 128,
-        method: 'context/addUserToContext',
-        params: {
-            contextId: contextId,
-            userId,
-            userPubKey: pubKey
+    try {
+        const accessToken = await getAccessToken();
+        const requestBody = {
+            jsonrpc: '2.0',
+            id: 128,
+            method: 'context/addUserToContext',
+            params: {
+                contextId: contextId,
+                userId,
+                userPubKey: pubKey
+            }
+        };
+        const addToContextRequest = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+        const response = await addToContextRequest.json();
+
+        if ('error' in response) {
+            console.error(response.error);
+            throw new Error('Unable to register user in context');
         }
-    };
 
-    const addToContextRequest = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(requestBody)
-    });
-
-    const response = await addToContextRequest.json();
-
-    if ('error' in response) {
-        console.error(response.error);
+        if (addToContextRequest.status === 200) {
+            return;
+        }
+    } catch (e) {
+        console.error('Unable to register user in context');
+        console.error(e);
         throw new Error('Unable to register user in context');
     }
-
-    if (addToContextRequest.status === 200) {
-        return;
-    }
-
-    throw new Error('Error adding user to context');
 }
 
 async function getAccessToken() {
