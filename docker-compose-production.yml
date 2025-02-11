@@ -12,8 +12,6 @@ services:
     restart: always
     volumes:
       - myvolume:/usr/src/app
-    ports:
-      - "${PORT}:3000"
     depends_on:
       - mongo
 
@@ -27,6 +25,16 @@ services:
       test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}) }" | mongosh --port 27017 --quiet
       start_period: 10s
       start_interval: 1s
-
+  nginx:
+    image: nginx:latest
+    container_name: chatee-nginx
+    restart: always
+    ports:
+      - "443:443"
+    volumes:
+      - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deployment/certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
 volumes:
   myvolume:
