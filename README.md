@@ -144,7 +144,7 @@ Regular users can create chats only with Staff.
     you want to change domain name of your app.
    To start your application, **run in root of your project**:
     ```sh
-    PORT=3000 docker-compose -f docker-compose-production.yml up
+    docker-compose -f docker-compose-production.yml up -d
     ```
 6. After the first startup, you will be prompted with an invitation token for the first staff user.
     You can check it using:

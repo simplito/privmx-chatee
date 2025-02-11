@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        DB_URI: "mongodb://mongo/Chatee?replicaSet=rs0"
     image: chatee:simplito
     restart: always
     volumes:
