@@ -2,9 +2,9 @@
 
 import { addUserToContext } from '@/lib/endpoint-api/utils';
 import { expireInviteToken } from '../invite-tokens/inviteTokens';
-import clientPromise from '../mongodb';
 import { createUser } from '../users/users';
 import { CONTEXT_ID } from '@utils/env';
+import { connectToDatabase } from '@lib/db/mongodb';
 
 export async function registerUser(
     username: string,
@@ -12,7 +12,7 @@ export async function registerUser(
     isStaff: boolean,
     tokenValue: string
 ) {
-    const client = await clientPromise;
+    const client = await connectToDatabase()
     const session = client.startSession();
     session.startTransaction();
     try {
