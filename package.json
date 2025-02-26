@@ -10,7 +10,10 @@
         "lint": "next lint",
         "build:standalone": "BUILD=True next build && cp -r ./public ./.next/standalone && cp -r ./.next/static ./.next/standalone/.next/",
         "start:standalone": "node ./.next/standalone/server.js",
-        "rebuild:standalone": "rm -rd ./.next && npm run build:standalone"
+        "rebuild:standalone": "rm -rd ./.next && npm run build:standalone",
+        "update-endpoint": "npm install @simplito/privmx-webendpoint@latest && npm run copy-privmx-assets",
+        "copy-privmx-assets": "mkdir -p public/privmx-assets && cp -r node_modules/@simplito/privmx-webendpoint/assets/* public/privmx-assets/",
+        "postinstall": "npm run copy-privmx-assets"
     },
     "dependencies": {
         "@mantine/core": "^7.5.3",
@@ -18,7 +21,7 @@
         "@mantine/hooks": "^7.5.3",
         "@mantine/modals": "^7.5.3",
         "@mantine/notifications": "^7.5.3",
-        "@simplito/privmx-webendpoint": "2.2.5",
+        "@simplito/privmx-webendpoint": "^2.2.8",
         "@tabler/icons-react": "^2.47.0",
         "bs58check": "^3.0.1",
         "dayjs": "^1.11.10",
