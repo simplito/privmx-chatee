@@ -1,6 +1,10 @@
 import { NEXT_PUBLIC_BACKEND_URL } from '@utils/env';
 
 export function register() {
+    if (!process.env.REPLICA_SET) {
+        throw new Error('ENV ERROR: REPLICA_SET IS NOT SET');
+    }
+    
     if (!process.env.MONGODB_URI) {
         throw new Error('ENV ERROR: MONGODB_URI IS NOT SET');
     }
