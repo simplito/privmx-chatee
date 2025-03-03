@@ -40,22 +40,25 @@ All the sent messages and files are managed by [PrivMX Bridge](https://github.co
 - To begin, clone this repository. It includes the Chatee sources along with various helpful files.
 - Copy or rename `./.env.example` to `./.env.local`. `.env.exemple` contains essential variables and / or placeholders. All environmental variables for local development should be put there, including MongoDB connection string, PrivMX Bridge URL, API Keys, PrivMX Solution & Context IDs. You can find more information about these variables in the following sections.
 
- ### **Start Bridge Instance**
+### **Start Bridge Instance**
 
- > To proceed, ensure that Docker is up and running.
+> To proceed, ensure that Docker is up and running.
 
-To succesfully run Chatee, you need to have a running PrivMX Bridge instance. PrivMX Bridge is a service that provides end-to-end encryption for your communication. It is a crucial part of Chatee's architecture.
+To successfully run Chatee, you need to have a running PrivMX Bridge instance. PrivMX Bridge is a service that provides end-to-end encryption for your communication. It is a crucial part of Chatee's architecture.
 
-To set up a PrivMX Bridge instance locally clone [PrivMX Bridge Docker](https://github.com/simplito/privmx-bridge-docker) repository. Follow instructions included in its README. The PrivMX Bridge startup process will create all necessities required to run Chatee with end-to-end encryption, including essential ENV variables. After initialization, the terminal will output the following:
+**Important:** If you already have a PrivMX Bridge Docker instance running on your machine, you **should not** create a new one. Instead, use your existing instance.
 
-- **PrivMX Bridge URL** - address of the running PrivMX Bridge instance;
-- **API Key ID** and **API Key Secret** - used to authorize Chatee requests to PrivMX Bridge;
-- **Solution ID** - ID of the created Solution;
-- **Context ID** - ID of one of the Contexts inside the Solution.
+If you don't have a running instance, clone the [PrivMX Bridge Docker](https://github.com/simplito/privmx-bridge-docker) repository to set up a PrivMX Bridge instance locally. Follow the instructions included in its README. The PrivMX Bridge startup process will create all necessities required to run Chatee with end-to-end encryption, including essential ENV variables. After initialization, the terminal will output the following:
+
+-   **PrivMX Bridge URL** - address of the running PrivMX Bridge instance;
+-   **API Key ID** and **API Key Secret** - used to authorize Chatee requests to PrivMX Bridge;
+-   **Solution ID** - ID of the created Solution;
+-   **Context ID** - ID of one of the Contexts inside the Solution.
 
 Paste them into the `./env.local` file created earlier.
 
 > If you want to know more about PrivMX Bridge, visit our documentation [here](https://docs.privmx.dev/).
+
 
 #### JWT Salt
 
@@ -110,7 +113,7 @@ npm run dev
 ```
 
 Durning the first run,  Chatee server will create the first invitation token. It's important to  **copy and save it somewhere**, it will be used for login.
-Go to <http://localhost:3000/sign-up> and create the first Staff user.
+Go to <http://localhost:3000/sign-up> and create the first Staff user. If you lose your first invite token dump your `Chatee` database and run the app again.
 
 ### Creating Threads
 
