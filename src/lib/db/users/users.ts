@@ -1,8 +1,8 @@
 'use server';
 
 import { ClientSession, Filter } from 'mongodb';
-import clientPromise from '../mongodb';
 import { CredentialError } from '@/lib/errors/credentialError';
+import { connectToDatabase } from '@lib/db/mongodb';
 
 export interface User {
     username: string;
@@ -11,9 +11,8 @@ export interface User {
 }
 
 async function getCollection() {
-    const mongoClient = await clientPromise;
-    const db = mongoClient.db();
-    const collection = db.collection<User>(`users`);
+    const mongoClient = await connectToDatabase();
+    const collection = mongoClient.db().collection<User>(`users`);
 
     return collection;
 }

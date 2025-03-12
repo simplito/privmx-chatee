@@ -1,27 +1,44 @@
-import { MONGODB_URI, REPLICA_SET } from '@/shared/utils/env';
-import { MongoClient, MongoClientOptions } from 'mongodb';
+import { MONGODB_URI  } from '@/shared/utils/env';
+import {MongoClient, } from 'mongodb';
 
-const uri = MONGODB_URI;
-const options: MongoClientOptions = {
-    replicaSet: REPLICA_SET
-};
+const uri = MONGODB_URI || "mongodb://127.0.0.1:27017/Chatee?replicaSet=rs0"; // Fallback for development
 
-let client;
-let clientPromise: Promise<MongoClient>;
+let dbClient:MongoClient;
 
-if (process.env.NODE_ENV === 'development') {
-    let globalWithMongo = global as typeof globalThis & {
-        _mongoClientPromise?: Promise<MongoClient>;
-    };
+async function connectToDatabase() {
+    try {
+        if (!dbClient) { // Only create a new connection if one doesn't exist
+            dbClient = new MongoClient(uri,{replicaSet:"rs0",});
+            await dbClient.connect();
+            console.log("Connected to MongoDB");
+        } else {
+            console.log("Reusing existing MongoDB connection")
+        }
+        return dbClient; // Return the database object
 
-    if (!globalWithMongo._mongoClientPromise) {
-        client = new MongoClient(uri, options);
-        globalWithMongo._mongoClientPromise = client.connect();
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        throw error; // Re-throw the error for handling elsewhere
     }
-    clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-    client = new MongoClient(uri, options);
-    clientPromise = client.connect();
 }
 
-export default clientPromise;
+
+async function closeDatabaseConnection() {
+    if (dbClient) {
+        try {
+            await dbClient.close();
+            console.log("MongoDB connection closed.");
+            dbClient = null;
+        } catch (err) {
+            console.error("Error closing MongoDB connection:", err);
+        }
+    }
+}
+
+process.on('SIGINT', async () => {
+    console.log('Shutting down gracefully...');
+    await closeDatabaseConnection();
+    process.exit(0);
+});
+
+export { connectToDatabase, closeDatabaseConnection };
