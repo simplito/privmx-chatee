@@ -29,7 +29,7 @@
         "jose": "^5.2.4",
         "jsonwebtoken": "^9.0.2",
         "mongodb": "^6.3.0",
-        "next": "^14.2.4",
+        "next": "^15.2.3",
         "next-intl": "^3.9.5",
         "react": "^18",
         "react-dom": "^18",
