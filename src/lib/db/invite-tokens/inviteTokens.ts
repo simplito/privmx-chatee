@@ -1,7 +1,7 @@
 'use server';
 
 import { ClientSession, Filter, UpdateFilter } from 'mongodb';
-import clientPromise from '../mongodb';
+import { connectToDatabase } from '../mongodb';
 import { generateInviteToken } from './utils';
 
 export interface InviteToken {
@@ -19,11 +19,16 @@ export interface InviteTokenClientDTO extends Omit<InviteToken, 'hashedValue'> {
 const collectionName = 'InviteTokens';
 
 async function getCollection() {
-    const mongoClient = await clientPromise;
-    const db = mongoClient.db();
-    const collection = db.collection<InviteTokenDbDTO>(collectionName);
+    try {
+        const mongoClient = await connectToDatabase();
+        const collection = await mongoClient.db().collection<InviteTokenDbDTO>(collectionName);
+        return collection;
+    }catch (e){
+       console.error(collectionName);
+       console.error(e.message);
+    }
 
-    return collection;
+
 }
 
 export async function createInviteToken(
@@ -49,12 +54,18 @@ export async function getInviteTokenByValue(tokenValue: string) {
 }
 
 export async function getActiveInviteTokens() {
-    const collection = await getCollection();
-    const maxCreationDate = Date.now() - 1000 * 60 * 60 * 24 * 7;
-    const token = await collection
-        .find({ isUsed: false, creationDate: { $gte: maxCreationDate } })
-        .toArray();
-    return token;
+
+    try {
+        const collection = await getCollection();
+        const maxCreationDate = Date.now() - 1000 * 60 * 60 * 24 * 7;
+        const token = await collection
+            .find({ isUsed: false, creationDate: { $gte: maxCreationDate } })
+            .toArray();
+        return token;
+    }catch (e){
+        console.error("getActive");
+        console.error(e.message);
+    }
 }
 
 export async function updateInviteToken(

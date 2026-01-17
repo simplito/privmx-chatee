@@ -8,7 +8,7 @@ Chatee is a simple chat application created for testing and demonstration purpos
 
 Chatee provides essential chat features, including group chats and file attachments. All the data exchanged within Chatee is
 end-to-end encrypted, meaning that only the end users can read (decrypt) their messages. It means that even the platform hosting
-provider cannot access user data.
+provider can’t access user data.
 
 Chatee categorizes users into two distinct roles:
 
@@ -114,20 +114,44 @@ Go to <http://localhost:3000/sign-up> and create the first Staff user.
 
 ### Creating Threads
 
-When creating threads (chat rooms) you are given a list of all the users from your app.
+When creating threads (chat rooms) you’re given a list of all the users from your app.
 Staff users can create chats with all the users in the app.
 Regular users can create chats only with Staff.
 
-### Production Notes
+## Production Deployments
 
-#### Alternative ways to use our docker-compose-production.yml
+1. For deployment, you will need [Docker](https://docs.docker.com/engine/install/ubuntu/) with [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine
+2. Create PrivMX Bridge Instance using our [PriMX Bridge docker repo](https://github.com/simplito/privmx-bridge-docker) 
+    After a setup process you will receive Bridge secrets, you will need them later.
+3. Clone this repository on your machine.
+4. Copy or rename `.env.example` to `.env.production`.
+    Using variables from step 2 fill your `.env.production` file with few modifications.
+    If your PrivMX Bridge doesn't have a domain assigned to it, you should pass an IP and port of your machine 
+    instead of `localhost`. 
+    **PrivMX Bridge must be served via https**
+5. Production docker compose comes with nginx container which needs certs for HTTPS connection
+   To generate cert run:
+    ```
+    cd ./deployments
+    mkdir -p certs && openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout certs/selfsigned.key -out certs/selfsigned.crt \
+    -subj "/CN=APP_DOMAIN_NAME"
+    ```
+    Replace `APP_DOMAIN_NAME` with domain of your app.
+    If you don't have a domain name, you can pass `"localhost"` instead.  
 
-1. Create the same .env file but name it **.env.production**.
-2. Run docker-compose. Variable `PORT` will define on which port it will be available.
-
-```sh
-   PORT=PORT_NUMER_OF_APPLICATION docker-compose -f docker-compose-production.yml up
-```
+    You can edit its configuration in `/deployments/nginx.conf` file, for example, if
+    you want to change domain name of your app.
+   To start your application, **run in root of your project**:
+    ```sh
+    docker-compose -f docker-compose-production.yml up -d
+    ```
+6. After the first startup, you will be prompted with an invitation token for the first staff user.
+    You can check it using:
+   ```
+   docker logs NAME_OF_CHATEE_CONTAINER 
+   ```
+7. Create first staff user on `/sign-up` page using your invite token
 
 ## License
 
